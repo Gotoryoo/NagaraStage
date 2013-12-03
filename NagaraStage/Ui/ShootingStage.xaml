@@ -1,0 +1,109 @@
+﻿<my:KeyHandleWorkspace x:Class="NagaraStage.Ui.ShootingStage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:my="clr-namespace:NagaraStage.Ui"
+             mc:Ignorable="d" 
+             d:DesignHeight="650" d:DesignWidth="800" Loaded="UserControl_Loaded">
+    <Grid Background="Gray">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180" />
+            <ColumnDefinition Width="648*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30" />
+            <RowDefinition Height="420*" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="170*" />
+        </Grid.RowDefinitions>
+        <my:CameraViewer Grid.Column="1" Grid.Row="1" Height="420" HorizontalAlignment="Center" x:Name="emulsionCanvas"  Width="512" Cursor="Pen" MouseMove="emulsionView_MouseMove" MouseLeave="emulsionView_MouseLeave" />
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1">
+            <Label Content="X:000.000mm Y:000.000mm Z:000.000mm" Height="28" Name="coordinateLabel" />
+        </StackPanel>
+        <Button HorizontalAlignment="Right" Name="closeButton" VerticalAlignment="Top" Width="20" Height="20" Grid.Column="1" Click="closeButton_Click">
+            <Image Source="/NagaraStage;component/Images/close.png" />
+        </Button>
+        <Grid Grid.RowSpan="4" Background="#FFE3E3E3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="52*" />
+                <RowDefinition Height="559*" />
+            </Grid.RowDefinitions>
+            <Label Content="shooting mode" HorizontalAlignment="Center" Name="modeLabel" VerticalAlignment="Center" FontSize="20" />
+            <StackPanel Grid.Row="1">
+                <Label Content="X:---.---mm" Height="28" Name="xCoordLabel" HorizontalAlignment="Center" />
+                <Label Content="Y:---.---mm" Height="28" Name="yCoordLabel" HorizontalAlignment="Center" />
+                <Label Content="Z:---.---mm" Height="28" Name="zCoordLabel" HorizontalAlignment="Center" />
+                <GroupBox Grid.Row="1" Header="{Binding Source={StaticResource strings}, Path=Led}" Height="100" HorizontalAlignment="Center" Name="ledGroupBox">
+                    <Grid Margin="8,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="62*" />
+                            <RowDefinition Height="59*" />
+                        </Grid.RowDefinitions>
+
+                        <Slider Height="23" HorizontalAlignment="Left" Margin="2,11,0,0" Name="ledSlider" VerticalAlignment="Top" Width="134" Maximum="255" ValueChanged="ledSlider_ValueChanged" />
+                        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal">
+                            <Button Content="{Binding Source={StaticResource strings}, Path=AdjustLight}" Height="23" Margin="4,0" Name="adjustLedButton" Width="75" Click="adjustLedButton_Click" />
+                            <TextBox Height="22" HorizontalAlignment="Left" Name="ledTextBox" Width="36" Text="0" TextChanged="ledTextBox_TextChanged" />
+                        </StackPanel>
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Column="1" Grid.Row="3" Background="#FFE3E3E3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="12*" />
+                <RowDefinition Height="149*" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="258*" />
+                <ColumnDefinition Width="235*" />
+                <ColumnDefinition Width="127*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Row="1" Margin="20,0,0,0">
+                <StackPanel HorizontalAlignment="Left" Name="stackPanel1" Orientation="Horizontal" Grid.Row="1">
+                    <Label Content="{Binding Source={StaticResource strings}, Path=Direction}" Height="28" Name="label1" />
+                    <RadioButton Content="{Binding Source={StaticResource strings}, Path=PlusDirection}" Height="16" Name="plusRadioButton" Padding="4,0" />
+                    <RadioButton Content="{Binding Source={StaticResource strings}, Path=MinusDirection}" Height="16" Name="minusRadioButton" Padding="4,0" IsChecked="True" />
+                </StackPanel>
+                <StackPanel Grid.Row="1" Height="44" HorizontalAlignment="Left" Name="stackPanel2" VerticalAlignment="Top" Width="200" Orientation="Horizontal">
+                    <Label Content="{Binding Source={StaticResource strings}, Path=Distance}" Height="28" Name="label2" />
+                    <Label Name="distanceRangeLabel" Height="28" />
+                    <TextBox Height="24" Name="distanceTextBox" Text="0" HorizontalContentAlignment="Right" TextChanged="distanceTextBox_TextChanged" />
+                    <Label Content="mm" Height="28" Name="label3" />
+                </StackPanel>
+                <StackPanel Grid.Row="1" Height="44" HorizontalAlignment="Left" Name="stackPanel3" VerticalAlignment="Top" Width="200" Orientation="Horizontal">
+                    <Label Content="{Binding Source={StaticResource strings}, Path=Interval}" Height="28" Name="label4" />
+                    <TextBox Height="24" Name="intervalTextBox" Width="120" Text="０" HorizontalContentAlignment="Right" TextChanged="intervalTextBox_TextChanged" />
+                    <Label Content="um" Height="28" Name="label5" />
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Grid.Column="1" Grid.Row="1">
+                <GroupBox Header="{Binding Source={StaticResource strings}, Path=Save}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="28" />
+                            <RowDefinition Height="28" />
+                            <RowDefinition Height="28" />
+                            <RowDefinition Height="28" />
+                        </Grid.RowDefinitions>
+                        <Label Content="{Binding Source={StaticResource strings}, Path=DestinationDir}" />
+                        <TextBox Height="28" Margin="5,1" Name="destinationTextBox" Grid.Row="1" TextChanged="destinationTextBox_TextChanged" />
+                        <Button Content="{Binding Refference, Mode=OneWay, Source={StaticResource ResourcesInstance}}" HorizontalAlignment="Right" Name="refButton" Grid.Row="1" Click="refButton_Click"  />
+                        <Label Grid.Row="2" Content="{Binding FileName, Mode=OneWay, Source={StaticResource ResourcesInstance}}" />
+                        <TextBox Grid.Row="3" Margin="10, 2" Name="fileNameTextBox" TextChanged="fileNameTextBox_TextChanged" />
+                    </Grid>
+                </GroupBox>
+            </StackPanel>
+            <StackPanel Grid.Column="2" Grid.Row="1">
+                <Button Content="{Binding Source={StaticResource strings}, Path=Start}" Height="23" Name="startButton" Width="75" Click="startButton_Click" />
+                <Button Content="{Binding Source={StaticResource strings}, Path=Abort}" Height="23" Name="abortButton" Width="75" Margin="0,8,0,0" Click="abortButton_Click" />
+            </StackPanel>
+        </Grid>
+        <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Center" Name="progressPanel">
+            <ProgressBar HorizontalAlignment="Stretch" Name="progressBar" VerticalAlignment="Center" Width="460" Height="20" SmallChange="1" />
+            <Label Content="000" Height="28" Name="shootNumLabel" VerticalAlignment="Center" />
+        </StackPanel>
+
+    </Grid>
+</my:KeyHandleWorkspace>

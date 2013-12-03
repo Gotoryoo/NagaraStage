@@ -1,0 +1,54 @@
+﻿<Window x:Class="SurfaceTestProject.ConfigWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Configure" Height="413" Width="541" ResizeMode="NoResize" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="320*" />
+            <ColumnDefinition Width="199*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="28*" />
+            <RowDefinition Height="34*" />
+            <RowDefinition Height="34*" />
+            <RowDefinition Height="40*" />
+            <RowDefinition Height="46*" />
+            <RowDefinition Height="52*" />
+            <RowDefinition Height="46*" />
+            <RowDefinition Height="76*" />
+            <RowDefinition Height="52*" />
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,80,0" Grid.ColumnSpan="2">
+            <Label Content="平均をとる辺の長さ(pixcel)" Height="28" />
+            <TextBox Height="24" Name="numSideTextBox" Width="120" />
+            <Button Content="初期値" Height="23" Name="numSideDefaultButton" Width="75" Click="numSideDefaultButton_Click" />
+        </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,80,0" Grid.ColumnSpan="2">
+            <Label Content="輝度値のしきい値" Height="28" />
+            <TextBox Height="24" Name="thresholdTextBox" Width="120" />
+            <Button Content="初期値" Height="23" Name="thresholdDefaultButton" Width="75" Click="thresholdDefaultButton_Click" />
+        </StackPanel>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,80,0" Grid.ColumnSpan="2">
+            <Label Content="二値化のしきい値" Height="28" />
+            <TextBox Height="24" Name="binThresholdTextBox" Width="120" />
+            <Button Content="初期値" Height="23" Name="binThresholdDefaultButton" Width="75" Click="binThresholdDefaultButton_Click" />
+        </StackPanel>
+        <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,80,0" Grid.ColumnSpan="2">
+            <Label Content="開始行" Height="28" />
+            <TextBox Height="24" Name="startRowTextBox" Width="120" />
+            <Button Content="初期値" Height="23" Name="startRowDefaultButton" Width="75" Click="startRowDefaultButton_Click" />
+        </StackPanel>
+        <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,80,0" Grid.ColumnSpan="2">
+            <Label Content="終了行" Height="28" />
+            <TextBox Height="24" Name="endRowTextBox" Width="120" />
+            <Button Content="初期値" Height="23" Name="endRowDefaultButton" Width="75" Click="endRowDefaultButton_Click" />
+        </StackPanel>
+        <StackPanel Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,0,80,0" Grid.ColumnSpan="2">
+            <Label Content="累乗" Height="28" />
+            <TextBox Height="24" Name="powerTextBox" Width="120" />
+            <Button Content="初期値" Height="23" Name="powerDefaultButton" Width="75" Click="powerDefaultButton_Click" />
+        </StackPanel>
+        <Button Content="OK" Grid.Column="1" Grid.Row="7" Height="23" HorizontalAlignment="Left" Margin="16,17,0,0" Name="okButton" VerticalAlignment="Top" Width="75" IsDefault="True" Click="okButton_Click" />
+        <Button Content="Cancel" Grid.Column="1" Grid.Row="7" Height="23" HorizontalAlignment="Right" Margin="0,17,12,0" Name="cancelButton" VerticalAlignment="Top" Width="75" IsCancel="True" Click="cancelButton_Click" />
+    </Grid>
+</Window>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="content-script-type" type="text/javascript">
+<meta http-equiv="content-style-type" type="text/css">
+<link rel="stylesheet" type="text/css" href="style.css">
+<script type="text/javascript" src="jquery-1.8.3.js"></script>
+<script type="text/javascript" src="http://www2.gifu-u.ac.jp/~gcrobo/lib/grobo/grobo.js"></script>
+<script type="text/javascript" src="script.js"></script>
+<title>表面認識ログビュワー</title>
+</head>
+<body>
+<form method="get" action="">
+<input type="file" id="fileInput" multiple>
+<input type="button" value="ロード" id="displayingButton">
+</form>
+<hr>
+<table id="resultTable">
+<tr>
+ <th>速さ引数</th>
+ <th>秒数(5sec)</th>
+ <th>ズレ：上ゲル正面(um)</th>
+ <th>ズレ：上ゲル下面(um)</th>
+ <th>ズレ：下ゲル上面(um)</th>
+ <th>ズレ：下ゲル下面(um)</th>
+</tr>
+</table>
+<a href="speedgraph.html">スピードグラフ</a>
+</body>
+</html>

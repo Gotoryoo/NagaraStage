@@ -1,0 +1,923 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Abort" xml:space="preserve">
+    <value>Abort</value>
+  </data>
+  <data name="AbortMotor" xml:space="preserve">
+    <value>Abort motor moving.</value>
+  </data>
+  <data name="Accum" xml:space="preserve">
+    <value>Accumulative</value>
+  </data>
+  <data name="AdjustLight" xml:space="preserve">
+    <value>Adjust Light</value>
+  </data>
+  <data name="AllTracks" xml:space="preserve">
+    <value>All Tracks</value>
+  </data>
+  <data name="Append" xml:space="preserve">
+    <value>Append</value>
+  </data>
+  <data name="AppendSave" xml:space="preserve">
+    <value>Do you append this file?</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>Attention</value>
+  </data>
+  <data name="AutoDetect" xml:space="preserve">
+    <value>Automatic Detection</value>
+  </data>
+  <data name="Automatic" xml:space="preserve">
+    <value>Automatic</value>
+  </data>
+  <data name="BackOrigin" xml:space="preserve">
+    <value>Back to Origin</value>
+  </data>
+  <data name="Camera" xml:space="preserve">
+    <value>Camera</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Comment" xml:space="preserve">
+    <value>Comment</value>
+  </data>
+  <data name="Control" xml:space="preserve">
+    <value>Control</value>
+  </data>
+  <data name="CoordSystem" xml:space="preserve">
+    <value>Coord Sysmtem</value>
+  </data>
+  <data name="CoordTab" xml:space="preserve">
+    <value>Creating Coord</value>
+  </data>
+  <data name="CorrectLens" xml:space="preserve">
+    <value>Correct lens type is {0}.</value>
+  </data>
+  <data name="CreateCoordSystem" xml:space="preserve">
+    <value>Create Coord System</value>
+  </data>
+  <data name="DecideGridMark" xml:space="preserve">
+    <value>Decide Grid mark</value>
+  </data>
+  <data name="DetectGridMark" xml:space="preserve">
+    <value>Detect Grid marks</value>
+  </data>
+  <data name="EmulstionType" xml:space="preserve">
+    <value>Emulsion type</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>Exit</value>
+  </data>
+  <data name="FileAlreadyExist" xml:space="preserve">
+    <value>{0} already exists.</value>
+  </data>
+  <data name="FileNotFound" xml:space="preserve">
+    <value>File is not found.</value>
+  </data>
+  <data name="GridMakrCenterTop" xml:space="preserve">
+    <value>Center Top Grid mark</value>
+  </data>
+  <data name="GridMarkCenterBottom" xml:space="preserve">
+    <value>Center Bottom Grid mark</value>
+  </data>
+  <data name="GridMarkCenterMiddle" xml:space="preserve">
+    <value>Center Middle Grid mark</value>
+  </data>
+  <data name="GridmarkDialog01" xml:space="preserve">
+    <value>Do you define here as {0}? Click "Yes" if you define as {0}. Or Click "No" if you define as other grid mark.</value>
+  </data>
+  <data name="GridMarkLeftBottom" xml:space="preserve">
+    <value>Left Bottom Grid mark</value>
+  </data>
+  <data name="GridMarkLeftMiddle" xml:space="preserve">
+    <value>Left Middle Grid mark</value>
+  </data>
+  <data name="GridMarkLeftTop" xml:space="preserve">
+    <value>Left Top Grid mark</value>
+  </data>
+  <data name="GridMarkRightBottom" xml:space="preserve">
+    <value>Right Bottom Grid mark</value>
+  </data>
+  <data name="GridMarkRightMiddle" xml:space="preserve">
+    <value>Right Middle Grid mark</value>
+  </data>
+  <data name="GridMarkRightTop" xml:space="preserve">
+    <value>Right Top Grid mark</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Index" xml:space="preserve">
+    <value>Index</value>
+  </data>
+  <data name="IndexFarExceptionWarning" xml:space="preserve">
+    <value>Indes value is far from 2. Is it true?</value>
+  </data>
+  <data name="IndexMeasure" xml:space="preserve">
+    <value>Index Measure</value>
+  </data>
+  <data name="IndexTooSmallException" xml:space="preserve">
+    <value>Index value must be lager than 1.</value>
+  </data>
+  <data name="IndexValueNotFound" xml:space="preserve">
+    <value>The file memorized index value is not found at {0}. Do you set it?</value>
+  </data>
+  <data name="InitGridMark" xml:space="preserve">
+    <value>Clear Defined Grid marks</value>
+  </data>
+  <data name="InitGridMarkReally" xml:space="preserve">
+    <value>Do you realy clear defined Grid marks?</value>
+  </data>
+  <data name="Led" xml:space="preserve">
+    <value>LED</value>
+  </data>
+  <data name="LensTypeException01" xml:space="preserve">
+    <value>Lens type is not correct.</value>
+  </data>
+  <data name="LensTypeSetting" xml:space="preserve">
+    <value>Lens type setting</value>
+  </data>
+  <data name="Load" xml:space="preserve">
+    <value>Load</value>
+  </data>
+  <data name="LoadData" xml:space="preserve">
+    <value>Load Data</value>
+  </data>
+  <data name="LoadIndex" xml:space="preserve">
+    <value>Load Index</value>
+  </data>
+  <data name="ModuleNo" xml:space="preserve">
+    <value>Module No.</value>
+  </data>
+  <data name="ModuleNoOutOfRangeException" xml:space="preserve">
+    <value>Module No. must be 1-45 or 51-100.</value>
+  </data>
+  <data name="MotorActive01" xml:space="preserve">
+    <value>Motor is moving now. Do you abort the present motor action?</value>
+  </data>
+  <data name="MotorActiveException01" xml:space="preserve">
+    <value>Motor is moving now.</value>
+  </data>
+  <data name="MotorActiveException02" xml:space="preserve">
+    <value>This command is canceld now because motor is active now.</value>
+  </data>
+  <data name="MotorStop01" xml:space="preserve">
+    <value>Motor moving is stopped by user`s request.</value>
+  </data>
+  <data name="Moving" xml:space="preserve">
+    <value>Moving...</value>
+  </data>
+  <data name="MovingComplete" xml:space="preserve">
+    <value>Complete moving.</value>
+  </data>
+  <data name="NewStage" xml:space="preserve">
+    <value>New Stage</value>
+  </data>
+  <data name="NewStageHelp" xml:space="preserve">
+    <value>Let's set up the New Stage.
+First, Enter your name and a mail address. Entering Mail address is voluntary.
+Next, Select the emulsion number you using. Enter plate No., module No. and select emulsion type, Thick or Thin. "Index" means the thickness of emulsion layers. "Up Index"  is the thickness of Upper gel, "Under Index" is the thickness of Lower gel. 
+And, there shold be files having Emulsion information. Enter the file path to appropritate emulsion you using.
+Last, Click the OK button.
+Last, Click OK button to start new stage.</value>
+  </data>
+  <data name="NewStart" xml:space="preserve">
+    <value>New</value>
+  </data>
+  <data name="NextGridMark" xml:space="preserve">
+    <value>Next Grid mark</value>
+  </data>
+  <data name="NextTrack" xml:space="preserve">
+    <value>Next Track</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="OK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>Open</value>
+  </data>
+  <data name="OpenPred" xml:space="preserve">
+    <value>Open Prediction File</value>
+  </data>
+  <data name="OpenScan" xml:space="preserve">
+    <value>Open Scaned File</value>
+  </data>
+  <data name="OriginChanged" xml:space="preserve">
+    <value>Original Point is changed.</value>
+  </data>
+  <data name="OtherGridMarks" xml:space="preserve">
+    <value>Other Grid marks</value>
+  </data>
+  <data name="OverIndex" xml:space="preserve">
+    <value>Over Index</value>
+  </data>
+  <data name="PlateNo" xml:space="preserve">
+    <value>Plate No.</value>
+  </data>
+  <data name="PlateNoInavilityException" xml:space="preserve">
+    <value>PlateNo. must be integer than 1.</value>
+  </data>
+  <data name="Prediction" xml:space="preserve">
+    <value>Prediction</value>
+  </data>
+  <data name="PreviousGridMark" xml:space="preserve">
+    <value>Previous Grid mark</value>
+  </data>
+  <data name="Scan" xml:space="preserve">
+    <value>Scan</value>
+  </data>
+  <data name="ScanFile" xml:space="preserve">
+    <value>Scan File</value>
+  </data>
+  <data name="SelectEmulsion" xml:space="preserve">
+    <value>Select Emulsion</value>
+  </data>
+  <data name="SelectWhichGridMark" xml:space="preserve">
+    <value>Select which is grid mark.</value>
+  </data>
+  <data name="SemiAuto" xml:space="preserve">
+    <value>Semi Automatic</value>
+  </data>
+  <data name="SetLensDialog" xml:space="preserve">
+    <value>Click "OK" after Set lens of the microscope to {0}.</value>
+  </data>
+  <data name="SetOrigin" xml:space="preserve">
+    <value>Set Origin Here</value>
+  </data>
+  <data name="SetSpiralOrigin" xml:space="preserve">
+    <value>Set Spiral Origin</value>
+  </data>
+  <data name="Shooting" xml:space="preserve">
+    <value>Shooting</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>Skip</value>
+  </data>
+  <data name="Slice" xml:space="preserve">
+    <value>Slice</value>
+  </data>
+  <data name="SoftwareName" xml:space="preserve">
+    <value>Auto Stage</value>
+  </data>
+  <data name="Speed" xml:space="preserve">
+    <value>Speed</value>
+  </data>
+  <data name="Speed1" xml:space="preserve">
+    <value>speed1</value>
+  </data>
+  <data name="Speed2" xml:space="preserve">
+    <value>speed2</value>
+  </data>
+  <data name="Speed3" xml:space="preserve">
+    <value>speed3</value>
+  </data>
+  <data name="Speed4" xml:space="preserve">
+    <value>speed4</value>
+  </data>
+  <data name="SpiralBack" xml:space="preserve">
+    <value>Back to Spiral Origin</value>
+  </data>
+  <data name="SpiralMove" xml:space="preserve">
+    <value>Spiral Move</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="ThickType" xml:space="preserve">
+    <value>Thick type</value>
+  </data>
+  <data name="ThinType" xml:space="preserve">
+    <value>Thin type</value>
+  </data>
+  <data name="Track" xml:space="preserve">
+    <value>Track</value>
+  </data>
+  <data name="TrackFoundComplete" xml:space="preserve">
+    <value>All tracks are already completed.</value>
+  </data>
+  <data name="TrackId" xml:space="preserve">
+    <value>Track ID</value>
+  </data>
+  <data name="TrackInfo" xml:space="preserve">
+    <value>Track Information</value>
+  </data>
+  <data name="TracksManagerException01" xml:space="preserve">
+    <value>Track information is not loaded. First, Load tracks information.</value>
+  </data>
+  <data name="UnderIndex" xml:space="preserve">
+    <value>UnderIndex</value>
+  </data>
+  <data name="VersionInfo" xml:space="preserve">
+    <value>Version Information</value>
+  </data>
+  <data name="WhichGridMark" xml:space="preserve">
+    <value>Which Grid mark you attempting to define?</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="Base" xml:space="preserve">
+    <value>Base</value>
+  </data>
+  <data name="Bottom" xml:space="preserve">
+    <value>Bottom</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>Failed.</value>
+  </data>
+  <data name="Gel" xml:space="preserve">
+    <value>Gel</value>
+  </data>
+  <data name="GridMarkNotFoundException01" xml:space="preserve">
+    <value>Failed grid mark searching.</value>
+  </data>
+  <data name="LowerGel" xml:space="preserve">
+    <value>Lower Gel</value>
+  </data>
+  <data name="LowerGelBottom" xml:space="preserve">
+    <value>Bottom of Lower gel</value>
+  </data>
+  <data name="LowerGelTop" xml:space="preserve">
+    <value>Top of Lower gel</value>
+  </data>
+  <data name="MoveToSurface" xml:space="preserve">
+    <value>Move to surface</value>
+  </data>
+  <data name="Surface" xml:space="preserve">
+    <value>Surface</value>
+  </data>
+  <data name="SurfaceRecognize" xml:space="preserve">
+    <value>Surface Recognize</value>
+  </data>
+  <data name="Top" xml:space="preserve">
+    <value>Top</value>
+  </data>
+  <data name="UpperGel" xml:space="preserve">
+    <value>Upper Gel</value>
+  </data>
+  <data name="UpperGelBottom" xml:space="preserve">
+    <value>Bottom of Upper gel</value>
+  </data>
+  <data name="UpperGelTop" xml:space="preserve">
+    <value>Top of Upper gel</value>
+  </data>
+  <data name="GridMarkNotDefinedMin" xml:space="preserve">
+    <value>The Number of defined grid marks id too few.</value>
+  </data>
+  <data name="WarnCreateCoord01" xml:space="preserve">
+    <value>All grid marks are not defined. But can create Coord System. Do you continu to create it?</value>
+  </data>
+  <data name="SurfaceException01" xml:space="preserve">
+    <value>Motor is moving now. Motor need to be stop for surface recognizing. Do you stop motor? </value>
+  </data>
+  <data name="SurfaceException02" xml:space="preserve">
+    <value>Surface recognizing task is already active  now. Do you abort it?</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
+  <data name="BrightnessThreshold" xml:space="preserve">
+    <value>Threshold of brightness</value>
+  </data>
+  <data name="Config" xml:space="preserve">
+    <value>Configure</value>
+  </data>
+  <data name="DefaultValue" xml:space="preserve">
+    <value>Defalut value</value>
+  </data>
+  <data name="DistanceOut" xml:space="preserve">
+    <value>Dsitance to abort(um)</value>
+  </data>
+  <data name="EndRow" xml:space="preserve">
+    <value>End row</value>
+  </data>
+  <data name="NumOfSidePixcel" xml:space="preserve">
+    <value>The length of side to average brightness (pxcel)</value>
+  </data>
+  <data name="StartRow" xml:space="preserve">
+    <value>Start row</value>
+  </data>
+  <data name="SurfaceConfig" xml:space="preserve">
+    <value>Surface Recognizing Configure</value>
+  </data>
+  <data name="File" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="InputInvalidValue" xml:space="preserve">
+    <value>Inputed value is invalid.</value>
+  </data>
+  <data name="AbortedSurfaceRecognizing" xml:space="preserve">
+    <value>Surface recognition is Aborted .</value>
+  </data>
+  <data name="CompletedSurfaceRecognizing" xml:space="preserve">
+    <value>Complete surface recognizing．</value>
+  </data>
+  <data name="FailedSurfaceRecognizing" xml:space="preserve">
+    <value>Failed surface recognizing.</value>
+  </data>
+  <data name="NoControllable" xml:space="preserve">
+    <value>The controll is unavailable now.</value>
+  </data>
+  <data name="StartedSurfaceRecognizing" xml:space="preserve">
+    <value>Started surface recognizing.</value>
+  </data>
+  <data name="DetermineInGel" xml:space="preserve">
+    <value>Determin in Gel</value>
+  </data>
+  <data name="ImageEnhancement" xml:space="preserve">
+    <value>Image Enhancement</value>
+  </data>
+  <data name="InsideGelNow" xml:space="preserve">
+    <value>It is Inside gel now.</value>
+  </data>
+  <data name="OutsideGelNow" xml:space="preserve">
+    <value>It is Outside gel Now.</value>
+  </data>
+  <data name="MotorAxisLimitMinus" xml:space="preserve">
+    <value>Motor Limit: - direction.</value>
+  </data>
+  <data name="MotorAxisLimitPlus" xml:space="preserve">
+    <value>Motor Limit: + direction.</value>
+  </data>
+  <data name="MotorOverHeat" xml:space="preserve">
+    <value>Motor: Over Heat</value>
+  </data>
+  <data name="Preview" xml:space="preserve">
+    <value>Preview</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="FileExtensionNotAvairable" xml:space="preserve">
+    <value>File extension is not avairable.</value>
+  </data>
+  <data name="CameraNotWork" xml:space="preserve">
+    <value>Camera is not working.</value>
+  </data>
+  <data name="PixcelFormatException" xml:space="preserve">
+    <value>Pixcel Format must be Gray8. 8bit 256 colors gray scale is accepted only.</value>
+  </data>
+  <data name="ImageFile" xml:space="preserve">
+    <value>Image File</value>
+  </data>
+  <data name="AllFiles" xml:space="preserve">
+    <value>All Files</value>
+  </data>
+  <data name="IndicativeBrightness" xml:space="preserve">
+    <value>Indicative Brightness</value>
+  </data>
+  <data name="ValMustMore" xml:space="preserve">
+    <value>{0} must be more than {1}</value>
+  </data>
+  <data name="ValMustOrMore" xml:space="preserve">
+    <value>{0} must be {1} or more</value>
+  </data>
+  <data name="ValMustPositive" xml:space="preserve">
+    <value>{0} must be a positive number.</value>
+  </data>
+  <data name="LensType" xml:space="preserve">
+    <value>Lens Type</value>
+  </data>
+  <data name="Emulsion" xml:space="preserve">
+    <value>Emulsion</value>
+  </data>
+  <data name="Operation" xml:space="preserve">
+    <value>Operation</value>
+  </data>
+  <data name="Measurement" xml:space="preserve">
+    <value>Measurement</value>
+  </data>
+  <data name="Brightness" xml:space="preserve">
+    <value>Brightness</value>
+  </data>
+  <data name="MeasBrightness" xml:space="preserve">
+    <value>Meas Brightness</value>
+  </data>
+  <data name="Distance" xml:space="preserve">
+    <value>Distance</value>
+  </data>
+  <data name="HitSharp" xml:space="preserve">
+    <value>Hit#</value>
+  </data>
+  <data name="SurfaceDownBottomRecognized" xml:space="preserve">
+    <value>Surface Recognizing: Bottom of Down Gel is at {0}. </value>
+  </data>
+  <data name="SurfaceDownTopRecognized" xml:space="preserve">
+    <value>Surface Recognizing: Top of Down Gel is at {0}.</value>
+  </data>
+  <data name="SurfaceOnBttomLimited" xml:space="preserve">
+    <value>Surface Recognizing: Motor got to Bottom Limit.</value>
+  </data>
+  <data name="SurfaceUpBottomRecognized" xml:space="preserve">
+    <value>Surface Recognizing: Bottom of Up Gel is at {0}.</value>
+  </data>
+  <data name="SurfaceUpTopRecognizing" xml:space="preserve">
+    <value>Surface Recognizing: Top of Up Gel is at {0}.</value>
+  </data>
+  <data name="Plurality" xml:space="preserve">
+    <value>Plurality</value>
+  </data>
+  <data name="SurfaceComplete" xml:space="preserve">
+    <value>Surface Recognizing: Complete!</value>
+  </data>
+  <data name="TakeAccumlative" xml:space="preserve">
+    <value>Take Accumlative Picture</value>
+  </data>
+  <data name="TakePlurality" xml:space="preserve">
+    <value>Take Plurality Pictures</value>
+  </data>
+  <data name="TakeSingle" xml:space="preserve">
+    <value>Take Single Picture</value>
+  </data>
+  <data name="Coordinate" xml:space="preserve">
+    <value>Coordinate</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Direction" xml:space="preserve">
+    <value>Direction</value>
+  </data>
+  <data name="DrawCoord" xml:space="preserve">
+    <value>Draw Coordinate</value>
+  </data>
+  <data name="DrawEmulsionInfo" xml:space="preserve">
+    <value>Draw Emulsion Information</value>
+  </data>
+  <data name="DrawFigures" xml:space="preserve">
+    <value>Draw Figures</value>
+  </data>
+  <data name="Interval" xml:space="preserve">
+    <value>Interval</value>
+  </data>
+  <data name="LeftBottom" xml:space="preserve">
+    <value>Left Bottom</value>
+  </data>
+  <data name="LeftTop" xml:space="preserve">
+    <value>Left Top</value>
+  </data>
+  <data name="MinusDirection" xml:space="preserve">
+    <value>Minus Direction</value>
+  </data>
+  <data name="MotorControllable" xml:space="preserve">
+    <value>Motor Controllable</value>
+  </data>
+  <data name="PlusDirection" xml:space="preserve">
+    <value>Plus Direction</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="RightBottom" xml:space="preserve">
+    <value>Right Bottom</value>
+  </data>
+  <data name="RightTop" xml:space="preserve">
+    <value>Right Top</value>
+  </data>
+  <data name="EndPosition" xml:space="preserve">
+    <value>End Position</value>
+  </data>
+  <data name="StartPosition" xml:space="preserve">
+    <value>Start Position</value>
+  </data>
+  <data name="ValMustPositiveNotZero" xml:space="preserve">
+    <value>{0} must be a positive number with 0.</value>
+  </data>
+  <data name="ValMustOdd" xml:space="preserve">
+    <value>{0} must be an odd number.</value>
+  </data>
+  <data name="PowerOfDifference" xml:space="preserve">
+    <value>Power Value of Difference</value>
+  </data>
+  <data name="DelayTime" xml:space="preserve">
+    <value>Delay time (msec)</value>
+  </data>
+  <data name="ShootException01" xml:space="preserve">
+    <value>Shooting Pictures is active. Do you abort?</value>
+  </data>
+  <data name="AbortGridMarkSearch" xml:space="preserve">
+    <value>Grid Mark Search is Aborted.</value>
+  </data>
+  <data name="FoundNow" xml:space="preserve">
+    <value>{0} is found now. ({1}, {2})</value>
+  </data>
+  <data name="GridMarkSearchComplete" xml:space="preserve">
+    <value>Grid Mark Search is Completed!</value>
+  </data>
+  <data name="GridMarkSearchFailed" xml:space="preserve">
+    <value>Grid Mark Search is Failed.</value>
+  </data>
+  <data name="GridMarkSearchStart" xml:space="preserve">
+    <value>Grid Mark Search is start.</value>
+  </data>
+  <data name="PressAnyKeyForAbort" xml:space="preserve">
+    <value>Press any key for abort.</value>
+  </data>
+  <data name="ActivityActiveException01" xml:space="preserve">
+    <value>Activity is already running. Do you abort it?</value>
+  </data>
+  <data name="AutoTracking" xml:space="preserve">
+    <value>Automatic Tracking</value>
+  </data>
+  <data name="BeamDetect" xml:space="preserve">
+    <value>Beam Sport Detect</value>
+  </data>
+  <data name="FullScan" xml:space="preserve">
+    <value>Full Scan</value>
+  </data>
+  <data name="GridMark" xml:space="preserve">
+    <value>Grid mark</value>
+  </data>
+  <data name="GridMarkNotExistedPredMove" xml:space="preserve">
+    <value>The Grid mark is not still defined. Move to the Predicted Coordinate?</value>
+  </data>
+  <data name="Max" xml:space="preserve">
+    <value>Max</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>File Name</value>
+  </data>
+  <data name="Refference" xml:space="preserve">
+    <value>Refference</value>
+  </data>
+  <data name="FileType" xml:space="preserve">
+    <value>FileType</value>
+  </data>
+  <data name="FolderNotExists" xml:space="preserve">
+    <value>The Folder is not exist.</value>
+  </data>
+  <data name="SelectFolderToSave" xml:space="preserve">
+    <value>Select Folder to Save Images.</value>
+  </data>
+  <data name="LensNodeParseException01" xml:space="preserve">
+    <value>Lens node doesn't have Necessary item(s) at {0}.</value>
+  </data>
+  <data name="SoftwareAlreadyBoot" xml:space="preserve">
+    <value>Software is already booting.</value>
+  </data>
+  <data name="SetLensXMag" xml:space="preserve">
+    <value>Set X{0} lens</value>
+  </data>
+  <data name="InitCameraExcetion01" xml:space="preserve">
+    <value>Initializing Camera is failed.</value>
+  </data>
+  <data name="InitLedException01" xml:space="preserve">
+    <value>Initializing LED is failed.</value>
+  </data>
+  <data name="InitMotorException01" xml:space="preserve">
+    <value>Initializing Motor Controler Board is failed.</value>
+  </data>
+  <data name="InitParamException01" xml:space="preserve">
+    <value>Initializing Parameters is failed.</value>
+  </data>
+  <data name="LangSelect01" xml:space="preserve">
+    <value>Do you realy set {0} language ?</value>
+  </data>
+  <data name="LangSelect02" xml:space="preserve">
+    <value>Language setting has been changed. It is available after reboot the Application.</value>
+  </data>
+  <data name="LangSelectException01" xml:space="preserve">
+    <value>Language select is failed. So, selected System Language.</value>
+  </data>
+  <data name="ChangeDate" xml:space="preserve">
+    <value>Change Date</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>Date</value>
+  </data>
+  <data name="EmulsionInformation" xml:space="preserve">
+    <value>Emulsion Information</value>
+  </data>
+  <data name="MailAddress" xml:space="preserve">
+    <value>Mail Address</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="FastSurfaceRecognition" xml:space="preserve">
+    <value>Fast Surface Recognition</value>
+  </data>
+  <data name="MoveToCoord" xml:space="preserve">
+    <value>Move to the Coord.</value>
+  </data>
+  <data name="CoordHint" xml:space="preserve">
+    <value>CoordHint</value>
+  </data>
+  <data name="SurfaceStart" xml:space="preserve">
+    <value>Surface Recognition started.</value>
+  </data>
+  <data name="SurfaceLoweringDistance" xml:space="preserve">
+    <value>Lowering Distance</value>
+  </data>
+  <data name="NumOfVoting" xml:space="preserve">
+    <value>Number of Voting</value>
+  </data>
+  <data name="SurfaceVerif" xml:space="preserve">
+    <value>Surface Recognition Verification</value>
+  </data>
+  <data name="Verif" xml:space="preserve">
+    <value>Verification</value>
+  </data>
+  <data name="Judge" xml:space="preserve">
+    <value>Judge</value>
+  </data>
+  <data name="SurfaceDistance" xml:space="preserve">
+    <value>Distance from Start Pint</value>
+  </data>
+  <data name="Boundary" xml:space="preserve">
+    <value>Boundary</value>
+  </data>
+  <data name="InGel" xml:space="preserve">
+    <value>In the Gel</value>
+  </data>
+  <data name="BinarizeThreshold" xml:space="preserve">
+    <value>Threshold for Binarize</value>
+  </data>
+  <data name="Configure" xml:space="preserve">
+    <value>Configure</value>
+  </data>
+  <data name="StageRunAbort" xml:space="preserve">
+    <value>Stage is running now. Do you finish the stage?</value>
+  </data>
+  <data name="SurfaceBinThresholdMessage01" xml:space="preserve">
+    <value>Binarize not run, in case you set less than or equal to 0.</value>
+  </data>
+  <data name="SystemConfigure" xml:space="preserve">
+    <value>System Configure</value>
+  </data>
+  <data name="ActivityAbort" xml:space="preserve">
+    <value>Activity was aborted.</value>
+  </data>
+  <data name="ActivityRunning" xml:space="preserve">
+    <value>Activity is running now.</value>
+  </data>
+  <data name="AskAbort" xml:space="preserve">
+    <value>Do you abort it ?</value>
+  </data>
+  <data name="ValTooLarge" xml:space="preserve">
+    <value>{0} is too large.</value>
+  </data>
+  <data name="ValTooSmall" xml:space="preserve">
+    <value>{0} is too small.</value>
+  </data>
+  <data name="DestinationDir" xml:space="preserve">
+    <value>Destination Folder</value>
+  </data>
+  <data name="DirNotFound" xml:space="preserve">
+    <value>The folder is not found.</value>
+  </data>
+  <data name="FileNameInvalid" xml:space="preserve">
+    <value>File name is invalid.</value>
+  </data>
+  <data name="SystemConfWarning" xml:space="preserve">
+    <value>Warning: Incorrect settings may not be able to operate correctly.</value>
+  </data>
+  <data name="ApplyReboot" xml:space="preserve">
+    <value>Apply and reboot.</value>
+  </data>
+  <data name="AskReallySetting" xml:space="preserve">
+    <value>Do you set, really?</value>
+  </data>
+  <data name="RemoveBoundaryFlag" xml:space="preserve">
+    <value>Remove Boundary flag.</value>
+  </data>
+  <data name="SetBoundaryFlag" xml:space="preserve">
+    <value>Set Boundary flag.</value>
+  </data>
+  <data name="SetXFlag" xml:space="preserve">
+    <value>Set {0} flag.</value>
+  </data>
+  <data name="DefineGridMark" xml:space="preserve">
+    <value>{0} is defined now. ({1}, {2})</value>
+  </data>
+</root>

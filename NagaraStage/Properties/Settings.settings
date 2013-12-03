@@ -1,0 +1,153 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="NagaraStage.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="SurfThreshold" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">11000</Value>
+    </Setting>
+    <Setting Name="SurfStartRow" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">215</Value>
+    </Setting>
+    <Setting Name="SurfEndRow" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">224</Value>
+    </Setting>
+    <Setting Name="SurfNumSide" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">9</Value>
+    </Setting>
+    <Setting Name="SurfDistance" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">800</Value>
+    </Setting>
+    <Setting Name="IndexUp" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="IndexDown" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="SurfaceVoting" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">5</Value>
+    </Setting>
+    <Setting Name="SurfacePower" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="SurfaceDelay" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">100</Value>
+    </Setting>
+    <Setting Name="GridSpiral" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">30</Value>
+    </Setting>
+    <Setting Name="LimitPol" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">252</Value>
+    </Setting>
+    <Setting Name="EncoderResolutionX" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.001</Value>
+    </Setting>
+    <Setting Name="EncoderResolutionY" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.001</Value>
+    </Setting>
+    <Setting Name="EncoderResolutionZ" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.0001</Value>
+    </Setting>
+    <Setting Name="MotorResolutionX" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.0005</Value>
+    </Setting>
+    <Setting Name="MotorResolutionY" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.0005</Value>
+    </Setting>
+    <Setting Name="MotorResolutionZ" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">2E-05</Value>
+    </Setting>
+    <Setting Name="InitialVelocityX" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.004</Value>
+    </Setting>
+    <Setting Name="InitialVelocityY" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.04</Value>
+    </Setting>
+    <Setting Name="InitialVelocityZ" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.0036</Value>
+    </Setting>
+    <Setting Name="AccelTimeX" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">20</Value>
+    </Setting>
+    <Setting Name="AccelTimeY" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">20</Value>
+    </Setting>
+    <Setting Name="AccelTimeZ" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="Speed1X" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.1</Value>
+    </Setting>
+    <Setting Name="Speed1Y" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.1</Value>
+    </Setting>
+    <Setting Name="Speed1Z" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.01</Value>
+    </Setting>
+    <Setting Name="Speed2X" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.2</Value>
+    </Setting>
+    <Setting Name="Speed2Y" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.2</Value>
+    </Setting>
+    <Setting Name="Speed2Z" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.02</Value>
+    </Setting>
+    <Setting Name="Speed3X" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">15</Value>
+    </Setting>
+    <Setting Name="Speed3Y" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">15</Value>
+    </Setting>
+    <Setting Name="Speed3Z" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.1</Value>
+    </Setting>
+    <Setting Name="Speed4X" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">30</Value>
+    </Setting>
+    <Setting Name="Speed4Y" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">30</Value>
+    </Setting>
+    <Setting Name="Speed4Z" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.4</Value>
+    </Setting>
+    <Setting Name="ScanAreaXm" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">-118</Value>
+    </Setting>
+    <Setting Name="ScanAreaXp" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">118</Value>
+    </Setting>
+    <Setting Name="ScanAreaYm" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">-118</Value>
+    </Setting>
+    <Setting Name="ScanAreaYp" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">118</Value>
+    </Setting>
+    <Setting Name="Language" Type="System.String" Scope="User">
+      <Value Profile="(Default)">ja-JP</Value>
+    </Setting>
+    <Setting Name="SurfaceLoweringThin" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="SurfaceLoweringThick" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+    <Setting Name="SurfBinThreshold" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">4</Value>
+    </Setting>
+    <Setting Name="ShootInterval" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">1</Value>
+    </Setting>
+    <Setting Name="ShootDistance" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">0.2</Value>
+    </Setting>
+    <Setting Name="GridMarkLens" Type="System.String" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="LedParam" Type="System.String" Scope="User">
+      <Value Profile="(Default)">COM1</Value>
+    </Setting>
+    <Setting Name="SurfaceMotorSpeed" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">2</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

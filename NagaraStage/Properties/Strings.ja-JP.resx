@@ -1,0 +1,894 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Abort" xml:space="preserve">
+    <value>中止</value>
+  </data>
+  <data name="AbortMotor" xml:space="preserve">
+    <value>モータの移動を中止しました．</value>
+  </data>
+  <data name="Accum" xml:space="preserve">
+    <value>重ねて</value>
+  </data>
+  <data name="AdjustLight" xml:space="preserve">
+    <value>自動調整</value>
+  </data>
+  <data name="AllTracks" xml:space="preserve">
+    <value>全てのトラック</value>
+  </data>
+  <data name="Append" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="AppendSave" xml:space="preserve">
+    <value>このファイルに追加しますか?</value>
+  </data>
+  <data name="Attention" xml:space="preserve">
+    <value>注意</value>
+  </data>
+  <data name="AutoDetect" xml:space="preserve">
+    <value>自動検出</value>
+  </data>
+  <data name="Automatic" xml:space="preserve">
+    <value>全自動</value>
+  </data>
+  <data name="BackOrigin" xml:space="preserve">
+    <value>原点に戻る</value>
+  </data>
+  <data name="Camera" xml:space="preserve">
+    <value>カメラ</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="Comment" xml:space="preserve">
+    <value>コメント</value>
+  </data>
+  <data name="Control" xml:space="preserve">
+    <value>コントロール</value>
+  </data>
+  <data name="CoordSystem" xml:space="preserve">
+    <value>座標系</value>
+  </data>
+  <data name="CoordTab" xml:space="preserve">
+    <value>座標作成</value>
+  </data>
+  <data name="CreateCoordSystem" xml:space="preserve">
+    <value>座標系を作成</value>
+  </data>
+  <data name="DecideGridMark" xml:space="preserve">
+    <value>グリッドマークを決定</value>
+  </data>
+  <data name="DetectGridMark" xml:space="preserve">
+    <value>グリッドマークを検出</value>
+  </data>
+  <data name="EmulsionType" xml:space="preserve">
+    <value>エマルション タイプ</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="Exit" xml:space="preserve">
+    <value>閉じる</value>
+  </data>
+  <data name="FileAlreadyExist" xml:space="preserve">
+    <value>{0}はすでに存在します．</value>
+  </data>
+  <data name="FileNotFound" xml:space="preserve">
+    <value>ファイルが見つかりません．</value>
+  </data>
+  <data name="GridMakrCenterTop" xml:space="preserve">
+    <value>中央上のグリッドマーク</value>
+  </data>
+  <data name="GridMarkCenterBottom" xml:space="preserve">
+    <value>中央下のグリッドマーク</value>
+  </data>
+  <data name="GridMarkCenterMiddle" xml:space="preserve">
+    <value>真ん中のグリッドマーク</value>
+  </data>
+  <data name="GridmarkDialog01" xml:space="preserve">
+    <value>ここを{0}として定義しますか？{0}としてていぎするには「はい」をクリックしてください．もしくは他のグリッドマークとして定義するには「いいえ」をクリックしてください．</value>
+  </data>
+  <data name="GridMarkLeftBottom" xml:space="preserve">
+    <value>左下のグリッドマーク</value>
+  </data>
+  <data name="GridMarkLeftMiddle" xml:space="preserve">
+    <value>左中央のグリッドマーク</value>
+  </data>
+  <data name="GridMarkLeftTop" xml:space="preserve">
+    <value>左上のグリッドマーク</value>
+  </data>
+  <data name="GridMarkRightBottom" xml:space="preserve">
+    <value>右下のグリッドマーク</value>
+  </data>
+  <data name="GridMarkRightMiddle" xml:space="preserve">
+    <value>右中央のグリッドマーク</value>
+  </data>
+  <data name="GridMarkRightTop" xml:space="preserve">
+    <value>右上のグリッドマーク</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>ホーム</value>
+  </data>
+  <data name="Index" xml:space="preserve">
+    <value>インデックス</value>
+  </data>
+  <data name="IndexFarExceptionWarning" xml:space="preserve">
+    <value>インデックス値が２より大きくずれていますが正しいですか？</value>
+  </data>
+  <data name="IndexMeasure" xml:space="preserve">
+    <value>インデックス測定</value>
+  </data>
+  <data name="IndexTooSmallException" xml:space="preserve">
+    <value>インデックス値は１以上でなければいけません．</value>
+  </data>
+  <data name="IndexValueNotFound" xml:space="preserve">
+    <value>インデックス値が記録されたファイルが見つかりませんでした．({0}) 開くファイルを指定しますか?</value>
+  </data>
+  <data name="InitGridMark" xml:space="preserve">
+    <value>定義済みのグリッドマークを消去</value>
+  </data>
+  <data name="InitGridMarkReally" xml:space="preserve">
+    <value>本当に定義済みのグリッドマークを削除しますか？</value>
+  </data>
+  <data name="LensTypeSetting" xml:space="preserve">
+    <value>レンズタイプ設定</value>
+  </data>
+  <data name="LoadData" xml:space="preserve">
+    <value>データの読み込み</value>
+  </data>
+  <data name="LoadIndex" xml:space="preserve">
+    <value>インデックスをロード</value>
+  </data>
+  <data name="ModuleNo" xml:space="preserve">
+    <value>モジュール番号</value>
+  </data>
+  <data name="ModuleNoOutOfRangeException" xml:space="preserve">
+    <value>モジュール番号は1から45もしくは51から100の値でなければいけません．</value>
+  </data>
+  <data name="MotorActive01" xml:space="preserve">
+    <value>現在モータが移動中です．現在のモータ動作を中止しますか?</value>
+  </data>
+  <data name="MotorActiveException01" xml:space="preserve">
+    <value>現在,モータは稼働中です．</value>
+  </data>
+  <data name="MotorActiveException02" xml:space="preserve">
+    <value>モータが稼働中であるため，只今のコマンドはキャンセルされました．</value>
+  </data>
+  <data name="MotorStop01" xml:space="preserve">
+    <value>ユーザの要求によりモータの稼働は停止されました．</value>
+  </data>
+  <data name="Moving" xml:space="preserve">
+    <value>移動中です．</value>
+  </data>
+  <data name="MovingComplete" xml:space="preserve">
+    <value>移動完了</value>
+  </data>
+  <data name="NewStage" xml:space="preserve">
+    <value>新規ステージ</value>
+  </data>
+  <data name="NewStageHelp" xml:space="preserve">
+    <value>　新規ステージをセットアップしましょう．
+　まずはじめに，あなたの名前と連絡先メールアドレスをを入力します．メールアドレスの入力は任意ですが，入力しておくことをおすすめします．
+　続いて，使用するエマルションを設定します．プレート番号とモジュール番号を入力し，そしてエマルションタイプを薄型もしくは厚型を選択します．インデックスはエマルションの層の厚さを意味しています．上層インデックスには上ゲルの厚さを，下層インデックスには下ゲルの厚さを入力します．
+　そして，エマルションの情報を記録したファイルがあるかと思います．使用するエマルション番号に該当するファイルを設定してください．
+　最後に，OKボタンをクリックして新規ステージを始めてください．</value>
+  </data>
+  <data name="NewStart" xml:space="preserve">
+    <value>新規開始</value>
+  </data>
+  <data name="NextGridMark" xml:space="preserve">
+    <value>次のグリッドマーク</value>
+  </data>
+  <data name="NextTrack" xml:space="preserve">
+    <value>次のトラックへ</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>いいえ</value>
+  </data>
+  <data name="Open" xml:space="preserve">
+    <value>開く</value>
+  </data>
+  <data name="OpenPred" xml:space="preserve">
+    <value>Prediction ファイルを開く</value>
+  </data>
+  <data name="OpenScan" xml:space="preserve">
+    <value>Scaned ファイルを開く</value>
+  </data>
+  <data name="OpenVertex" xml:space="preserve">
+    <value>Vertex ファイルを開く</value>
+  </data>
+  <data name="OriginChanged" xml:space="preserve">
+    <value>原点が変更されました．</value>
+  </data>
+  <data name="OtherGridMarks" xml:space="preserve">
+    <value>その他のグリッドマーク</value>
+  </data>
+  <data name="OverIndex" xml:space="preserve">
+    <value>上層インデックス</value>
+  </data>
+  <data name="PlateNo" xml:space="preserve">
+    <value>プレート番号</value>
+  </data>
+  <data name="PlateNoInavilityException" xml:space="preserve">
+    <value>プレート番号は1よりも大きい整数でなければいけません．</value>
+  </data>
+  <data name="Prediction" xml:space="preserve">
+    <value>予測</value>
+  </data>
+  <data name="PredictionFile" xml:space="preserve">
+    <value>Predictionファイル</value>
+  </data>
+  <data name="PreviousGridMark" xml:space="preserve">
+    <value>前のグリッドマーク</value>
+  </data>
+  <data name="Scan" xml:space="preserve">
+    <value>スキャン</value>
+  </data>
+  <data name="ScanFile" xml:space="preserve">
+    <value>Scanファイル</value>
+  </data>
+  <data name="SelectEmulsion" xml:space="preserve">
+    <value>エマルションの選択</value>
+  </data>
+  <data name="SelectWhichGridMark" xml:space="preserve">
+    <value>どのグリッドマークかを選択します．</value>
+  </data>
+  <data name="SemiAuto" xml:space="preserve">
+    <value>セミオート</value>
+  </data>
+  <data name="SetLensDialog" xml:space="preserve">
+    <value>顕微鏡のレンズを{0}にして，"OK"をクリックしてください．</value>
+  </data>
+  <data name="SetOrigin" xml:space="preserve">
+    <value>現在地を原点に設定</value>
+  </data>
+  <data name="SetSpiralOrigin" xml:space="preserve">
+    <value>らせん移動の中心に設定</value>
+  </data>
+  <data name="Shooting" xml:space="preserve">
+    <value>撮影</value>
+  </data>
+  <data name="Skip" xml:space="preserve">
+    <value>スキップ</value>
+  </data>
+  <data name="Slice" xml:space="preserve">
+    <value>1枚</value>
+  </data>
+  <data name="Speed" xml:space="preserve">
+    <value>速さ</value>
+  </data>
+  <data name="SpiralBack" xml:space="preserve">
+    <value>らせん中心に戻る</value>
+  </data>
+  <data name="SpiralMove" xml:space="preserve">
+    <value>らせん移動</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>スタート</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>停止</value>
+  </data>
+  <data name="ThickType" xml:space="preserve">
+    <value>厚型</value>
+  </data>
+  <data name="ThinType" xml:space="preserve">
+    <value>薄型</value>
+  </data>
+  <data name="Track" xml:space="preserve">
+    <value>トラック</value>
+  </data>
+  <data name="TrackFoundComplete" xml:space="preserve">
+    <value>全てのトラックが完了しています．</value>
+  </data>
+  <data name="TrackId" xml:space="preserve">
+    <value>トラックID</value>
+  </data>
+  <data name="TrackInfo" xml:space="preserve">
+    <value>トラック情報</value>
+  </data>
+  <data name="TracksManagerException01" xml:space="preserve">
+    <value>トラック情報が読み込まれていません．まず，トラック情報を読み込んでください．</value>
+  </data>
+  <data name="UnderIndex" xml:space="preserve">
+    <value>下層インデックス</value>
+  </data>
+  <data name="VersionInfo" xml:space="preserve">
+    <value>バージョン情報</value>
+  </data>
+  <data name="VertexFile" xml:space="preserve">
+    <value>Vertexファイル</value>
+  </data>
+  <data name="WhichGridMark" xml:space="preserve">
+    <value>あなたが定義しようとしているグリッドマークはどれですか？</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>はい</value>
+  </data>
+  <data name="Base" xml:space="preserve">
+    <value>ベース</value>
+  </data>
+  <data name="Bottom" xml:space="preserve">
+    <value>下部</value>
+  </data>
+  <data name="CorrectLens" xml:space="preserve">
+    <value>正しいレンズは{0}です．</value>
+  </data>
+  <data name="Failed" xml:space="preserve">
+    <value>失敗</value>
+  </data>
+  <data name="Gel" xml:space="preserve">
+    <value>ゲル</value>
+  </data>
+  <data name="GridMarkNotFoundException01" xml:space="preserve">
+    <value>グリッドマークの検索に失敗しました．</value>
+  </data>
+  <data name="LowerGel" xml:space="preserve">
+    <value>下ゲル</value>
+  </data>
+  <data name="LowerGelBottom" xml:space="preserve">
+    <value>下ゲルの下部</value>
+  </data>
+  <data name="LowerGelTop" xml:space="preserve">
+    <value>下ゲルの上部</value>
+  </data>
+  <data name="MoveToSurface" xml:space="preserve">
+    <value>表面へ移動</value>
+  </data>
+  <data name="Surface" xml:space="preserve">
+    <value>表面</value>
+  </data>
+  <data name="SurfaceRecognize" xml:space="preserve">
+    <value>表面認識</value>
+  </data>
+  <data name="Top" xml:space="preserve">
+    <value>上部</value>
+  </data>
+  <data name="UpperGel" xml:space="preserve">
+    <value>上ゲル</value>
+  </data>
+  <data name="UpperGelBottom" xml:space="preserve">
+    <value>上ゲルの下部</value>
+  </data>
+  <data name="UpperGelTop" xml:space="preserve">
+    <value>上ゲルの上部</value>
+  </data>
+  <data name="GridMarkNotDefinedMin" xml:space="preserve">
+    <value>定義済みのグリッドマーク数が少なすぎます．</value>
+  </data>
+  <data name="WarnCreateCoord01" xml:space="preserve">
+    <value>全てのグリッドマークが定義されていません．しかし，座標系を生成できます．座標系の生成をぞこうしますか?</value>
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value>適用</value>
+  </data>
+  <data name="BrightnessThreshold" xml:space="preserve">
+    <value>輝度値のしきい値</value>
+  </data>
+  <data name="Config" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="DefaultValue" xml:space="preserve">
+    <value>初期値</value>
+  </data>
+  <data name="DistanceOut" xml:space="preserve">
+    <value>中止する距離(um)</value>
+  </data>
+  <data name="EndRow" xml:space="preserve">
+    <value>終了行</value>
+  </data>
+  <data name="NumOfSidePixcel" xml:space="preserve">
+    <value>輝度値平均の辺の長さ(pixcel)</value>
+  </data>
+  <data name="StartRow" xml:space="preserve">
+    <value>開始行</value>
+  </data>
+  <data name="SurfaceConfig" xml:space="preserve">
+    <value>表面認識設定</value>
+  </data>
+  <data name="SurfaceException01" xml:space="preserve">
+    <value>現在，モータが移動中です．表面認識のためにモータは停止している必要があります．モータを停止しますか？</value>
+  </data>
+  <data name="SurfaceException02" xml:space="preserve">
+    <value>表面認識処理は現在，すでに実行中です．これを中止しますか?</value>
+  </data>
+  <data name="File" xml:space="preserve">
+    <value>ファイル</value>
+  </data>
+  <data name="InputInvalidValue" xml:space="preserve">
+    <value>入力値が不正です.</value>
+  </data>
+  <data name="AbortedSurfaceRecognizing" xml:space="preserve">
+    <value>表面認識処理を中止しました.</value>
+  </data>
+  <data name="CompletedSurfaceRecognizing" xml:space="preserve">
+    <value>表面認識が完了しました．</value>
+  </data>
+  <data name="FailedSurfaceRecognizing" xml:space="preserve">
+    <value>表面認識に失敗しました．</value>
+  </data>
+  <data name="NoControllable" xml:space="preserve">
+    <value>現在，その制御は利用でなくなっています．</value>
+  </data>
+  <data name="StartedSurfaceRecognizing" xml:space="preserve">
+    <value>表面認識を開始しました．</value>
+  </data>
+  <data name="LensTypeException01" xml:space="preserve">
+    <value>レンズタイプが間違っています．</value>
+  </data>
+  <data name="DetermineInGel" xml:space="preserve">
+    <value>ゲル内か判定</value>
+  </data>
+  <data name="ImageEnhancement" xml:space="preserve">
+    <value>画像処理</value>
+  </data>
+  <data name="InsideGelNow" xml:space="preserve">
+    <value>現在，ゲルの内部です．</value>
+  </data>
+  <data name="OutsideGelNow" xml:space="preserve">
+    <value>現在，ゲルの外部です．</value>
+  </data>
+  <data name="MotorAxisLimitMinus" xml:space="preserve">
+    <value>モータ限界: -方向</value>
+  </data>
+  <data name="MotorAxisLimitPlus" xml:space="preserve">
+    <value>モータ限界: +方向</value>
+  </data>
+  <data name="MotorOverHeat" xml:space="preserve">
+    <value>モータ: オーバヒートしています．</value>
+  </data>
+  <data name="Preview" xml:space="preserve">
+    <value>プレビュー</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="FileExtensionNotAvairable" xml:space="preserve">
+    <value>ファイルの拡張子が不正です．</value>
+  </data>
+  <data name="CameraNotWork" xml:space="preserve">
+    <value>カメラが稼働していません．</value>
+  </data>
+  <data name="PixcelFormatException" xml:space="preserve">
+    <value>Pixcel FormatはGray8でなければいけません．8bit 256色グレースケールのみ対応しています．</value>
+  </data>
+  <data name="ImageFile" xml:space="preserve">
+    <value>画像ファイル</value>
+  </data>
+  <data name="AllFiles" xml:space="preserve">
+    <value>すべてのファイル</value>
+  </data>
+  <data name="IndicativeBrightness" xml:space="preserve">
+    <value>指標となる輝度値</value>
+  </data>
+  <data name="ValMustMore" xml:space="preserve">
+    <value>{0}は{1}より大きい値でなければいけません．</value>
+  </data>
+  <data name="ValMustOrMore" xml:space="preserve">
+    <value>{0}は{1}以上の値でなければいけません．</value>
+  </data>
+  <data name="ValMustPositive" xml:space="preserve">
+    <value>{0}は正の値でなければいけません．</value>
+  </data>
+  <data name="Emulsion" xml:space="preserve">
+    <value>エマルション</value>
+  </data>
+  <data name="LensType" xml:space="preserve">
+    <value>レンズタイプ</value>
+  </data>
+  <data name="Operation" xml:space="preserve">
+    <value>オペレーション</value>
+  </data>
+  <data name="Measurement" xml:space="preserve">
+    <value>測定</value>
+  </data>
+  <data name="Brightness" xml:space="preserve">
+    <value>明るさ</value>
+  </data>
+  <data name="MeasBrightness" xml:space="preserve">
+    <value>明度計測</value>
+  </data>
+  <data name="Distance" xml:space="preserve">
+    <value>距離</value>
+  </data>
+  <data name="SurfaceComplete" xml:space="preserve">
+    <value>表面認識: 完了しました！</value>
+  </data>
+  <data name="SurfaceDownBottomRecognized" xml:space="preserve">
+    <value>表面認識: 下ゲル下部は{0}です・</value>
+  </data>
+  <data name="SurfaceDownTopRecognized" xml:space="preserve">
+    <value>表面認識: 下ゲル上部は{0}です．</value>
+  </data>
+  <data name="SurfaceOnBttomLimited" xml:space="preserve">
+    <value>表面認識: モータは最下点に到達しました．</value>
+  </data>
+  <data name="SurfaceUpBottomRecognized" xml:space="preserve">
+    <value>表面認識: 上ゲル下部は{0}です．</value>
+  </data>
+  <data name="SurfaceUpTopRecognizing" xml:space="preserve">
+    <value>表面認識: 上ゲル上部は{0}です．</value>
+  </data>
+  <data name="Plurality" xml:space="preserve">
+    <value>複数枚</value>
+  </data>
+  <data name="TakeAccumlative" xml:space="preserve">
+    <value>重ねて撮影する</value>
+  </data>
+  <data name="TakePlurality" xml:space="preserve">
+    <value>複数枚撮影する</value>
+  </data>
+  <data name="TakeSingle" xml:space="preserve">
+    <value>単一撮影する</value>
+  </data>
+  <data name="Coordinate" xml:space="preserve">
+    <value>座標</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>消去</value>
+  </data>
+  <data name="Direction" xml:space="preserve">
+    <value>方向</value>
+  </data>
+  <data name="DrawCoord" xml:space="preserve">
+    <value>座標を描画</value>
+  </data>
+  <data name="DrawEmulsionInfo" xml:space="preserve">
+    <value>エマルション情報を描画</value>
+  </data>
+  <data name="DrawFigures" xml:space="preserve">
+    <value>図形を描画</value>
+  </data>
+  <data name="Interval" xml:space="preserve">
+    <value>間隔</value>
+  </data>
+  <data name="LeftBottom" xml:space="preserve">
+    <value>左下</value>
+  </data>
+  <data name="LeftTop" xml:space="preserve">
+    <value>左上</value>
+  </data>
+  <data name="MinusDirection" xml:space="preserve">
+    <value>マイナス方向</value>
+  </data>
+  <data name="MotorControllable" xml:space="preserve">
+    <value>モータ制御</value>
+  </data>
+  <data name="PlusDirection" xml:space="preserve">
+    <value>プラス方向</value>
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value>位置</value>
+  </data>
+  <data name="RightBottom" xml:space="preserve">
+    <value>右下</value>
+  </data>
+  <data name="RightTop" xml:space="preserve">
+    <value>右上</value>
+  </data>
+  <data name="EndPosition" xml:space="preserve">
+    <value>終了地点</value>
+  </data>
+  <data name="StartPosition" xml:space="preserve">
+    <value>開始地点</value>
+  </data>
+  <data name="ValMustPositiveNotZero" xml:space="preserve">
+    <value>{0}は0以外の正の値でなければなりません．</value>
+  </data>
+  <data name="ValMustOdd" xml:space="preserve">
+    <value>{0}は奇数でなければいけません。</value>
+  </data>
+  <data name="PowerOfDifference" xml:space="preserve">
+    <value>微分の累乗値</value>
+  </data>
+  <data name="DelayTime" xml:space="preserve">
+    <value>遅延時間(msec)</value>
+  </data>
+  <data name="ShootingException01" xml:space="preserve">
+    <value>画像の撮影がアクティブです．中止しますか？</value>
+  </data>
+  <data name="AbortGridMarkSearch" xml:space="preserve">
+    <value>グリッドマーク探索は中止されました．</value>
+  </data>
+  <data name="FoundNow" xml:space="preserve">
+    <value>今，{0}が見つかりました．({1}, {2})</value>
+  </data>
+  <data name="GridMarkSearchComplete" xml:space="preserve">
+    <value>グリッドマーク探索が完了しました!</value>
+  </data>
+  <data name="GridMarkSearchFailed" xml:space="preserve">
+    <value>グリッドマーク探索は失敗しました．</value>
+  </data>
+  <data name="GridMarkSearchStart" xml:space="preserve">
+    <value>グリッドマーク探索を開始しました．</value>
+  </data>
+  <data name="PressAnyKeyForAbort" xml:space="preserve">
+    <value>中止するにはどれかのキーを押してください．</value>
+  </data>
+  <data name="ActivityActiveException01" xml:space="preserve">
+    <value>すでにアクティビティが動作中です．それを中止しますか?</value>
+  </data>
+  <data name="AutoTracking" xml:space="preserve">
+    <value>自動追跡</value>
+  </data>
+  <data name="BeamDetect" xml:space="preserve">
+    <value>ビームスポット検出</value>
+  </data>
+  <data name="FullScan" xml:space="preserve">
+    <value>全面スキャン</value>
+  </data>
+  <data name="GridMark" xml:space="preserve">
+    <value>グリッドマーク</value>
+  </data>
+  <data name="GridMarkNotExistedPredMove" xml:space="preserve">
+    <value>そのグリッドマークはまだ定義されていません．予測座標に移動しますか？</value>
+  </data>
+  <data name="Max" xml:space="preserve">
+    <value>最大</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>ファイル名</value>
+  </data>
+  <data name="Refference" xml:space="preserve">
+    <value>参照</value>
+  </data>
+  <data name="FileType" xml:space="preserve">
+    <value>ファイル形式</value>
+  </data>
+  <data name="FolderNotExists" xml:space="preserve">
+    <value>フォルダが存在しません．</value>
+  </data>
+  <data name="SelectFolderToSave" xml:space="preserve">
+    <value>画像を保存するためのフォルダを選んでください．</value>
+  </data>
+  <data name="LensNodeParseException01" xml:space="preserve">
+    <value>レンズのノードが必要な項目を持っていません．at {0}</value>
+  </data>
+  <data name="SoftwareAlreadyBoot" xml:space="preserve">
+    <value>すでにソフトウェアは起動しています．</value>
+  </data>
+  <data name="SetLensXMag" xml:space="preserve">
+    <value>{0}倍のレンズをセット</value>
+  </data>
+  <data name="InitCameraExcetion01" xml:space="preserve">
+    <value>カメラの初期化に失敗しました．</value>
+  </data>
+  <data name="InitLedException01" xml:space="preserve">
+    <value>LEDの初期化に失敗しました．</value>
+  </data>
+  <data name="InitMotorException01" xml:space="preserve">
+    <value>モータコントローラボードの初期化に失敗しました．</value>
+  </data>
+  <data name="InitParamException01" xml:space="preserve">
+    <value>パラメータの初期化に失敗しました．</value>
+  </data>
+  <data name="ChangeDate" xml:space="preserve">
+    <value>日付を変更</value>
+  </data>
+  <data name="Date" xml:space="preserve">
+    <value>日付</value>
+  </data>
+  <data name="EmulsionInformation" xml:space="preserve">
+    <value>エマルション情報</value>
+  </data>
+  <data name="MailAddress" xml:space="preserve">
+    <value>メールアドレス</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="Profile" xml:space="preserve">
+    <value>プロファイル</value>
+  </data>
+  <data name="FastSurfaceRecognition" xml:space="preserve">
+    <value>高速表面認識</value>
+  </data>
+  <data name="MoveToCoord" xml:space="preserve">
+    <value>座標へ移動</value>
+  </data>
+  <data name="CoordHint" xml:space="preserve">
+    <value>座標系の作成と修正を行います．
+座標系の作成はエマルションの中央と3 x 3に印付けされたグリッドマークの位置を定義することで行われます．モータのエンコーダが持つ座標系とエマルション系が持つ座標系を一貫させるための大切な作業です．
+グリッドマークは9つあります．より正確な座標系の作成のために9つ全てを定義しましょう．しかし，9つ全てを定義することは面倒なことです．そこで中央ともう1カ所の合計2カ所を定義すれば，残りのグリッドマークを自動的に見つけさせることができます．</value>
+  </data>
+  <data name="SurfaceStart" xml:space="preserve">
+    <value>表面認識は開始されました．</value>
+  </data>
+  <data name="SurfaceLoweringDistance" xml:space="preserve">
+    <value>下降距離</value>
+  </data>
+  <data name="NumOfVoting" xml:space="preserve">
+    <value>多数決数</value>
+  </data>
+  <data name="SurfaceVerif" xml:space="preserve">
+    <value>表面認識検証</value>
+  </data>
+  <data name="Verif" xml:space="preserve">
+    <value>検証</value>
+  </data>
+  <data name="Judge" xml:space="preserve">
+    <value>判定</value>
+  </data>
+  <data name="SurfaceDistance" xml:space="preserve">
+    <value>開始地点からの距離</value>
+  </data>
+  <data name="Boundary" xml:space="preserve">
+    <value>境界</value>
+  </data>
+  <data name="InGel" xml:space="preserve">
+    <value>ゲル内</value>
+  </data>
+  <data name="BinarizeThreshold" xml:space="preserve">
+    <value>二値化のしきい値</value>
+  </data>
+  <data name="Configure" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="StageRunAbort" xml:space="preserve">
+    <value>現在，ステージは実行中です．今のステージを終了しますか?</value>
+  </data>
+  <data name="SurfaceBinThresholdMessage01" xml:space="preserve">
+    <value>0以下が設定された場合，二値化は行われません．</value>
+  </data>
+  <data name="SystemConfigure" xml:space="preserve">
+    <value>システム設定</value>
+  </data>
+  <data name="ActivityAbort" xml:space="preserve">
+    <value>アクティビティが中止されました．</value>
+  </data>
+  <data name="ActivityRunning" xml:space="preserve">
+    <value>現在，アクティビティが実行中です．</value>
+  </data>
+  <data name="AskAbort" xml:space="preserve">
+    <value>中止しますか？</value>
+  </data>
+  <data name="ValTooLarge" xml:space="preserve">
+    <value>{0}が大きすぎます．</value>
+  </data>
+  <data name="ValTooSmall" xml:space="preserve">
+    <value>{0}が小さすぎます．</value>
+  </data>
+  <data name="DestinationDir" xml:space="preserve">
+    <value>保存先フォルダ</value>
+  </data>
+  <data name="DirNotFound" xml:space="preserve">
+    <value>フォルダが見つかりません．</value>
+  </data>
+  <data name="FileNameInvalid" xml:space="preserve">
+    <value>ファイル名が適切ではありません．</value>
+  </data>
+  <data name="SystemConfWarning" xml:space="preserve">
+    <value>警告: 設定を誤ると，正常に動作しなくなる場合があります．</value>
+  </data>
+  <data name="ApplyReboot" xml:space="preserve">
+    <value>適用し，再起動する．</value>
+  </data>
+  <data name="AskReallySetting" xml:space="preserve">
+    <value>本当に設定しますか？</value>
+  </data>
+  <data name="RemoveBoundaryFlag" xml:space="preserve">
+    <value>境界フラグを削除する</value>
+  </data>
+  <data name="SetBoundaryFlag" xml:space="preserve">
+    <value>境界フラグをセットする</value>
+  </data>
+  <data name="DefineGridMark" xml:space="preserve">
+    <value>{0}が定義されました．({1}, {2})</value>
+  </data>
+</root>

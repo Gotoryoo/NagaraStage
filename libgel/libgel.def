@@ -1,0 +1,5 @@
+LIBRARY libgel
+EXPORTS
+    isInGel @1
+    isInGelBrightness @2
+

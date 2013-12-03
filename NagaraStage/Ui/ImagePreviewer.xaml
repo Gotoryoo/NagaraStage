@@ -1,0 +1,33 @@
+﻿<Window x:Class="NagaraStage.Ui.ImagePreviewer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{Binding Source={StaticResource strings}, Path=Preview}" 
+        Height="450" Width="763" 
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="512" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>        
+        <Image Height="440" HorizontalAlignment="Left" Name="view" VerticalAlignment="Top" Width="512" Source="/NagaraStage;component/Images/miku01.jpg" />
+        <StackPanel Height="Auto" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#FFCCD7F4" Grid.Column="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="40" />
+                    <RowDefinition Height="40*" />
+                </Grid.RowDefinitions>
+                <TextBox x:Name="refferenceTextBox" Height="23" Width="133" Margin="10,8,0,9" HorizontalAlignment="Left" />
+                <Label Content="{Binding FileType ,Mode=OneWay, Source={StaticResource strings}}" Height="23" Grid.Row="1" />
+                <ComboBox x:Name="fileTypeComboBox" Grid.Row="1" Height="23" Width="100" VerticalAlignment="Center" Margin="112,10,33,7">
+                    <ComboBoxItem Content=".png" IsSelected="True" />
+                    <ComboBoxItem Content=".bmp" />
+                    <ComboBoxItem Content=".jpg" />                   
+                </ComboBox>
+                <Button x:Name="refferenceButton" Content="{Binding Source={StaticResource strings}, Path=Refference}" Height="23" Width="80"  HorizontalAlignment="Right" Margin="10,0" Click="refferenceButton_Click" />
+                <Button Content="{Binding Source={StaticResource strings}, Path=Save}" Height="23" HorizontalAlignment="Right" Name="saveButton" VerticalAlignment="Top" Width="75" Grid.Row="2" IsDefault="True" Click="saveButton_Click" Margin="0, 0, 100, 0" />
+                <Button Content="{Binding Source={StaticResource strings}, Path=Cancel}" Height="23" HorizontalAlignment="Right" Name="cancelButton" VerticalAlignment="Top" Width="75" Grid.Row="2" IsCancel="True" Margin="0,0,20,0" />
+            </Grid>            
+        </StackPanel>
+    </Grid>
+</Window>

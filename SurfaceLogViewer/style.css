@@ -1,0 +1,12 @@
+/**
+* @authro Hirokazu Yokoyama
+*/
+
+#resultTable {
+    border: solid 1px black;
+    border-collapse: collapse;
+}
+
+#resultTable td {
+    border: solid 1px;
+}

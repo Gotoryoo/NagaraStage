@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ccd>
+    <description>CCD Cameraの解像度 Stage#3 x 0.60</description>
+    
+    <lens magnification="4">
+        <resolutionX>33638E-2</resolutionX>
+        <resolutionY>33454E-2</resolutionY>
+        <offsetDX>0.0000</offsetDX>
+        <offsetDY>0.0000</offsetDY>
+        <spiralDX>1.425</spiralDX>
+        <spiralDY>1.250</spiralDY>
+        <zStep>0.0071</zStep>
+        <gridMarkSize>0</gridMarkSize>
+        <ledParam>0</ledParam>
+    </lens>
+
+    <lens magnification="10">
+        <resolutionX>.13631E-2</resolutionX>
+        <resolutionY>.33638E-2</resolutionY>
+        <offsetDX>0</offsetDX>
+        <offsetDY>0</offsetDY>
+        <spiralDX>0.58</spiralDX>
+        <spiralDY>0.5</spiralDY>
+        <zStep>0.0071</zStep>
+        <gridMarkSize>50</gridMarkSize>
+        <ledParam>40</ledParam>
+    </lens>
+
+    <lens magnification="20">
+        <resolutionX>.67276E-3</resolutionX>
+        <resolutionY>.66908E-3</resolutionY>
+        <offsetDX>-0.000</offsetDX>
+        <offsetDY>0.018</offsetDY>
+        <spiralDX>0.285</spiralDX>
+        <spiralDY>0.250</spiralDY>
+        <zStep>0.0071</zStep>
+        <gridMarkSize>110</gridMarkSize>
+        <ledParam>40</ledParam>
+    </lens>
+
+    <lens magnification="50">
+        <resolutionX>.26680E-3</resolutionX>
+        <resolutionY>.26716E-3</resolutionY>
+        <offsetDX>0</offsetDX>
+        <offsetDY>0</offsetDY>
+        <spiralDX>0.11</spiralDX>
+        <spiralDY>0.09</spiralDY>
+        <zStep>0.0071</zStep>
+        <gridMarkSize>250</gridMarkSize>
+        <ledParam>60</ledParam>
+    </lens>
+
+    <lens magnification="90">
+        <resolutionX>.15430E-3</resolutionX>
+        <resolutionY>.15000E-3</resolutionY>
+        <offsetDX>-0.033</offsetDX>
+        <offsetDY>-0.043</offsetDY>
+        <spiralDX>0.08</spiralDX>
+        <spiralDY>0.08</spiralDY>
+        <zStep>0.0071</zStep>
+        <gridMarkSize>0</gridMarkSize>
+        <ledParam>80</ledParam>
+    </lens>
+
+    <lens magnification="100">
+        <resolutionX>.26739E-3</resolutionX>
+        <resolutionY>.26720E-3</resolutionY>
+        <offsetDX>0</offsetDX>
+        <offsetDY>0</offsetDY>
+        <spiralDX>0.04</spiralDX>
+        <spiralDY>0.04</spiralDY>
+        <zStep>0.0071</zStep>
+        <gridMarkSize>0</gridMarkSize>
+        <ledParam>80</ledParam>
+    </lens>
+</ccd>

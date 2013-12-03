@@ -1,0 +1,9 @@
+﻿<Canvas x:Class="NagaraStage.Ui.CameraViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="440" d:DesignWidth="512" Background="White">
+    <Image Name="cameraLayer" Source="/NagaraStage;component/Images/miku01.jpg" />
+</Canvas>

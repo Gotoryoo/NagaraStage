@@ -1,0 +1,131 @@
+﻿<my:Workspace x:Class="NagaraStage.Ui.SystemConfControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:my="clr-namespace:NagaraStage.Ui"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="800" Loaded="Workspace_Loaded_1">
+    <Grid Background="White">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="7*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Background="Aqua">
+            <TextBlock TextWrapping="Wrap" Text="{Binding SystemConfigure, Mode=OneWay, Source={StaticResource ResourcesInstance}}" TextAlignment="Center" FontSize="22" Margin="0,10" />
+            <TextBlock TextWrapping="Wrap" Text="{Binding SystemConfWarning, Mode=OneWay, Source={StaticResource ResourcesInstance}}" Margin="6,30,6,0" FontWeight="Bold"/>
+        </StackPanel>
+        <Grid Grid.Column="1">
+            <Grid Margin="10" >
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="109*"/>
+                    <RowDefinition Height="7*"/>
+                </Grid.RowDefinitions>
+                <ScrollViewer>
+                    <Grid >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="173*"/>
+                            <ColumnDefinition Width="208*"/>
+                            <ColumnDefinition Width="159*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                            <RowDefinition Height="30*"/>
+                        </Grid.RowDefinitions>
+                        <Label Content="AccelTimeX" HorizontalAlignment="Right" />                        
+                        <Label Content="AccelTimeY" Grid.Row="1" HorizontalAlignment="Right" />                        
+                        <Label Content="AccelTimeZ" Grid.Row="2" HorizontalAlignment="Right" />                                                
+                        <Label Content="EncoderResolutionX" Grid.Row="3" HorizontalAlignment="Right" />
+                        <Label Content="EncoderResolutionY" Grid.Row="4" HorizontalAlignment="Right" />
+                        <Label Content="EncoderResolutionZ" Grid.Row="5" HorizontalAlignment="Right" />
+                        <Label Content="MotorResolutionX" Grid.Row="6" HorizontalAlignment="Right" />
+                        <Label Content="MotorResolutionY" Grid.Row="7" HorizontalAlignment="Right" />
+                        <Label Content="MotorResolutionZ" Grid.Row="8" HorizontalAlignment="Right" />
+                        <Label Content="InitialVelocityX" Grid.Row="9" HorizontalAlignment="Right" />
+                        <Label Content="InitialVelocityY" Grid.Row="10" HorizontalAlignment="Right" />
+                        <Label Content="InitialVelocityZ" Grid.Row="11" HorizontalAlignment="Right" />
+                        <Label Content="ScanAreaXm" Grid.Row="12" HorizontalAlignment="Right" />
+                        <Label Content="ScanAreaXp" Grid.Row="13" HorizontalAlignment="Right" />
+                        <Label Content="ScanAreaYm" Grid.Row="14" HorizontalAlignment="Right" />
+                        <Label Content="ScanAreaYp" Grid.Row="15" HorizontalAlignment="Right" />
+                        <Label Content="Speed1X" Grid.Row="16" HorizontalAlignment="Right" />
+                        <Label Content="Speed1Y" Grid.Row="17" HorizontalAlignment="Right" />
+                        <Label Content="Speed1Z" Grid.Row="18" HorizontalAlignment="Right" />
+                        <Label Content="Speed2X" Grid.Row="19" HorizontalAlignment="Right" />
+                        <Label Content="Speed2Y" Grid.Row="20" HorizontalAlignment="Right" />
+                        <Label Content="Speed2Z" Grid.Row="21" HorizontalAlignment="Right" />
+                        <Label Content="Speed3X" Grid.Row="22" HorizontalAlignment="Right" />
+                        <Label Content="Speed3Y" Grid.Row="23" HorizontalAlignment="Right" />
+                        <Label Content="Speed3Z" Grid.Row="24" HorizontalAlignment="Right" />
+                        <Label Content="Speed4X" Grid.Row="25" HorizontalAlignment="Right" />
+                        <Label Content="Speed4Y" Grid.Row="26" HorizontalAlignment="Right" />
+                        <Label Content="Speed4Z" Grid.Row="27" HorizontalAlignment="Right" />
+                        <Label Content="LedPort" Grid.Row="28" HorizontalAlignment="Right" />
+                        <Label Content="LmitPol" Grid.Row="29" HorizontalAlignment="Right" />
+
+                        <TextBox Grid.Column="1" Height="28" Margin="10,0" Name="accelTimeXTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="1" Height="28" Margin="10,0" Name="accelTimeYTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="2" Height="28" Margin="10,0" Name="accelTimeZTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="3" Height="28" Margin="10,0" Name="encoderResolutionXTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="4" Height="28" Margin="10,0" Name="encoderResolutionYTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="5" Height="28" Margin="10,0" Name="encoderResolutionZTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="6" Height="28" Margin="10,0" Name="motorResolutionXTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="7" Height="28" Margin="10,0" Name="motorResolutionYTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="8" Height="28" Margin="10,0" Name="motorResolutionZTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="9" Height="28" Margin="10,0" Name="initialVelocityXTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="10" Height="28" Margin="10,0" Name="initialVelocityYTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="11" Height="28" Margin="10,0" Name="initialVelocityZTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="12" Height="28" Margin="10,0" Name="scanAreaXmTextBox" TextChanged="scanArea_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="13" Height="28" Margin="10,0" Name="scanAreaXpTextBox" TextChanged="scanArea_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="14" Height="28" Margin="10,0" Name="scanAreaYmTextBox" TextChanged="scanArea_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="15" Height="28" Margin="10,0" Name="scanAreaYpTextBox" TextChanged="scanArea_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="16" Height="28" Margin="10,0" Name="speed1XTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="17" Height="28" Margin="10,0" Name="speed1YTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="18" Height="28" Margin="10,0" Name="speed1ZTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="19" Height="28" Margin="10,0" Name="speed2XTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="20" Height="28" Margin="10,0" Name="speed2YTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="21" Height="28" Margin="10,0" Name="speed2ZTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="22" Height="28" Margin="10,0" Name="speed3XTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="23" Height="28" Margin="10,0" Name="speed3YTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="24" Height="28" Margin="10,0" Name="speed3ZTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="25" Height="28" Margin="10,0" Name="speed4XTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="26" Height="28" Margin="10,0" Name="speed4YTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="27" Height="28" Margin="10,0" Name="speed4ZTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="28" Height="28" Margin="10,0" Name="ledPortTextBox" TextChanged="positiveNotZero_TextChanged" />
+                        <TextBox Grid.Column="1" Grid.Row="29" Height="28" Margin="10,0" Name="limitPolTextBox" TextChanged="positiveNotZero_TextChanged" />
+                    </Grid>
+                </ScrollViewer>
+                <Button x:Name="cancelButton" Content="{Binding Cancel, Mode=OneWay, Source={StaticResource ResourcesInstance}}" HorizontalAlignment="Right" Margin="357,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="75" Height="24" Click="cancelButton_Click"/>
+                <Button x:Name="okButton" Content="{Binding ApplyReboot, Mode=OneWay, Source={StaticResource ResourcesInstance}}" HorizontalAlignment="Right" Margin="0,10,80,0" Grid.Row="1" VerticalAlignment="Top" Height="24" Click="okButton_Click"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</my:Workspace>

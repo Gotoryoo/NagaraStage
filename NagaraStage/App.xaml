@@ -1,0 +1,15 @@
+﻿<Application x:Class="NagaraStage.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:NagaraStage="clr-namespace:NagaraStage"
+             xmlns:properties="clr-namespace:NagaraStage.Properties"
+             Exit="Application_Exit">
+    <Application.Resources>
+		<!-- Resources scoped at the Application level should be defined here. -->
+        <ObjectDataProvider x:Key="ResourcesInstance" 
+                            ObjectType="{x:Type NagaraStage:CultureResources}" 
+                            MethodName="GetResourceInstance"/>
+        <ObjectDataProvider x:Key="Resources" ObjectType="{x:Type NagaraStage:CultureResources}"/>
+        <properties:Strings x:Key="strings" />
+    </Application.Resources>
+</Application>

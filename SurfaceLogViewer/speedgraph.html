@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="content-script-type" type="text/javascript">
+<meta http-equiv="content-style-type" type="text/css">
+<script type="text/javascript" src="jquery-1.8.3.js"></script>
+<script type="text/javascript" src="http://www2.gifu-u.ac.jp/~gcrobo/lib/grobo/grobo.js"></script>
+<script type="text/javascript" src="speedgraph.js"></script>
+<title>Speed Graph</title>
+</head>
+<body>
+<form method="get">
+<input type="file" id="fileInput">
+<input type="button" value="開く" id="openButton">
+<input type="button" value="保存" id="saveButton">
+</form>
+<table style="border: 1px solid; border-collapse: collapse; margin-left:
+ auto; margin-right: auto;">
+<tr><th>速度引数</th></tr>
+<tr><td id="speedParam"></td></tr>
+</table>
+<canvas id="Canvas" style="border: solid 1px black;">
+</canvas>
+<table style="border: 1px solid;text-align:left;" border="1">
+ <tr id="secRow"><th>経過秒数</th></tr>
+ <tr id="distanceRow"><th>距離</th></tr>
+ <tr  id="speedRow"><th>速度[um/sec]</th></tr>
+</table>
+test
+</body>
+</html>
