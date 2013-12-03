@@ -31,3 +31,5 @@ $tf*/
 *.csproj
 *.dll
 *.png
+*.opensdf
+*.sdf
