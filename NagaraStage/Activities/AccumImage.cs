@@ -234,9 +234,26 @@ namespace NagaraStage {
                 double pnInterval = (startPoint > endPoint ? -interval : interval);
                 double presentPoint = mc.GetPoint().Z;
                 while (isShootContinue(presentPoint)) {
+                    mc.MoveDistance(pnInterval, VectorId.Z);
+                    mc.Join();
+                    camera.Stop();
+                    BitmapSource image = camera.Image;                    
+                    saveTemp(image);
+                    camera.Start();
+                    shotPoint.Add(presentPoint);
+                    ++numOfShot;
+                    if (OnShort != null)
+                    {
+                        ActivityEventArgs e = new ActivityEventArgs();
+                        e.ZValue = presentPoint;
+                        OnShort(this, e);
+                    }
+#if false//20140225 yokoyama,jyoshida
+
                     mc.MoveDistance(pnInterval, VectorId.Z, delegate {
                         presentPoint = mc.GetPoint().Z;
-                        saveTemp(camera.Image);
+                        Camera c = Camera.GetInstance();
+                        saveTemp(c.Image);
                         shotPoint.Add(presentPoint);
                         ++numOfShot;
                         if (OnShort != null) {
@@ -245,7 +262,8 @@ namespace NagaraStage {
                             OnShort(this, e);
                         }
                     });
-                    mc.Join();
+#endif
+                                                          mc.Join();
                     presentPoint = mc.GetPoint().Z;
                 }
 
@@ -253,7 +271,7 @@ namespace NagaraStage {
             }
 
             private void saveTemp(BitmapSource image) {
-                string name = System.IO.Path.GetTempFileName();
+                string name = System.IO.Path.GetTempFileName() + ".png";
                 ImageUtility.Save(image, name);
                 imagesUri.Add(name);
             }

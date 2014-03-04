@@ -53,7 +53,7 @@ namespace NagaraStage {
             /// </summary>
             public BitmapSource Image {
             get {
-                    System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(new Action(delegate {
+                BitmapSource bitmapBuffer;
                         bitmapBuffer = BitmapSource.Create(
                             Width, Height,
                             96, 96,
@@ -61,8 +61,7 @@ namespace NagaraStage {
                             BitmapPalettes.Gray256,
                             captruredBuffer,
                             Width);
-                    }), null);
-                    return bitmapBuffer;
+                return bitmapBuffer;
                 }
             }
 

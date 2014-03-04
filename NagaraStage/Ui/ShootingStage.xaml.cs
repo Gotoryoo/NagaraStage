@@ -118,9 +118,11 @@ namespace NagaraStage.Ui {
                     Dispatcher.BeginInvoke(new Action(saveProjectedImages), null);
                     break;
             }
-            abortButton.IsEnabled = false;
-            ledGroupBox.IsEnabled = true;
-            MessageBox.Show("Complete");
+            System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(new Action(delegate {
+                abortButton.IsEnabled = false;
+                ledGroupBox.IsEnabled = true;
+                MessageBox.Show("Complete");
+            }), null);            
         }
 
         private void saveParaImages() {
