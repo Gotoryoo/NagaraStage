@@ -8,6 +8,7 @@ using System.Windows.Media.Imaging;
 using NagaraStage;
 using NagaraStage.Parameter;
 using NagaraStage.IO;
+using System.IO;
 
 namespace NagaraStage {
     namespace Activities {
@@ -230,6 +231,8 @@ namespace NagaraStage {
                 mc.MovePointZ(startPoint);
                 mc.Join();
 
+                StreamWriter writer = new StreamWriter(@".\z.txt");
+
                 // 撮影終了地点に移動しながら画像を確保する
                 double pnInterval = (startPoint > endPoint ? -interval : interval);
                 double presentPoint = mc.GetPoint().Z;
@@ -242,6 +245,9 @@ namespace NagaraStage {
                     camera.Start();
                     shotPoint.Add(presentPoint);
                     ++numOfShot;
+
+                    writer.WriteLine(presentPoint.ToString());
+
                     if (OnShort != null)
                     {
                         ActivityEventArgs e = new ActivityEventArgs();
@@ -266,7 +272,7 @@ namespace NagaraStage {
                                                           mc.Join();
                     presentPoint = mc.GetPoint().Z;
                 }
-
+                writer.Close();
                 mc.StopInching(MechaAxisAddress.ZAddress);
             }
 

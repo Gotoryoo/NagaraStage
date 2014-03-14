@@ -111,7 +111,7 @@ namespace NagaraStage.Ui {
                     && scanAreaXpTextBox.Background == Brushes.White
                     && scanAreaYmTextBox.Background == Brushes.White
                     && scanAreaYpTextBox.Background == Brushes.White
-                    && ledPortTextBox.Background == Brushes.White
+                    //&& ledPortTextBox.Background == Brushes.White
                     && limitPolTextBox.Background == Brushes.White
                     );
             }

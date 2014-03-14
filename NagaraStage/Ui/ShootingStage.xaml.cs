@@ -74,7 +74,7 @@ namespace NagaraStage.Ui {
         private void viewTimer_Ticked(object sender, EventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             Vector3 p = mc.GetPoint();
-            coordinateLabel.Content = string.Format("X:{0:0.0000}, Y:{1:0.0000}, Z:{2:0.0000}",
+            coordinateLabel.Content = string.Format("X:{0:0.0000}, Y:{1:0.0000}, Z:{2:0.00000}",
                 p.X, p.Y, p.Z);            
         }
 
@@ -118,6 +118,7 @@ namespace NagaraStage.Ui {
                     Dispatcher.BeginInvoke(new Action(saveProjectedImages), null);
                     break;
             }
+
             System.Windows.Threading.Dispatcher.CurrentDispatcher.BeginInvoke(new Action(delegate {
                 abortButton.IsEnabled = false;
                 ledGroupBox.IsEnabled = true;
