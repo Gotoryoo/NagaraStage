@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-
 using NagaraStage;
 using NagaraStage.Parameter;
 using NagaraStage.IO.Driver;
@@ -32,6 +31,7 @@ namespace NagaraStage {
             private int limitPol0;
             private Vector3 tolerance;
             private Thread movingThread;
+            //private Thread isMovingPointContinuemovingThread;
             /// <summary>らせん移動の位置を保持するカウンタ</summary>            
             private Vector2Int spiralCounter;
             /// <summary>らせん移動の中心座標</summary>

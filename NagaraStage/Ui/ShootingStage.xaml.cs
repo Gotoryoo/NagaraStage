@@ -74,7 +74,7 @@ namespace NagaraStage.Ui {
         private void viewTimer_Ticked(object sender, EventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             Vector3 p = mc.GetPoint();
-            coordinateLabel.Content = string.Format("X:{0:0.0000}, Y:{1:0.0000}, Z:{2:0.00000}",
+            coordinateLabel.Content = string.Format("X:{0:0.00000}, Y:{1:0.00000}, Z:{2:0.0000}",
                 p.X, p.Y, p.Z);            
         }
 

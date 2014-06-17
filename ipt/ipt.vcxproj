@@ -93,7 +93,7 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ModuleDefinitionFile>ipt.def</ModuleDefinitionFile>
-      <AdditionalDependencies>opencv_core242d.lib;opencv_highgui242d.lib;opencv_imgproc242d.lib;opencv_objdetect242d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>C:\OpenCV\opencv246\build\x86\vc10\lib\*.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent />
   </ItemDefinitionGroup>

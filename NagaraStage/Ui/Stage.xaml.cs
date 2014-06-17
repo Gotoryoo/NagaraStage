@@ -434,7 +434,7 @@ namespace NagaraStage.Ui {
         /// <param name="value">表示する座標値</param>
         private void drawPositionOnViewer(Vector3 value) {
             motorPositionLabel.Content = string.Format(
-                "X:{0:0.0000}mm , Y:{1:0.0000}mm , Z:{2:0.0000}mm",
+                "X:{0:0.00000}mm , Y:{1:0.00000}mm , Z:{2:0.0000}mm",
                 value.X, value.Y, value.Z);
         }
 
