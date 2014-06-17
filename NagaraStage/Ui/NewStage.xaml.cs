@@ -144,7 +144,7 @@ namespace NagaraStage.Ui {
         private void okButton_Click(object sender, RoutedEventArgs e) {
             // Index値が2より大きければ注意ダイアログを表示し，
             // ユーザーが「はい」をクリックした時のみ続行する．
-            if (isIndexValueCorrect()) {
+            if (!isIndexValueCorrect()) {
                 MessageBoxResult r = MessageBox.Show(
                     Properties.Strings.IndexFarExceptionWarning,
                     Properties.Strings.Attention,
@@ -173,9 +173,8 @@ namespace NagaraStage.Ui {
         }
 
         private Boolean isIndexValueCorrect() {
-            return (Math.Abs(parameterBuffer.EmulsionIndexUp) - 2 > 0.5
-                || Math.Abs(parameterBuffer.EmulsionIndexDown) - 2 > 0.5
-                ? false : true);
+            return (Math.Abs(parameterBuffer.EmulsionIndexUp - 2) <= 0.5
+                && Math.Abs(parameterBuffer.EmulsionIndexDown - 2) <= 0.5);
         }
 
         private void skipButton_Click(object sender, RoutedEventArgs e) {
