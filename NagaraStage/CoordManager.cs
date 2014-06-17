@@ -365,6 +365,7 @@ namespace NagaraStage {
                         jId = getXYGridId(j);
                         dx = gridOrgX[iId.X, iId.Y] - gridOrgX[jId.X, jId.Y];
                         dy = gridOrgY[iId.X, iId.Y] - gridOrgY[jId.X, jId.Y];
+                        distOrigin += Math.Sqrt(dx * dx + dy * dy);
                         thetaOrigin = (Math.Abs(dx) > 5 ? Math.Atan(dy / dx) : -Math.Atan(dx / dy));
                         theta += (thetaNow - thetaOrigin);
                         ++combinationNum;
