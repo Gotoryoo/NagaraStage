@@ -473,7 +473,7 @@
     <value>定義済みのグリッドマーク数が少なすぎます．</value>
   </data>
   <data name="WarnCreateCoord01" xml:space="preserve">
-    <value>全てのグリッドマークが定義されていません．しかし，座標系を生成できます．座標系の生成をぞこうしますか?</value>
+    <value>全てのグリッドマークが定義されていません．しかし，座標系を生成できます．座標系の生成を続行しますか?</value>
   </data>
   <data name="Apply" xml:space="preserve">
     <value>適用</value>
