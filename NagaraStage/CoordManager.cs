@@ -288,8 +288,8 @@ namespace NagaraStage {
                     emX = gridMarks[i].x - offset.X;
                     emY = gridMarks[i].y - offset.Y;
                     Ipt.MtoG(0, emX, emY, ref x, ref y);
-                    iId.X = (int)((x + 100) / 100 + 0.5);
-                    iId.Y = (int)((y + 100) / 100 + 0.5);
+                    iId.X = (int)(((x + 100) / 100) + 0.5);
+                    iId.Y = (int)(((y + 100) / 100) + 0.5);
                     gridOffsetX[iId.X, iId.Y] = x - gridOrgX[iId.X, iId.Y];
                     gridOffsetY[iId.X, iId.Y] = y - gridOrgY[iId.X, iId.Y];
                 } else {
@@ -355,7 +355,7 @@ namespace NagaraStage {
             }            
 
             for (int i = 0; i < AllGridMarksNum; ++i) {
-                for (int j = ++i; j < AllGridMarksNum; ++j) {
+                for (int j = i + 1; j < AllGridMarksNum; ++j) {
                     if (gridMarks[i].Existed) {
                         dx = gridMarks[i].x - gridMarks[j].x;
                         dy = gridMarks[i].y - gridMarks[j].y;
@@ -374,13 +374,14 @@ namespace NagaraStage {
             } // for i END             
 
             magnitOfGrid = distNow / distOrigin;
-            angleOfGrid = thetaOrigin / combinationNum;
+            angleOfGrid = theta / combinationNum;
             Ipt.SetGridLocal(
                 (short)parameterManager.PlateNo, 
                 magnitOfGrid, 
                 angleOfGrid, 
                 parameterManager.EmulsionIndexUp, 
                 parameterManager.EmulsionIndexDown);
+            System.Diagnostics.Debug.WriteLine(String.Format("mag: {0}, theta: {1}", magnitOfGrid, theta));
         }
 
         /// <summary>

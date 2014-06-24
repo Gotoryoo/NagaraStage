@@ -293,12 +293,12 @@ namespace NagaraStage {
                     _GridOriginalX[1, 1] = 0;
                     _GridOriginalY[1, 1] = 0;
                     double cosGridOrgSita = Math.Cos(_GridOriginalSita);
-                    double sinGridOrgSita = Math.Sign(_GridOriginalSita);
+                    double sinGridOrgSita = Math.Sin(_GridOriginalSita);
                     for (int i = 1; i < 9; ++i) {
                         double x = (markx[i] * cosGridOrgSita + marky[i] * sinGridOrgSita) / _GridOrigianlMag;
                         double y = (-markx[i] * sinGridOrgSita + marky[i] * cosGridOrgSita) / _GridOrigianlMag;
-                        int ix = (int)((x + 100) / 100 + 0.5);
-                        int iy = (int)((y + 100) / 100 + 0.5);
+                        int ix = (int)(((x + 100) / 100) + 0.5);
+                        int iy = (int)(((y + 100) / 100) + 0.5);
                         _GridOriginalX[ix, iy] = x;
                         _GridOriginalY[ix, iy] = y;
                     }
