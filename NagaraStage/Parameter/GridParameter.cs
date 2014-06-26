@@ -137,7 +137,7 @@ namespace NagaraStage {
                     string[] args = line.Split(delimiterChars, StringSplitOptions.RemoveEmptyEntries);
                     double x = double.Parse(args[0]) - ep.GridOriginalX0;
                     double y = double.Parse(args[1]) - ep.GridOriginalY0;
-                    double xp = (x * Math.Cos(ep.GridOriginalSita) + y * Math.Sign(ep.GridOriginalSita)) / ep.GridOriginalMag;
+                    double xp = (x * Math.Cos(ep.GridOriginalSita) + y * Math.Sin(ep.GridOriginalSita)) / ep.GridOriginalMag;
                     double yp = (-x * Math.Sin(ep.GridOriginalSita) + y * Math.Cos(ep.GridOriginalSita)) / ep.GridOriginalMag;
                     switch (mode) {
                         case 0:

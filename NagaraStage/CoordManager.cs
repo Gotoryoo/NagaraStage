@@ -381,7 +381,7 @@ namespace NagaraStage {
                 angleOfGrid, 
                 parameterManager.EmulsionIndexUp, 
                 parameterManager.EmulsionIndexDown);
-            System.Diagnostics.Debug.WriteLine(String.Format("mag: {0}, theta: {1}", magnitOfGrid, theta));
+            System.Diagnostics.Debug.WriteLine(String.Format("mag: {0}, theta: {1}", magnitOfGrid, angleOfGrid));
         }
 
         /// <summary>
