@@ -630,6 +630,7 @@ namespace NagaraStage.Ui {
 
             try {
                 coordManager.CreateCoordSystem();
+                stage.WriteLine(String.Format("mag={0}, theta={1}", coordManager.MagnitOfGrid, coordManager.AngleOfGrid));
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message, Properties.Strings.Error);
             }
