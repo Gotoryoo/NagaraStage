@@ -50,7 +50,7 @@ namespace NagaraStage {
                     trackLine.X1 = Width / 2;
                     trackLine.Y1 = Height / 2;
                     trackLine.X2 = (Width / 2) + ((track.MsDX * 0.07) / parameterManager.CameraMainResolution);
-                    trackLine.Y2 = (Height / 2) + ((track.MsDY * 0.07) / parameterManager.CameraSubResolution);
+                    trackLine.Y2 = (Height / 2) - ((track.MsDY * 0.07) / parameterManager.CameraSubResolution);
                 }
             }
 

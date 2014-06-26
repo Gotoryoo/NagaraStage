@@ -92,6 +92,7 @@ namespace NagaraStage.Ui {
             led.SetDcPower(0);
             led.OnPulse();
 #endif
+            this.Focus();
         }
 
         /// <summary>
