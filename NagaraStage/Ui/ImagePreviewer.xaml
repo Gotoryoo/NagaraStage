@@ -17,7 +17,7 @@
                     <RowDefinition Height="40" />
                     <RowDefinition Height="40*" />
                 </Grid.RowDefinitions>
-                <TextBox x:Name="refferenceTextBox" Height="23" Width="133" Margin="10,8,0,9" HorizontalAlignment="Left" />
+                <TextBox x:Name="refferenceTextBox" Height="23" Width="133" Margin="10,8,0,9" HorizontalAlignment="Left" InputMethod.PreferredImeState="Off" />
                 <Label Content="{Binding FileType ,Mode=OneWay, Source={StaticResource strings}}" Height="23" Grid.Row="1" />
                 <ComboBox x:Name="fileTypeComboBox" Grid.Row="1" Height="23" Width="100" VerticalAlignment="Center" Margin="112,10,33,7">
                     <ComboBoxItem Content=".png" IsSelected="True" />

@@ -15,8 +15,8 @@
         </Grid.ColumnDefinitions>
         <Label Content="X" HorizontalAlignment="Right"  VerticalAlignment="Center" RenderTransformOrigin="-0.074,0.214" Grid.Row="1" Margin="0,5,0,4"/>
         <Label Content="Y" HorizontalAlignment="Right"  Grid.Row="2" VerticalAlignment="Top"/>
-        <TextBox x:Name="xTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23"  Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" Width="120" Margin="0,7" TextChanged="xTextBox_TextChanged"/>
-        <TextBox x:Name="yTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23"  Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="yTextBox_TextChanged"/>
+        <TextBox x:Name="xTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23"  Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Center" Width="120" Margin="0,7" TextChanged="xTextBox_TextChanged" InputMethod.PreferredImeState="Off" InputMethod.IsInputMethodSuspended="True"/>
+        <TextBox x:Name="yTextBox" Grid.Column="1" HorizontalAlignment="Left" Height="23"  Grid.Row="2" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" TextChanged="yTextBox_TextChanged" InputMethod.PreferredImeState="Off" InputMethod.IsInputMethodSuspended="True" />
         <Label x:Name="xLabel" Content="mm" Grid.Column="1" HorizontalAlignment="Left" Margin="125,1,0,0" Grid.Row="1" VerticalAlignment="Top"/>
         <Label x:Name="yLabel" Content="mm" Grid.Column="1" HorizontalAlignment="Left" Margin="125,0,0,0" Grid.Row="2" VerticalAlignment="Top"/>
         <Button x:Name="okButton" Content="{Binding OK, Mode=OneWay, Source={StaticResource ResourcesInstance}}" Grid.Column="1" HorizontalAlignment="Left" Margin="10,4,0,0" Grid.Row="3" VerticalAlignment="Top" Width="75" IsDefault="True" Click="okButton_Click"/>

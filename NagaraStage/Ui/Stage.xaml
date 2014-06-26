@@ -24,7 +24,7 @@
             x:Name="motorPositionLabel" 
             Content="Positon Label" 
             OpacityMask="White" Foreground="Blue" Grid.ColumnSpan="2" />
-        <TextBox Grid.Row="3" Height="123" HorizontalAlignment="Center" Margin="6,3" Name="infoTextBox" VerticalAlignment="Center" MinWidth="500" MinHeight="110" Grid.RowSpan="2" TextWrapping="WrapWithOverflow" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" />
+        <TextBox Grid.Row="3" Height="123" HorizontalAlignment="Center" Margin="6,3" Name="infoTextBox" VerticalAlignment="Center" MinWidth="500" MinHeight="110" Grid.RowSpan="2" TextWrapping="WrapWithOverflow" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" InputMethod.PreferredImeState="Off" />
         <my:CameraViewer 
             Height="440" 
             HorizontalAlignment="Left" 
@@ -37,7 +37,7 @@
             <Grid>
                 <Button Content="{Binding Source={StaticResource strings}, Path=AdjustLight}" Height="23" HorizontalAlignment="Right" Margin="0,11,19,0" Name="adjustLedButton" VerticalAlignment="Top" Width="75" Click="adjustLedButton_Click" />
                 <Slider Height="23" HorizontalAlignment="Left" Margin="2,11,0,0" Name="ledSlider" VerticalAlignment="Top" Width="134" Maximum="255" ValueChanged="ledSlider_ValueChanged" />
-                <TextBox Height="22" HorizontalAlignment="Left" Margin="138,12,0,0" Name="ledTextBox" VerticalAlignment="Top" Width="36" Text="0" TextChanged="ledTextBox_TextChanged" IsReadOnly="True" />
+                <TextBox Height="22" HorizontalAlignment="Left" Margin="138,12,0,0" Name="ledTextBox" VerticalAlignment="Top" Width="36" Text="0" TextChanged="ledTextBox_TextChanged" IsReadOnly="True" InputMethod.PreferredImeState="Off" InputMethod.IsInputMethodSuspended="True" />
             </Grid>
         </GroupBox>
 
