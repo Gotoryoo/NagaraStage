@@ -618,14 +618,27 @@ namespace NagaraStage.Ui {
             }
 
             // 全てのグリッドマークが定義されていない場合は，続行するか確認する
-            if (coordManager.DefinedGridMarkNum == 9) {
+            if (coordManager.DefinedGridMarkNum == 9)
+            {
+                MessageBoxResult result = MessageBox.Show(
+                    Properties.Strings.CreateCoordSystem,
+                    Properties.Strings.Attention,
+                    MessageBoxButton.YesNo);
+                if (result != MessageBoxResult.Yes)
+                {
+                    return;
+                }
+            }
+            else {
                 MessageBoxResult result = MessageBox.Show(
                     Properties.Strings.WarnCreateCoord01,
                     Properties.Strings.Attention,
                     MessageBoxButton.YesNo);
-                if (result != MessageBoxResult.Yes) {
+                if (result != MessageBoxResult.Yes)
+                {
                     return;
                 }
+
             }
 
             try {
