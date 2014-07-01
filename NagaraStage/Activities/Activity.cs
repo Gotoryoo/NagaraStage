@@ -15,6 +15,154 @@ using NagaraStage.IO;
 namespace NagaraStage {
     namespace Activities {
         /// <summary>
+        /// 自動処理を行うアクティビティを管理するクラスです。
+        /// </summary>
+        public class Activity {
+            private static Activity instance = null;
+
+            /// <summary>
+            /// アクティビティのタスクのためのデリゲート
+            /// </summary>
+            public delegate void ActivityTask();
+
+            /// <summary>
+            /// アクティビティのキュー。
+            /// <para>各タスクをキューイングすることで、順に実行します。</para>
+            /// </summary>
+            private ActivityQueue queue = new ActivityQueue();
+
+            private ParameterManager parameterManager = null;
+
+            /// <summary>
+            /// キューイングを行うスレッドです
+            /// </summary>
+            private Thread queuingThread = null;
+
+            /// <summary>
+            /// アクティビティが実行中かどうかを取得します。
+            /// <para>true: 実行中, false: 停止中</para>
+            /// </summary>
+            public bool IsActive {
+                get { 
+                    bool retval = false;
+                    if(queuingThread != null) {
+                        retval = (queuingThread.IsAlive);
+                    }
+                    return retval;
+                }
+            }
+
+            public static Activity GetInstance(ParameterManager paramgerManger = null) {
+                if(instance == null) {
+                    instance = new Activity(paramgerManger);
+                }
+                return instance;
+            }
+
+            private Activity(ParameterManager _parameterManager) {
+                this.parameterManager = _parameterManager;
+                isValidate();
+            }
+
+            /// <summary>
+            /// タスクを末尾に追加します。
+            /// </summary>
+            /// <param name="task">追加するアクティビティタスク</param>
+            /// <param name="handler">該当タスクが終了したときのイベントハンドラ</param>
+            public void Enqueue(ActivityTask task, ActivityEventHandler handler) {
+                Thread t = createTaskThraed(task, handler);
+                queue.Enqueue(t);
+            }
+
+            /// <summary>
+            /// キューイングされたタスクをすべて削除します。
+            /// <para>アクティビティが終了させてから実行してください。
+            /// さもなくばInActionExceptionが投げられます。</para>
+            /// </summary>
+            public void Clear() {
+                if(IsActive) {
+                    throw new InActionException();
+                }
+                queue.Clear();
+            }
+
+            public void Start() {
+                queuingThread = new Thread(queueing());
+                queuingThread.Start();
+            }
+            public void Abort() {
+                if(IsActive) {
+                    queuingThread.Abort();
+                    queuingThread.Join();
+                }
+            }
+
+            /// <summary>
+            /// キューに登録するアクティビティスレッドを作成します。
+            /// </summary>
+            /// <param name="task">アクティビティスレッドで実行するタスク</param>
+            /// <param name="handler">アクティビティが終了したときのイベントハンドラ(初期値:null)</param>
+            /// <returns>作成したアクティビティスレッド</returns>
+            private Thread createTaskThraed(ActivityTask task, ActivityEventHandler handler = null) {
+                ThreadStart threadStart = new ThreadStart(delegate {
+                    ActivityEventArgs args = new ActivityEventArgs();
+                    try
+                    {
+                        task();
+                        args.IsCompleted = true;
+                    }
+                    catch (ThreadAbortException ex)
+                    {
+                        args.IsAborted = true;
+                        args.Exception = ex;
+                    }
+                    catch (Exception ex)
+                    {
+                        args.Exception = ex;
+                    }
+                    finally
+                    {
+                        MotorControler mc = MotorControler.GetInstance(parameterManager);
+                        mc.AbortMoving();
+                        mc.StopInching(MechaAxisAddress.XAddress);
+                        mc.StopInching(MechaAxisAddress.YAddress);
+                        mc.StopInching(MechaAxisAddress.ZAddress);
+                        if (handler != null)
+                        {
+                            handler(this, args);
+                        }
+                    }
+                });
+                return new Thread(threadStart);
+            }
+
+            private ThreadStart queueing() {
+                return new ThreadStart(delegate{
+                    while(queue.Count > 0) {
+                        Thread activity = queue.Dequeue();
+                        activity.Start();
+                        activity.Join();
+                    }
+                });                
+            }
+
+            private bool isValidate() {
+                if(parameterManager == null) {
+                    throw new NullReferenceException("parameterManager is null pointer.");
+                }
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// アクティビティのキューイングを行うキュークラスです。
+        /// </summary>
+        internal class ActivityQueue : Queue<Thread> {
+        }
+
+#if false
+
+        /// <summary>
         /// 自動処理を行うアクティビティを管理するクラスです．
         /// <para>
         /// 全面スキャンなどでは，トラック追跡，表面認識を始めあらゆる工程を自動的に行います．
@@ -85,25 +233,34 @@ namespace NagaraStage {
             /// <param name="task">アクティビティのタスク</param>
             /// <param name="handler">タスク終了時のイベントハンドラ</param>
             /// <returns>アクティビティスレッド</returns>
-            protected Thread Create(ActivityTask task, ActivityEventHandler handler) {
-                ThreadStart start = new ThreadStart(delegate {
+            protected Thread Create(ActivityTask task, ActivityEventHandler handler)
+            {
+                ThreadStart start = new ThreadStart(delegate
+                {
                     ActivityEventArgs args = new ActivityEventArgs();
-                    try {
+                    try
+                    {
                         task();
                         args.IsCompleted = true;
-                    } catch (ThreadAbortException ex) {
+                    }
+                    catch (ThreadAbortException ex)
+                    {
                         args.IsAborted = true;
                         args.Exception = ex;
-                    } catch (Exception ex) {
+                    }
+                    catch (Exception ex)
+                    {
                         args.Exception = ex;
                     }
-                    finally {
+                    finally
+                    {
                         MotorControler mc = MotorControler.GetInstance(parameterManager);
                         mc.AbortMoving();
                         mc.StopInching(MechaAxisAddress.XAddress);
                         mc.StopInching(MechaAxisAddress.YAddress);
                         mc.StopInching(MechaAxisAddress.ZAddress);
-                        if (handler != null) {
+                        if (handler != null)
+                        {
                             handler(this, args);
                         }
                     }
@@ -126,4 +283,5 @@ namespace NagaraStage {
             }
         }
     }
+#endif
 }
