@@ -112,13 +112,13 @@
                 <ribbon:RibbonGroup 
                     Header="{Binding Source={StaticResource strings}, Path=Gel}" Name="gelGroup">
                     <ribbon:RibbonButton 
-                        Name="surfaceRecognizeButton" 
-                        Label="{Binding Source={StaticResource strings}, Path=SurfaceRecognize}" 
-                        LargeImageSource="/NagaraStage;component/Images/handglass.png" Click="surfaceRecognizeButton_Click" />
+                        Name="surfaceRecogButton" 
+                        Label="{Binding Source={StaticResource strings}, Path=SurfaceRecog}" 
+                        LargeImageSource="/NagaraStage;component/Images/handglass.png" Click="surfaceRecogButton_Click" />
                     <ribbon:RibbonButton
-                        Name="fastSurfaceRecognizeButton"
-                        Label="{Binding Source={StaticResource strings}, Path=FastSurfaceRecognition}"
-                        SmallImageSource="/NagaraStage;component/Images/handglass.png" Click="fastSurfaceRecognizeButton_Click"
+                        Name="fastSurfaceRecogButton"
+                        Label="{Binding Source={StaticResource strings}, Path=FastSurfaceRecog}"
+                        SmallImageSource="/NagaraStage;component/Images/handglass.png" Click="fastSurfaceRecogButton_Click"
                         />
                     <ribbon:RibbonButton 
                         Name="inGelButton"
@@ -131,13 +131,13 @@
                         <ribbon:RibbonButton Label="{Binding Source={StaticResource strings}, Path=LowerGelBottom}" Name="moveToLowerGelBottomButton" HorizontalAlignment="Left" Click="moveToLowerGelBottomButton_Click" />
                     </ribbon:RibbonMenuButton>
                     <ribbon:RibbonButton 
-                        Name="surfaceRecognizeConfigButton" 
+                        Name="surfaceRecogConfigButton" 
                         Label="{Binding Source={StaticResource strings}, Path=Config}"
-                        SmallImageSource="/NagaraStage;component/Images/config.png" Click="surfaceRecognizeConfigButton_Click" />
+                        SmallImageSource="/NagaraStage;component/Images/config.png" Click="surfaceRecogConfigButton_Click" />
                     <ribbon:RibbonButton
-                        Name="surfaceRecognizeAbortButton"
+                        Name="surfaceRecogAbortButton"
                         Label="{Binding Source={StaticResource strings}, Path=Abort}"
-                        SmallImageSource="/NagaraStage;component/Images/stop.png" Click="surfaceRecognizeAbortButton_Click" />
+                        SmallImageSource="/NagaraStage;component/Images/stop.png" Click="surfaceRecogAbortButton_Click" />
                     <ribbon:RibbonButton
                         Name="surfaceVerifButton"
                         Label="{Binding Source={StaticResource strings}, Path=Verif}"

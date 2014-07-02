@@ -147,7 +147,7 @@ namespace NagaraStage.Ui {
             surface.Started += surface_Started;
             surface.Exited += surface_Exited;
             IsTabsEnabled = false;
-            surfaceRecognizeAbortButton.IsEnabled = false;
+            surfaceRecogAbortButton.IsEnabled = false;
         }
 
         /// <summary>
@@ -341,7 +341,7 @@ namespace NagaraStage.Ui {
             previewer.ShowDialog();
         }
 
-        private void surfaceRecognizeButton_Click(object sender, RoutedEventArgs e) {
+        private void surfaceRecogButton_Click(object sender, RoutedEventArgs e) {
             // モータが稼働中であれば停止するかどうかを尋ねる．
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             if (mc.IsMoving) {
@@ -384,7 +384,7 @@ namespace NagaraStage.Ui {
                 HomeTab.IsEnabled = true; 
                 controlGroup.IsEnabled = false;
                 shootingGrop.IsEnabled = false;
-                surfaceRecognizeAbortButton.IsEnabled = true;
+                surfaceRecogAbortButton.IsEnabled = true;
             }), null);            
         }
         
@@ -394,11 +394,11 @@ namespace NagaraStage.Ui {
                 IsTabsEnabled = true;
                 controlGroup.IsEnabled = true;
                 shootingGrop.IsEnabled = true;
-                surfaceRecognizeAbortButton.IsEnabled = false;
+                surfaceRecogAbortButton.IsEnabled = false;
             }), null);            
         }
 
-        private void surfaceRecognizeConfigButton_Click(object sender, RoutedEventArgs e) {
+        private void surfaceRecogConfigButton_Click(object sender, RoutedEventArgs e) {
             SurfaceConfig surfaceConfig = new SurfaceConfig(this);
             surfaceConfig.NextControl = SurfaceConfig.PresentControl;
             SetElementOnWorkspace(surfaceConfig);
@@ -410,7 +410,7 @@ namespace NagaraStage.Ui {
             SetElementOnWorkspace(verif);
         }
 
-        private void fastSurfaceRecognizeButton_Click(object sender, RoutedEventArgs e) {
+        private void fastSurfaceRecogButton_Click(object sender, RoutedEventArgs e) {
             Surface surface = Surface.GetInstance(parameterManager);
             try {
                 surface.Start(true);
@@ -419,7 +419,7 @@ namespace NagaraStage.Ui {
             }
         }        
 
-        private void surfaceRecognizeAbortButton_Click(object sender, RoutedEventArgs e) {
+        private void surfaceRecogAbortButton_Click(object sender, RoutedEventArgs e) {
             Surface surface = Surface.GetInstance(parameterManager);
             surface.Abort();
             stage.WriteLine(Properties.Strings.AbortedSurfaceRecognizing);

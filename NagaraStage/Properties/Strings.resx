@@ -473,7 +473,7 @@ Last, Click OK button to start new stage.</value>
   <data name="Surface" xml:space="preserve">
     <value>Surface</value>
   </data>
-  <data name="SurfaceRecognize" xml:space="preserve">
+  <data name="SurfaceRecog" xml:space="preserve">
     <value>Surface Recognize</value>
   </data>
   <data name="Top" xml:space="preserve">

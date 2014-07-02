@@ -454,7 +454,7 @@
   <data name="Surface" xml:space="preserve">
     <value>表面</value>
   </data>
-  <data name="SurfaceRecognize" xml:space="preserve">
+  <data name="SurfaceRecog" xml:space="preserve">
     <value>表面認識</value>
   </data>
   <data name="Top" xml:space="preserve">
@@ -809,7 +809,7 @@
 中央と左上の合計2カ所を手動で測定し，「自動検出」のボタンを押と，残りのグリッドマークを自動的に見つけさせることができるようにしたい．by吉田(2014/07/01)</value>
   </data>
   <data name="SurfaceStart" xml:space="preserve">
-    <value>表面認識は開始されました．</value>
+    <value>表面認識が開始されました．</value>
   </data>
   <data name="SurfaceLoweringDistance" xml:space="preserve">
     <value>下降距離</value>
