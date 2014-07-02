@@ -76,22 +76,18 @@
                         x:Name="backOriginButton"
                         SmallImageSource="/NagaraStage;component/Images/SmallIcon.png"      
                         Label="{Binding Source={StaticResource strings}, Path=BackOrigin}" Click="backOriginButton_Click" />
-                    <ribbon:RibbonMenuButton
-                        SmallImageSource="/NagaraStage;component/Images/spiral.png" 
-                        Label="{Binding Source={StaticResource strings}, Path=SpiralMove}">
-                        <ribbon:RibbonButton 
-                            x:Name="SpiralStartButton"
-                            SmallImageSource="/NagaraStage;component/Images/SmallIcon.png"
-                            Label="{Binding Source={StaticResource strings}, Path=SpiralMove}" Click="SpiralStartButton_Click" />
-                        <ribbon:RibbonButton 
-                            x:Name="SpiralBackButton" 
-                            SmallImageSource="/NagaraStage;component/Images/SmallIcon.png" 
-                            Label="{Binding Source={StaticResource strings}, Path=SpiralBack}" Click="SpiralBackButton_Click" />
-                        <ribbon:RibbonButton 
-                            x:Name="SpiralOriginButton" 
-                            SmallImageSource="/NagaraStage;component/Images/SmallIcon.png"
-                            Label="{Binding Source={StaticResource strings}, Path=SetSpiralOrigin}" Click="SpiralOriginButton_Click" />
-                    </ribbon:RibbonMenuButton>
+                    <ribbon:RibbonButton 
+                        x:Name="SpiralStartButton"
+                        SmallImageSource="/NagaraStage;component/Images/SmallIcon.png"
+                        Label="{Binding Source={StaticResource strings}, Path=SpiralMove}" Click="SpiralStartButton_Click" />
+                    <ribbon:RibbonButton 
+                        x:Name="SpiralBackButton" 
+                        SmallImageSource="/NagaraStage;component/Images/SmallIcon.png" 
+                        Label="{Binding Source={StaticResource strings}, Path=SpiralBack}" Click="SpiralBackButton_Click" />
+                    <ribbon:RibbonButton 
+                        x:Name="SpiralOriginButton" 
+                        SmallImageSource="/NagaraStage;component/Images/SmallIcon.png"
+                        Label="{Binding Source={StaticResource strings}, Path=SetSpiralOrigin}" Click="SpiralOriginButton_Click" />
                 </ribbon:RibbonGroup>
 
                 <ribbon:RibbonGroup x:Name="shootingGrop"
