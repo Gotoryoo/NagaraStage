@@ -920,4 +920,7 @@ Last, Click OK button to start new stage.</value>
   <data name="DefineGridMark" xml:space="preserve">
     <value>{0} is defined now. ({1}, {2})</value>
   </data>
+  <data name="OKandNEXT" xml:space="preserve">
+    <value>OKandNEXT</value>
+  </data>
 </root>
