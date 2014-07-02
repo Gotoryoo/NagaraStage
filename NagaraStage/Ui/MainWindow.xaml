@@ -62,20 +62,18 @@
                         x:Name="stopButton"
                         LargeImageSource="/NagaraStage;component/Images/stop2.png"      
                         Label="{Binding Source={StaticResource strings}, Path=Stop}" Click="stopButton_Click" />
-
-                    <ribbon:RibbonButton
-                        x:Name="setOriginButton"
-                        SmallImageSource="/NagaraStage;component/Images/SmallIcon.png"                            
-                        Label="{Binding Source={StaticResource strings}, Path=SetOrigin}" Click="setOriginButton_Click" />
                     <ribbon:RibbonButton
                         x:Name="moveToCoordButton"
                         SmallImageSource="/NagaraStage;component/IMages/SmallIcon.png"
-                        Label="{Binding Source={StaticResource strings}, Path=MoveToCoord}" Click="moveToCoordButton_Click" 
-                        />
+                        Label="{Binding Source={StaticResource strings}, Path=MoveToCoord}" Click="moveToCoordButton_Click" />
                     <ribbon:RibbonButton
                         x:Name="backOriginButton"
                         SmallImageSource="/NagaraStage;component/Images/SmallIcon.png"      
                         Label="{Binding Source={StaticResource strings}, Path=BackOrigin}" Click="backOriginButton_Click" />
+                    <ribbon:RibbonButton
+                        x:Name="setOriginButton"
+                        SmallImageSource="/NagaraStage;component/Images/SmallIcon.png"                            
+                        Label="{Binding Source={StaticResource strings}, Path=SetOrigin}" Click="setOriginButton_Click" />
                     <ribbon:RibbonButton 
                         x:Name="SpiralStartButton"
                         SmallImageSource="/NagaraStage;component/Images/SmallIcon.png"
