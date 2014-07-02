@@ -684,9 +684,9 @@ namespace NagaraStage.Properties {
         /// <summary>
         ///   Fast Surface Recognition に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string FastSurfaceRecognition {
+        public static string FastSurfaceRecog {
             get {
-                return ResourceManager.GetString("FastSurfaceRecognition", resourceCulture);
+                return ResourceManager.GetString("FastSurfaceRecog", resourceCulture);
             }
         }
         

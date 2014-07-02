@@ -824,7 +824,7 @@ Last, Click OK button to start new stage.</value>
   <data name="Profile" xml:space="preserve">
     <value>Profile</value>
   </data>
-  <data name="FastSurfaceRecognition" xml:space="preserve">
+  <data name="FastSurfaceRecog" xml:space="preserve">
     <value>Fast Surface Recognition</value>
   </data>
   <data name="MoveToCoord" xml:space="preserve">

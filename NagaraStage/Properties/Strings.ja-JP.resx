@@ -796,7 +796,7 @@
   <data name="Profile" xml:space="preserve">
     <value>プロファイル</value>
   </data>
-  <data name="FastSurfaceRecognition" xml:space="preserve">
+  <data name="FastSurfaceRecog" xml:space="preserve">
     <value>高速表面認識</value>
   </data>
   <data name="MoveToCoord" xml:space="preserve">
