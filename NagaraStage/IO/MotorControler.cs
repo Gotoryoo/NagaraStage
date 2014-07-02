@@ -701,18 +701,29 @@ namespace NagaraStage {
             /// <para>trueにした場合，呼び出し側スレッドが移動完了まで停止することを留意する必要があります．</para>
             /// </param>
             public void BackToSpiralCenter(bool wait = false) {
-                SpiralIndex = 0;
-                MovePointXY(spiralCentralPosition.X, spiralCentralPosition.Y);
+                Vector2Int i = getSpiralPosition(0);
+                MovePointXY(spiralCentralPosition.X, spiralCentralPosition.Y, delegate
+                {
+                    if (SpiralMoved != null)
+                    {
+                        SpiralMoved(this, new SpiralEventArgs(i.X, i.Y));
+                    }
+                });
                 if (wait) {
                     movingThread.Join();
                 }
+                SpiralIndex = 0;
+                spiralCounter = i;
             }
 
             /// <summary>
             /// 現在値をらせん移動の中心地に設定します．
             /// </summary>
             public void SetSpiralCenterPoint() {
+                SpiralMoved(this, new SpiralEventArgs(0, 0));
+                Vector2Int i = getSpiralPosition(0);
                 SpiralIndex = 0;
+                spiralCounter = i;
             }
 
             /// <summary>
