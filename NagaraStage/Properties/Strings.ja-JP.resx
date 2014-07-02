@@ -898,4 +898,7 @@
   <data name="DefineGridMark" xml:space="preserve">
     <value>{0}が定義されました．({1}, {2})</value>
   </data>
+  <data name="OKandNEXT" xml:space="preserve">
+    <value>OKして次へ</value>
+  </data>
 </root>

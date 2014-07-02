@@ -1551,6 +1551,15 @@ namespace NagaraStage.Properties {
         }
         
         /// <summary>
+        ///   OKandNEXT に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OKandNEXT {
+            get {
+                return ResourceManager.GetString("OKandNEXT", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Open に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Open {
