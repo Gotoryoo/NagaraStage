@@ -800,7 +800,7 @@
     <value>高速表面認識</value>
   </data>
   <data name="MoveToCoord" xml:space="preserve">
-    <value>座標へ移動</value>
+    <value>指定座標へ移動</value>
   </data>
   <data name="CoordHint" xml:space="preserve">
     <value>座標系の作成または修正を行います．
