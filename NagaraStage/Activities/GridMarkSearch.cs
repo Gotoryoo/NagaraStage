@@ -58,7 +58,7 @@ namespace NagaraStage.Activities {
         /// グリッドマークを入力画像から認識するために用いるメソッドを設定，または取得します．
         /// <para>設定するメソッドは検出したグリッドマークの</para>
         /// </summary>
-        public IGridMarkRecogner GridMarkRecognizer;
+        public IGridMarkRecognizer GridMarkRecognizer;
 
         private CoordManager coordManager;
         private ParameterManager parameterManager;

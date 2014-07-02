@@ -11,7 +11,7 @@ namespace NagaraStage {
     /// <summary>
     /// グリッドマークを画像から認識・検出するためのメソッドをもつインターフェイスです．
     /// </summary>
-    public interface IGridMarkRecogner {
+    public interface IGridMarkRecognizer {
         /// <summary>
         /// グリッドマークを検出し，その座標を返します．
         /// </summary>

@@ -16,7 +16,7 @@ namespace NagaraStage {
     /// グリッドマークおよび座標を管理するクラスです．
     /// </summary>
     /// <author email="o1007410@edu.gifu-u.ac.jp">Hirokazu Yokoyama</author>
-    public class CoordManager : IGridMarkRecogner {
+    public class CoordManager : IGridMarkRecognizer {
 
         /// <summary>
         /// エマルションに存在するグリッドマークの個数
