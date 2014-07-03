@@ -65,6 +65,11 @@ namespace NagaraStage {
                 DialogResult = true;
             }
 
+            private void okandnextButton_Click(object sender, RoutedEventArgs e)
+            {
+                DialogResult = true;
+            }
+
             private void leftTopRadioButton_Checked(object sender, RoutedEventArgs e) {
                 selectedPoint = GridMarkPoint.LeftTop;
             }

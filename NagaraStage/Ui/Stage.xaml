@@ -23,7 +23,7 @@
         <Label 
             x:Name="motorPositionLabel" 
             Content="Positon Label" 
-            OpacityMask="White" Foreground="Blue" Grid.ColumnSpan="2" />
+            OpacityMask="White" Foreground="Blue" Grid.ColumnSpan="2" FontSize="18"/>
         <TextBox Grid.Row="3" Height="123" HorizontalAlignment="Center" Margin="6,3" Name="infoTextBox" VerticalAlignment="Center" MinWidth="500" MinHeight="110" Grid.RowSpan="2" TextWrapping="WrapWithOverflow" AcceptsReturn="True" VerticalScrollBarVisibility="Auto" InputMethod.PreferredImeState="Off" />
         <my:CameraViewer 
             Height="440" 

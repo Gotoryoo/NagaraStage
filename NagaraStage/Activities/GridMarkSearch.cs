@@ -58,7 +58,7 @@ namespace NagaraStage.Activities {
         /// グリッドマークを入力画像から認識するために用いるメソッドを設定，または取得します．
         /// <para>設定するメソッドは検出したグリッドマークの</para>
         /// </summary>
-        public IGridMarkRecogner GridMarkRecoogner;
+        public IGridMarkRecognizer GridMarkRecognizer;
 
         private CoordManager coordManager;
         private ParameterManager parameterManager;
@@ -94,7 +94,7 @@ namespace NagaraStage.Activities {
             : base(_parameterManager) {
             this.coordManager = _coordManager;
             this.parameterManager = _parameterManager;
-            this.GridMarkRecoogner = coordManager;
+            this.GridMarkRecognizer = coordManager;
             this.utility = new GridMarkDefinitionUtil(coordManager);
         }
 
@@ -175,7 +175,7 @@ namespace NagaraStage.Activities {
                     try {
                         Led led = Led.GetInstance();
                         led.AdjustLight(parameterManager);
-                        Vector2 viewerPoint = GridMarkRecoogner.SearchGridMark();
+                        Vector2 viewerPoint = GridMarkRecognizer.SearchGridMark();
                         Vector2 encoderPoint = coordManager.TransToEmulsionCoord(viewerPoint);
                         mc.MovePointXY(encoderPoint);
                         mc.Join();

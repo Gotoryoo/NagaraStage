@@ -81,7 +81,7 @@ namespace NagaraStage.Ui {
                 } else if (e.Key == Key.S) {
                     mc.MoveInSpiral();
                 } else if (e.Key == Key.O) {                    
-                    mc.MoveInSpiral();
+                    mc.BackToSpiralCenter();
                 }
 #endif
             } catch (MotorAxisException ex) {

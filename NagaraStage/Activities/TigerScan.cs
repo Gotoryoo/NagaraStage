@@ -7,6 +7,7 @@ using System.Threading;
 using NagaraStage.IO;
 using NagaraStage.Parameter;
 
+#if false
 namespace NagaraStage.Activities {
     /// <summary>
     /// <h1>タイガースキャンの実装</h1>
@@ -56,7 +57,8 @@ namespace NagaraStage.Activities {
             if(Started != null) {
                 Started(this, new EventArgs());
             }
-
         }
     }
 }
+#endif
+
