@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace NagaraStage {
     namespace Activities {
@@ -38,12 +39,20 @@ namespace NagaraStage {
             /// <summary>
             /// アクティビティを開始します．
             /// </summary>
+            [Obsolete("アクティビティキューに移行するため廃止予定です。")]
             void Start();
 
             /// <summary>
             /// 実行中のアクティビティを中止します．
             /// </summary>
+            [Obsolete("アクティビティキューに移行するため廃止予定です。")]
             void Abort();
+
+            /// <summary>
+            /// アクティビティを実行するスレッドを作成します。
+            /// </summary>
+            /// <returns>実行スレッド</returns>
+            Thread CreateTaskThread();
         }
     }
 }

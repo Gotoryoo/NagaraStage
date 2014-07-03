@@ -311,6 +311,11 @@ namespace NagaraStage {
                 }
                 return flag;
             }
+
+
+            public Thread CreateTaskThread() {
+                throw new NotImplementedException();
+            }
         }
     }
 }

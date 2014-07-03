@@ -9,7 +9,7 @@ using NagaraStage.Parameter;
 
 
 namespace NagaraStage.Activities {
-    class ActivityManager {
+    class ActivityManager:IActivity {
         private static ActivityManager instance = null;
 
         /// <summary>
@@ -57,13 +57,12 @@ namespace NagaraStage.Activities {
         }
 
         /// <summary>
-        /// タスクを末尾に追加します。
+        /// 実行するアクティビティを末尾に追加します。
         /// </summary>
         /// <param name="task">追加するアクティビティタスク</param>
         /// <param name="handler">該当タスクが終了したときのイベントハンドラ</param>
-        public void Enqueue(ActivityTask task, ActivityEventHandler handler) {
-            Thread t = createTaskThraed(task, handler);
-            queue.Enqueue(t);
+        public void Enqueue(IActivity activity) {            
+            queue.Enqueue(activity.CreateTaskThread());
         }
 
         /// <summary>
@@ -89,37 +88,6 @@ namespace NagaraStage.Activities {
             }
         }
 
-        /// <summary>
-        /// キューに登録するアクティビティスレッドを作成します。
-        /// </summary>
-        /// <param name="task">アクティビティスレッドで実行するタスク</param>
-        /// <param name="handler">アクティビティが終了したときのイベントハンドラ(初期値:null)</param>
-        /// <returns>作成したアクティビティスレッド</returns>
-        private Thread createTaskThraed(ActivityTask task, ActivityEventHandler handler = null) {
-            ThreadStart threadStart = new ThreadStart(delegate {
-                ActivityEventArgs args = new ActivityEventArgs();
-                try {
-                    task();
-                    args.IsCompleted = true;
-                } catch (ThreadAbortException ex) {
-                    args.IsAborted = true;
-                    args.Exception = ex;
-                } catch (Exception ex) {
-                    args.Exception = ex;
-                } finally {
-                    MotorControler mc = MotorControler.GetInstance(parameterManager);
-                    mc.AbortMoving();
-                    mc.StopInching(MechaAxisAddress.XAddress);
-                    mc.StopInching(MechaAxisAddress.YAddress);
-                    mc.StopInching(MechaAxisAddress.ZAddress);
-                    if (handler != null) {
-                        handler(this, args);
-                    }
-                }
-            });
-            return new Thread(threadStart);
-        }
-
         private ThreadStart queueing() {
             return new ThreadStart(delegate {
                 while (queue.Count > 0) {
@@ -135,6 +103,15 @@ namespace NagaraStage.Activities {
                 throw new NullReferenceException("parameterManager is null pointer.");
             }
             return true;
+        }
+
+
+        public event EventHandler<EventArgs> Started;
+
+        public event ActivityEventHandler Exited;
+
+        public Thread CreateTaskThread() {
+            throw new NotImplementedException();
         }
     }
 

@@ -202,6 +202,11 @@ namespace NagaraStage.Activities {
             // 座標系の生成
             coordManager.CreateCoordSystem();
         }
+
+
+        public Thread CreateTaskThread() {
+            throw new NotImplementedException();
+        }
     }
 
 }

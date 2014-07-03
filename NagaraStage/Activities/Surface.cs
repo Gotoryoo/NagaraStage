@@ -799,6 +799,11 @@ namespace NagaraStage.Activities {
             }
             return (num >= 0);
         }
+
+
+        public Thread CreateTaskThread() {
+            throw new NotImplementedException();
+        }
     }
 
 }
