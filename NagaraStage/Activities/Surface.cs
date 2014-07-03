@@ -528,6 +528,7 @@ namespace NagaraStage.Activities {
         /// <summary>
         /// 表面認識処理を開始します．
         /// </summary>
+        [Obsolete("アクティビティキューイングに移行するため、そのうち廃止します。")]
         public void Start() {
             Start(false);
         }
@@ -800,9 +801,13 @@ namespace NagaraStage.Activities {
             return (num >= 0);
         }
 
-
+        /// <summary>
+        /// 表面認識の実行スレッドを作成します。
+        /// このクラスはActivityManagerからのみ呼び出すようにしてください。
+        /// </summary>
+        /// <returns></returns>
         public Thread CreateTaskThread() {
-            throw new NotImplementedException();
+            return Create(new ThreadStart(recogThread_Task));
         }
     }
 
