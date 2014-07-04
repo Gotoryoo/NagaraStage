@@ -55,8 +55,8 @@ namespace NagaraStage.Activities {
             get;
         }
 
-        /// <summary>現在撮影中の位置がゲルの中であるかどうかを取得します．</summary>
-        /// <returns><c>true</c> ゲルの中似る場合; そうでなければ, <c>false</c>.</returns>
+        /// <summary>現在撮影中の視野がゲルの中であるかどうかを取得します．</summary>
+        /// <returns><c>true</c> ゲルの中にある場合; そうでなければ, <c>false</c>.</returns>
         bool IsInGel();
     }
 }
