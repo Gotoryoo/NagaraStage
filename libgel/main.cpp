@@ -43,7 +43,6 @@ DLLEXPORT bool __stdcall NagaraStage::isInGel(
 	int lengthOfSide, 
 	int threshold0, int threshold1,
 	double powerOfDifference){
-		cv::M  
 		NagaraStage::Image *image = new Image(imageData, width, height);
 		image->setPowerOfDifference(powerOfDifference);
 		image->setThreshold(threshold1);
