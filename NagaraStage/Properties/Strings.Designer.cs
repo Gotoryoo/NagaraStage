@@ -2172,6 +2172,15 @@ namespace NagaraStage.Properties {
         }
         
         /// <summary>
+        ///   SurfaceRecogFromZBottom に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string SurfaceRecogBottom {
+            get {
+                return ResourceManager.GetString("SurfaceRecogBottom", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Surface Recognition started. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string SurfaceStart {

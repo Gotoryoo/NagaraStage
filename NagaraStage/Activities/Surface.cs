@@ -636,14 +636,15 @@ namespace NagaraStage.Activities {
             }
 
             // 遅延を行わないとモータドライバが動作不良を起こす場合がある.
-            Thread.Sleep(200);
+            Thread.Sleep(300);
 
             /* -------------------- 下降の完了 ---------------- */
 
             /* 上昇しながら撮影中の画像を分析する */
             // 最下点からZ軸をプラス方向に動かす．
             // 撮影中の画像がゲルの中か否かを判定する．
-            // ベース及びその他の場所と，ゲルの中の境界である座標を記録する．            
+            // ベース及びその他の場所と，ゲルの中の境界である座標を記録する．
+
             mc.Inch(PlusMinus.Plus, motorSpeed, VectorId.Z);
             startPoint = mc.GetPoint().Z;
 

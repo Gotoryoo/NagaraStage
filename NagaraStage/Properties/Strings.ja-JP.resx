@@ -803,7 +803,7 @@
     <value>プロファイル</value>
   </data>
   <data name="FastSurfaceRecog" xml:space="preserve">
-    <value>高速表面認識</value>
+    <value>表面認識</value>
   </data>
   <data name="MoveToCoord" xml:space="preserve">
     <value>指定座標へ移動</value>
@@ -900,5 +900,8 @@
   </data>
   <data name="OKandNEXT" xml:space="preserve">
     <value>OKして次へ</value>
+  </data>
+  <data name="SurfaceRecogBottom" xml:space="preserve">
+    <value>表面認識をZ最下点から</value>
   </data>
 </root>

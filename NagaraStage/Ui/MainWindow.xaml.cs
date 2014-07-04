@@ -371,7 +371,43 @@ namespace NagaraStage.Ui {
             }
 
             try {
-                surface.Start();
+                surface.Start(true);
+            } catch (Exception ex) {
+                MessageBox.Show(ex.Message, Properties.Strings.Error);
+            }
+        }
+
+        private void SurfaceRecogBottomButton_Click(object sender, RoutedEventArgs e) {
+            // モータが稼働中であれば停止するかどうかを尋ねる．
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            if (mc.IsMoving) {
+                MessageBoxResult r = MessageBox.Show(
+                    Properties.Strings.SurfaceException01,
+                    Properties.Strings.Abort + "?",
+                    MessageBoxButton.YesNo);
+                if (r == MessageBoxResult.Yes) {
+                    mc.AbortMoving();
+                } else {
+                    return;
+                }
+            }
+
+            // すでに表面認識が実行中であれば停止するかどうか尋ねる．
+            Surface surface = Surface.GetInstance(parameterManager);
+            if (surface.IsActive) {
+                MessageBoxResult r = MessageBox.Show(
+                    Properties.Strings.SurfaceException02,
+                    Properties.Strings.Abort + "?",
+                    MessageBoxButton.YesNo);
+                if (r == MessageBoxResult.Yes) {
+                    surface.Abort();
+                } else {
+                    return;
+                }
+            }
+
+            try {
+                surface.Start(false);
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message, Properties.Strings.Error);
             }
@@ -410,14 +446,7 @@ namespace NagaraStage.Ui {
             SetElementOnWorkspace(verif);
         }
 
-        private void fastSurfaceRecogButton_Click(object sender, RoutedEventArgs e) {
-            Surface surface = Surface.GetInstance(parameterManager);
-            try {
-                surface.Start(true);
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message, Properties.Strings.Error);
-            }
-        }        
+       
 
         private void surfaceRecogAbortButton_Click(object sender, RoutedEventArgs e) {
             Surface surface = Surface.GetInstance(parameterManager);

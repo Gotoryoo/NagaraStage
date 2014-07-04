@@ -110,10 +110,9 @@
                         Label="{Binding Source={StaticResource strings}, Path=SurfaceRecog}" 
                         LargeImageSource="/NagaraStage;component/Images/handglass.png" Click="surfaceRecogButton_Click" />
                     <ribbon:RibbonButton
-                        Name="fastSurfaceRecogButton"
-                        Label="{Binding Source={StaticResource strings}, Path=FastSurfaceRecog}"
-                        SmallImageSource="/NagaraStage;component/Images/handglass.png" Click="fastSurfaceRecogButton_Click"
-                        />
+                        Name="SurfaceRecogBottomButton"
+                        Label="{Binding Source={StaticResource strings}, Path=SurfaceRecogBottom}"
+                        SmallImageSource="/NagaraStage;component/Images/handglass.png" Click="SurfaceRecogBottomButton_Click" />
                     <ribbon:RibbonButton 
                         Name="inGelButton"
                         Label="{Binding Source={StaticResource strings}, Path=DetermineInGel}"
