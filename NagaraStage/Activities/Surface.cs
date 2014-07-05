@@ -104,14 +104,14 @@ namespace NagaraStage.Activities {
         /// <summary>BrightnessThresholdLBの初期値</summary>
         public const int BrightnessThresholdLBDefault = 11000;
         /// <summary>輝度値の微分に対する二値化のしきい値の初期値</summary>
-        public const int BinarizeThresholdDefault = 4;
+        public const int BinarizeThresholdDefault = 10;
         /// <summary>StartRowの初期値</summary>
         public const int StartRowDefault = 215;
         /// <summary>EndRowの初期値</summary>
         public const int EndRowDefault = 224;
-        /// <summary></summary>
+        /// <summary>最下点からどれだけ上方向に境界面を探索するかの初期値</summary>
         public const double DistanceOutDefault = 800;
-        /// <summary>境界面判定に用いいる多数決の初期値</summary>
+        /// <summary>境界面判定に用いる多数決の初期値</summary>
         public const int NumOfVotingDefault = 5;
         /// <summary>画素の微分値の累乗値</summary>
         public const double PowerOfDifferenceDefault = 1;
@@ -120,9 +120,9 @@ namespace NagaraStage.Activities {
         /// <summary>表面認識を行うときのモータの移動速度の初期値</summary>
         public const double DefaultSpeed = 0.25;
         /// <summary>厚型エマルションにおける下降距離(mm)の初期値</summary>
-        public const double LoweringDistanceThickDefault = 2;
+        public const double LoweringDistanceThickDefault = 0.3;
         /// <summary>薄型エマルションにおける下降距離(mm)の初期値</summary>
-        public const double LoweringDistanceThinDefault = 1;
+        public const double LoweringDistanceThinDefault = 0.6;
 
         /// <summary>
         /// 表面認識処理が開催されたときのイベント
@@ -749,7 +749,7 @@ namespace NagaraStage.Activities {
                 // 距離によるエラー終了
                 if (mc.GetPoint().Z - startPoint > distanceOut) {
                     mc.StopInching(MechaAxisAddress.ZAddress);
-                    throw new SurfaceFailedException("Distance lmit out");
+                    throw new SurfaceFailedException("Distance limit out");
                 }
             }
 

@@ -43,6 +43,11 @@ DLLEXPORT bool __stdcall NagaraStage::isInGel(
 	int lengthOfSide, 
 	int threshold0, int threshold1,
 	double powerOfDifference){
+		//NagaraStage::Image *image = new Image(imageData, width, height);
+		//image->setPowerOfDifference(powerOfDifference);
+		//image->setThreshold(threshold1);
+		//int brightness = image->sumBrightness(startRow, endRow, lengthOfSide);
+		//delete image;
 		cv::Mat mat = cv::Mat(height,width,CV_8U,imageData);
 		cv::Mat gau = mat.clone();
 		cv::GaussianBlur(gau, gau, cv::Size(31,31), 0);
@@ -51,11 +56,6 @@ DLLEXPORT bool __stdcall NagaraStage::isInGel(
 		
 		int brightness = cv::countNonZero(mat);
 
-		//NagaraStage::Image *image = new Image(imageData, width, height);
-		//image->setPowerOfDifference(powerOfDifference);
-		//image->setThreshold(threshold1);
-		//int brightness = image->sumBrightness(startRow, endRow, lengthOfSide);
-		//delete image;
 		return (brightness > threshold0);
 }
 
