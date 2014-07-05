@@ -97,8 +97,7 @@
                     <ribbon:RibbonButton
                         x:Name="takeOneImageButton" 
                        SmallImageSource="/NagaraStage;component/Images/Capture2.png" 
-                       Label="{Binding Source={StaticResource strings}, Path=Slice}" 
-                       Click="takeOneImageButton_Click" />
+                        Label="{Binding Source={StaticResource strings}, Path=Slice}" Click="takeOneImageButton_Click" />
                     <ribbon:RibbonButton
                         x:Name="takePluralityButton" 
                         Label="{Binding Source={StaticResource strings}, Path=Plurality}" Click="takePluralityButton_Click" />
