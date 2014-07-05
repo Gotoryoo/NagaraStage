@@ -69,11 +69,20 @@ DLLEXPORT bool __stdcall NagaraStage::isInGelBrightness(
 	int lengthOfSide,
 	int threshold0, int threshold1,
 	double powerOfDifference){        
-		NagaraStage::Image *image = new Image(imageData, width, height);        
-		image->setPowerOfDifference(powerOfDifference);
-		image->setThreshold(threshold1);
-		*brightness0 = image->sumBrightness(startRow, endRow, lengthOfSide);
-		delete image;
+		//NagaraStage::Image *image = new Image(imageData, width, height);        
+		//image->setPowerOfDifference(powerOfDifference);
+		//image->setThreshold(threshold1);
+		//*brightness0 = image->sumBrightness(startRow, endRow, lengthOfSide);
+
+		//cv::Mat mat = cv::Mat(height,width,CV_8U,imageData);
+		//cv::Mat gau = mat.clone();
+		//cv::GaussianBlur(gau, gau, cv::Size(31,31), 0);
+		//cv::subtract(gau, mat, mat);
+		//cv::threshold(mat, mat, threshold1, 1, cv::THRESH_BINARY);
+		
+		cv::Mat mat = cv::Mat::ones(height,width,CV_8U);
+		*brightness0 = cv::countNonZero(mat);
+		//delete image;
 		return false;
 		//return (*brightness0 > threshold0);        
 }
