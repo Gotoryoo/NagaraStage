@@ -681,6 +681,7 @@ namespace NagaraStage.Activities {
             int previousBrightness , presentBrightness;
             bool previousResult = false, presentResult = false;
             while (index >= 0) {
+                Thread.Sleep(150);
                 presentResult = IsInGel();
                 bool isBorder = isBoudarySurface(previousResult, presentResult, index);
 
