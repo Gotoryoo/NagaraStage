@@ -28,7 +28,7 @@ namespace NagaraStage {
     /// 2次元ベクトル(x, y)のdouble型構造体です．
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public struct Vector2 {
+    public class Vector2 {
         /// <summary>
         /// X方向の値
         /// </summary>
@@ -38,6 +38,11 @@ namespace NagaraStage {
         /// Y方向の値
         /// </summary>
         public double Y;
+
+        public Vector2() {
+            this.X = 0;
+            this.Y = 0;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Vector2" /> struct.
@@ -112,21 +117,15 @@ namespace NagaraStage {
     /// <summary>
     /// 3次元ベクトル(x, y, z)のdouble型構造体です．
     /// </summary>
-    public struct Vector3 {
-        /// <summary>
-        /// X方向の値
-        /// </summary>
-        public double X;
-
-        /// <summary>
-        /// Y方向の値
-        /// </summary>
-        public double Y;
-
+    public class Vector3: Vector2 {        
         /// <summary>
         /// Z方向の値
         /// </summary>
         public double Z;
+
+        public Vector3():base(0, 0) {
+            this.Z = 0;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Vector3" /> struct.
@@ -134,9 +133,7 @@ namespace NagaraStage {
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
         /// <param name="z">The z.</param>
-        public Vector3(double x, double y, double z) {
-            this.X = x;
-            this.Y = y;
+        public Vector3(double x, double y, double z):base(x, y) {
             this.Z = z;
         }
 
