@@ -909,7 +909,20 @@ namespace NagaraStage.Ui {
             moveToGridMark(GridMarkPoint.CenterTop);
         }
 
-        private void GridMarksRecogButton_Click(object sender, RoutedEventArgs e) {
+        private void gridMarksRecogButton_Click(object sender, RoutedEventArgs e) {
+            Camera camera = Camera.GetInstance();
+            if (!camera.IsRunning) {
+                MessageBox.Show(Properties.Strings.CameraNotWork, Properties.Strings.Error);
+                return;
+            }
+
+            try {
+                IGridMarkRecognizer GridMarkRecognizer = coordManager;
+                Vector2 viewerPoint = GridMarkRecognizer.SearchGridMark();
+                System.Diagnostics.Debug.WriteLine(String.Format("{0}  {1}", viewerPoint.X, viewerPoint.Y));
+            } catch(GridMarkNotFoundException ex) {
+                System.Diagnostics.Debug.WriteLine(String.Format("grid mark not found"));
+            }
 
         }    
 

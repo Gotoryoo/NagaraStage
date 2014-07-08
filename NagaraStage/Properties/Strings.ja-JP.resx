@@ -904,4 +904,7 @@
   <data name="SurfaceRecogBottom" xml:space="preserve">
     <value>表面認識をZ最下点から</value>
   </data>
+  <data name="GridMarkRecog" xml:space="preserve">
+    <value>グリッドマーク認識</value>
+  </data>
 </root>

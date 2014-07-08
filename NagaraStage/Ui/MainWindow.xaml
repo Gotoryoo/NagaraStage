@@ -176,7 +176,7 @@
                     <ribbon:RibbonButton 
                         Name="GridMarksRecogButton" 
                         SmallImageSource="/Images/init.png"
-                        Label="{Binding Source={StaticResource strings}, Path=GridMarkRecog}" Click="GridMarksRecogButton_Click" />
+                        Label="{Binding Source={StaticResource strings}, Path=GridMarkRecog}" Click="gridMarksRecogButton_Click" />
                 </ribbon:RibbonGroup>
                 <ribbon:RibbonGroup Header="{Binding Source={StaticResource strings}, Path=BeamDetect}">                    
                 </ribbon:RibbonGroup>

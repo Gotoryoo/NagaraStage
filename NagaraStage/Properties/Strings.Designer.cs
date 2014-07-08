@@ -889,6 +889,15 @@ namespace NagaraStage.Properties {
         }
         
         /// <summary>
+        ///   GridMarkRecog に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string GridMarkRecog {
+            get {
+                return ResourceManager.GetString("GridMarkRecog", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Right Bottom Grid mark に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string GridMarkRightBottom {

@@ -926,4 +926,7 @@ Last, Click OK button to start new stage.</value>
   <data name="SurfaceRecogBottom" xml:space="preserve">
     <value>SurfaceRecogFromZBottom</value>
   </data>
+  <data name="GridMarkRecog" xml:space="preserve">
+    <value>GridMarkRecog</value>
+  </data>
 </root>
