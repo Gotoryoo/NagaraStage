@@ -324,7 +324,29 @@ namespace NagaraStage {
                 throw ex;
             }
         }
-   
+
+        /// <summary>
+        /// 与えられたエンコーダ座標系の地点から最も近いグリッドマーク情報を取得します。
+        /// </summary>
+        /// <param name="point">エンコーダ座標系の座標</param>
+        /// <returns>最も近いグッドマーク</returns>
+        public GridMark GetNearestGridMark(Vector2 point) {
+            GridMark retval = null;
+            double minDistance = -1;
+            for (int i = 0; i < gridMarks.Length; ++i ) {
+                if(gridMarks[i].Existed) {
+                    double distanceX = gridMarks[i].x - point.X;
+                    double distanceY = gridMarks[i].y - point.Y;
+                    double distance = Math.Sqrt(Math.Pow(distanceX, 2) + Math.Pow(distanceY, 2));
+                    if(distance < minDistance || minDistance == -1) {
+                        minDistance = distance;
+                        retval = gridMarks[i];
+                    }
+                }
+            }
+            return retval;
+        }
+
 
         /// <summary>
         /// 10倍レンズから50倍レンズのグリッドマークの位置のズレを補正した座標を返します．
