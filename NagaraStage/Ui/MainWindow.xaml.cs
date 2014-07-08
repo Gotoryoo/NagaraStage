@@ -909,6 +909,11 @@ namespace NagaraStage.Ui {
             moveToGridMark(GridMarkPoint.CenterTop);
         }
 
+        private void GridMarksRecogButton_Click(object sender, RoutedEventArgs e) {
+
+        }    
+
+
         private void moveToCoordButton_Click(object sender, RoutedEventArgs e) {
             // これから表示するダイアログのテキストボックスのTextChangedイベントハンドラ
             Predicate<string> func = delegate(string val) {
@@ -937,7 +942,8 @@ namespace NagaraStage.Ui {
             ShootingStage ss = new ShootingStage(this, ShootingMode.Accumlative);
             ss.NextControl = Workspace.PresentControl;
             SetElementOnWorkspace(ss);
-        }    
+        }
+
     }
 
 }
