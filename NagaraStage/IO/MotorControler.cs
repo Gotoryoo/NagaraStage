@@ -29,7 +29,7 @@ namespace NagaraStage {
             private ParameterManager parameterManager;
             private Vector3Int nowSpeed;
             private int limitPol0;
-            private Vector3 tolerance;
+            private Vector3 tolerance = new Vector3();
             private Thread movingThread;
             //private Thread isMovingPointContinuemovingThread;
             /// <summary>らせん移動の位置を保持するカウンタ</summary>            
@@ -586,8 +586,7 @@ namespace NagaraStage {
             /// <param name="callback">移動処理後のコールバックメソッド</param>
             /// <param name="abortedCallback">移動処理が中止された場合のコールバックメソッド</param>
             public void MovePointXY(double x, double y, Action callback = null, AbortedCallback abortedCallback = null) {
-                Vector3 p = GetPoint();
-                MovePoint(x, y, p.Z, callback, abortedCallback);
+                MovePoint(x, y, GetPoint().Z, callback, abortedCallback);
             }
 
             public void MovePointXY(Vector2 p, Action callback = null, AbortedCallback abortedCallback = null) {
