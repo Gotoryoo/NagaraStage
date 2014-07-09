@@ -918,7 +918,18 @@ namespace NagaraStage.Ui {
                 System.Diagnostics.Debug.WriteLine(String.Format("grid mark not found"));
             }
 
-        }    
+        }
+
+
+        private void goTheNearestGridMarkButton_Click(object sender, RoutedEventArgs e) {
+
+        }
+
+
+        private void setHyperFineParamButton_Click(object sender, RoutedEventArgs e) {
+            Ipt.SetHyperFineXY(0.0, 0.0);
+        }
+        
 
 
         private void moveToCoordButton_Click(object sender, RoutedEventArgs e) {
