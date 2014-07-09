@@ -922,7 +922,17 @@ namespace NagaraStage.Ui {
 
 
         private void goTheNearestGridMarkButton_Click(object sender, RoutedEventArgs e) {
-
+            try {
+                MotorControler mc = MotorControler.GetInstance(parameterManager);
+                Vector3 p = mc.GetPoint();
+                Vector2 p2 = new Vector2(p.X, p.Y);
+                GridMark nearestMark = coordManager.GetTheNearestGridMark(p2);
+                //mc.MovePointXY(nearestMark.x, nearestMark.y);
+                //mc.Join();
+                System.Diagnostics.Debug.WriteLine(String.Format("{0},  {1}", nearestMark.x, nearestMark.y));
+            } catch (GridMarkNotFoundException ex) {
+                System.Diagnostics.Debug.WriteLine(String.Format("{0}", ex.ToString()));
+            }
         }
 
 

@@ -332,9 +332,28 @@ namespace NagaraStage {
         /// <returns>最も近いグッドマーク</returns>
         public GridMark GetTheNearestGridMark(Vector2 point) {
             GridMark retval = null;
+
+            Vector2Int iId = new Vector2Int();
+
+            //なんで　this.FineGrStep2　でアクセスできんのじゃああ
+            double x = (point.X + GridParameter.FineGridArea2) / GridParameter.FineGridStep2;
+            double y = (point.Y + GridParameter.FineGridArea2) / GridParameter.FineGridStep2;
+            int ix = (int)x;
+            int iy = (int)y;
+
+
+            //なんでアクセスできんのじゃああ
+            double[,] gridOriginalFineX = GridParameter.getGridOriginalFineX();
+            double[,] gridOriginalFineY = GridParameter.getGridOriginalFineY();
+
+            double emX = new double();
+            double emY = new double();
+            Ipt.GToM("p", gridOriginalFineX[iId.X, iId.Y], gridOriginalFineY[iId.X, iId.Y],  ref emX, ref emY);
+
+            /*
             double minDistance = 99999999.9;
             for (int i = 0; i < gridMarks.Length; ++i ) {
-                if(gridMarks[i].Existed) {
+                if( this.   gridMarks[i].Existed) {
                     double distanceX = gridMarks[i].x - point.X;
                     double distanceY = gridMarks[i].y - point.Y;
                     double distance = Math.Sqrt(distanceX * distanceX + distanceY * distanceY);
@@ -344,6 +363,7 @@ namespace NagaraStage {
                     }
                 }
             }
+             * */
             return retval;
         }
 
