@@ -337,7 +337,7 @@ namespace NagaraStage {
                 if(gridMarks[i].Existed) {
                     double distanceX = gridMarks[i].x - point.X;
                     double distanceY = gridMarks[i].y - point.Y;
-                    double distance = Math.Sqrt(Math.Pow(distanceX, 2) + Math.Pow(distanceY, 2));
+                    double distance = Math.Sqrt(distanceX * distanceX + distanceY * distanceY);
                     if(distance < minDistance) {
                         minDistance = distance;
                         retval = gridMarks[i];
@@ -476,8 +476,7 @@ namespace NagaraStage {
             }
 
             return v;
-        }        
-
+        }
     }
 }
 
