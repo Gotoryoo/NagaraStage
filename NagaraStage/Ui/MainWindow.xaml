@@ -174,9 +174,17 @@
                         SmallImageSource="/Images/init.png"
                         Label="{Binding Source={StaticResource strings}, Path=InitGridMark}" Click="clearGridMarksButton_Click" />
                     <ribbon:RibbonButton 
-                        Name="GridMarksRecogButton" 
+                        Name="gridMarksRecogButton" 
                         SmallImageSource="/Images/init.png"
                         Label="{Binding Source={StaticResource strings}, Path=GridMarkRecog}" Click="gridMarksRecogButton_Click" />
+                    <ribbon:RibbonButton 
+                        Name="goTheNearestGridMarkButton" 
+                        SmallImageSource="/Images/init.png"
+                        Label="{Binding Source={StaticResource strings}, Path=GoTheNearestGridMark}" Click="goTheNearestGridMarkButton_Click" />
+                    <ribbon:RibbonButton 
+                        Name="setHyperFineParamButton" 
+                        SmallImageSource="/Images/init.png"
+                        Label="{Binding Source={StaticResource strings}, Path=SetHyperFineParam}" Click="setHyperFineParamButton_Click" />
                 </ribbon:RibbonGroup>
                 <ribbon:RibbonGroup Header="{Binding Source={StaticResource strings}, Path=BeamDetect}">                    
                 </ribbon:RibbonGroup>
