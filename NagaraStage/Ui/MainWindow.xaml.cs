@@ -910,12 +910,6 @@ namespace NagaraStage.Ui {
         }
 
         private void gridMarksRecogButton_Click(object sender, RoutedEventArgs e) {
-            Camera camera = Camera.GetInstance();
-            if (!camera.IsRunning) {
-                MessageBox.Show(Properties.Strings.CameraNotWork, Properties.Strings.Error);
-                return;
-            }
-
             try {
                 IGridMarkRecognizer GridMarkRecognizer = coordManager;
                 Vector2 viewerPoint = GridMarkRecognizer.SearchGridMark();
