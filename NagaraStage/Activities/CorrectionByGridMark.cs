@@ -23,7 +23,7 @@ namespace NagaraStage.Activities {
 
         private GridMark getNearestGirdMark() {
             MotorControler mc = MotorControler.GetInstance();
-            return coordManager.GetNearestGridMark(mc.GetPoint());            
+            return coordManager.GetTheNearestGridMark(mc.GetPoint());            
         }
 
         private Boolean isValidate() { 

@@ -330,15 +330,15 @@ namespace NagaraStage {
         /// </summary>
         /// <param name="point">エンコーダ座標系の座標</param>
         /// <returns>最も近いグッドマーク</returns>
-        public GridMark GetNearestGridMark(Vector2 point) {
+        public GridMark GetTheNearestGridMark(Vector2 point) {
             GridMark retval = null;
-            double minDistance = -1;
+            double minDistance = 99999999.9;
             for (int i = 0; i < gridMarks.Length; ++i ) {
                 if(gridMarks[i].Existed) {
                     double distanceX = gridMarks[i].x - point.X;
                     double distanceY = gridMarks[i].y - point.Y;
                     double distance = Math.Sqrt(Math.Pow(distanceX, 2) + Math.Pow(distanceY, 2));
-                    if(distance < minDistance || minDistance == -1) {
+                    if(distance < minDistance) {
                         minDistance = distance;
                         retval = gridMarks[i];
                     }
