@@ -1,0 +1,459 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{ED0C5141-448C-48AD-AC01-926A3549436C}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NagaraStage</RootNamespace>
+    <AssemblyName>NagaraStage</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\NagaraStage.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\NagaraStage.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug_NoHardware|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug_NoHardware\</OutputPath>
+    <DefineConstants>TRACE;DEBUG;_NoHardWare, NoHardware</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
+    <DocumentationFile>
+    </DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>NagaraStage.App</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="RibbonControlsLibrary" />
+    <Reference Include="Microsoft.Windows.Shell" />
+    <Reference Include="WindowsFormsIntegration" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="Activities\AccumImage.cs" />
+    <Compile Include="Activities\Activity.cs" />
+    <Compile Include="Activities\ActivityEventArgs.cs" />
+    <Compile Include="Activities\ActivityEventHandler.cs" />
+    <Compile Include="Activities\ActivityManager.cs" />
+    <Compile Include="Activities\CorrectionByGridMark.cs" />
+    <Compile Include="Activities\MotorMove.cs" />
+    <Compile Include="Activities\SurfaceEventArgs.cs" />
+    <Compile Include="Activities\TigerScan.cs" />
+    <Compile Include="GelLayer.cs" />
+    <Compile Include="Activities\GridMarkSearch.cs" />
+    <Compile Include="Activities\IActivity.cs" />
+    <Compile Include="Activities\InActionException.cs" />
+    <Compile Include="Activities\ISurface.cs" />
+    <Compile Include="Activities\Surface.cs" />
+    <Compile Include="Activities\SurfaceFailedException.cs" />
+    <Compile Include="CoordManager.cs" />
+    <Compile Include="DoubleEventArgs.cs" />
+    <Compile Include="ErrorLog.cs" />
+    <Compile Include="Gel.cs" />
+    <Compile Include="GridMark.cs" />
+    <Compile Include="GridMarkDefinitionUtil.cs" />
+    <Compile Include="GridMarkEventArgs.cs" />
+    <Compile Include="GridMarkException.cs" />
+    <Compile Include="GridMarkFewException.cs" />
+    <Compile Include="GridMarkNotFoundException.cs" />
+    <Compile Include="GridMarkPoint.cs" />
+    <Compile Include="IGridMarkRecognizer.cs" />
+    <Compile Include="ImageUtility.cs" />
+    <Compile Include="IndexMeasure.cs" />
+    <Compile Include="IntEventArgs.cs" />
+    <Compile Include="IO\Camera.cs" />
+    <Compile Include="IO\CameraType.cs" />
+    <Compile Include="IO\CameraUtil.cs" />
+    <Compile Include="IO\Driver\Apci54.cs" />
+    <Compile Include="IO\Driver\Apci54Resouce.cs" />
+    <Compile Include="IO\Driver\Apci59.cs" />
+    <Compile Include="IO\Driver\Apci59Constants.cs" />
+    <Compile Include="IO\Driver\Apci59Resouce.cs" />
+    <Compile Include="IO\Driver\ApciErrorCode.cs" />
+    <Compile Include="IO\Driver\ApciIp54.cs" />
+    <Compile Include="IO\Driver\ApciM59.cs" />
+    <Compile Include="IO\Driver\Converter.cs" />
+    <Compile Include="IO\Driver\VP910.cs" />
+    <Compile Include="IO\Driver\VP910Define.cs" />
+    <Compile Include="IO\Led.cs" />
+    <Compile Include="IO\MechaAxisAddress.cs" />
+    <Compile Include="IO\MotorAbnomalState.cs" />
+    <Compile Include="IO\MotorActiveException.cs" />
+    <Compile Include="IO\MotorAxisException.cs" />
+    <Compile Include="IO\MotorControler.cs" />
+    <Compile Include="IO\MotorOverHeatException.cs" />
+    <Compile Include="IO\MotorSpeed.cs" />
+    <Compile Include="Ipt.cs" />
+    <Compile Include="Logger\SurfaceArgs.cs" />
+    <Compile Include="Logger\SurfaceLogger.cs" />
+    <Compile Include="MessageList.cs" />
+    <Compile Include="Parameter\EmulsionEventArgs.cs" />
+    <Compile Include="Parameter\EmulsionIndex.cs" />
+    <Compile Include="Parameter\EmulsionParameter.cs" />
+    <Compile Include="Parameter\EmulsionType.cs" />
+    <Compile Include="Parameter\EmulsionTypeException.cs" />
+    <Compile Include="Parameter\GridParameter.cs" />
+    <Compile Include="Parameter\IFileParser.cs" />
+    <Compile Include="Parameter\ILensParameter.cs" />
+    <Compile Include="Parameter\IStageParameter.cs" />
+    <Compile Include="Parameter\LensEventArgs.cs" />
+    <Compile Include="Parameter\LensParameter.cs" />
+    <Compile Include="Parameter\LensParameterCSV.cs" />
+    <Compile Include="Parameter\LensStatus.cs" />
+    <Compile Include="Parameter\LensTypeException.cs" />
+    <Compile Include="Parameter\OpenInFileMode.cs" />
+    <Compile Include="Parameter\ParameterManager.cs" />
+    <Compile Include="Parameter\Track.cs" />
+    <Compile Include="Parameter\TrackNotExistException.cs" />
+    <Compile Include="Parameter\TracksManager.cs" />
+    <Compile Include="PlusMinus.cs" />
+    <Compile Include="Profile.cs" />
+    <Compile Include="Properties\Strings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Strings.ja-JP.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.ja-JP.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs" />
+    <Compile Include="ShootingMode.cs" />
+    <Compile Include="Size.cs" />
+    <Compile Include="SpiralEventArgs.cs" />
+    <Compile Include="SpiralSearch.cs" />
+    <Compile Include="Properties\Strings.ko-KR.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Strings.ko-KR.resx</DependentUpon>
+    </Compile>
+    <Compile Include="StringResource.cs" />
+    <Compile Include="Ui\CameraViewer.xaml.cs">
+      <DependentUpon>CameraViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\CoordControl.xaml.cs">
+      <DependentUpon>CoordControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\CoordWindow.xaml.cs">
+      <DependentUpon>CoordWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\IDialogWorkspace.cs" />
+    <Compile Include="Ui\ImagePreviewer.xaml.cs">
+      <DependentUpon>ImagePreviewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\IMainWindow.cs" />
+    <Compile Include="Ui\IStageTabComponent.cs" />
+    <Compile Include="Ui\MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\MeasControl.xaml.cs">
+      <DependentUpon>MeasControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\KeyHandleWorkspace.cs" />
+    <Compile Include="Ui\NewStage.xaml.cs">
+      <DependentUpon>NewStage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\OpenFileDialog.cs" />
+    <Compile Include="Ui\OpenFileDialogMode.cs" />
+    <Compile Include="Ui\RibbonTabEventArgs.cs" />
+    <Compile Include="Ui\SaveFileDialog.cs" />
+    <Compile Include="Ui\SaveFileDialogMode.cs" />
+    <Compile Include="Ui\SelectGridMarkWindow.xaml.cs">
+      <DependentUpon>SelectGridMarkWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\ShootingStage.xaml.cs">
+      <DependentUpon>ShootingStage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Stage.xaml.cs">
+      <DependentUpon>Stage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\Workspace.cs" />
+    <Compile Include="Ui\StageFieldEventArgs.cs" />
+    <Compile Include="Ui\SurfaceConfig.xaml.cs">
+      <DependentUpon>SurfaceConfig.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\SurfaceVerif.xaml.cs">
+      <DependentUpon>SurfaceVerif.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\SystemConfControl.xaml.cs">
+      <DependentUpon>SystemConfControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\TrackInfoCanvas.xaml.cs">
+      <DependentUpon>TrackInfoCanvas.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\TrackInfoViewer.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Ui\TrackStageControl.xaml.cs">
+      <DependentUpon>TrackStageControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Ui\VersionInfo.xaml.cs">
+      <DependentUpon>VersionInfo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Vector.cs" />
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CultureResources.cs" />
+    <Page Include="Ui\CameraViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\CoordControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\CoordWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\ImagePreviewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\MeasControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\NewStage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\SelectGridMarkWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\ShootingStage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\Stage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\SurfaceConfig.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\SurfaceVerif.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\SystemConfControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Ui\TrackInfoCanvas.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\TrackStageControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\VersionInfo.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Strings.ja-JP.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.ja-JP.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Strings.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <None Include="app.config" />
+    <None Include="Configure\ccdreso.ini">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Configure\VIDEOLUT.PRM">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+    <EmbeddedResource Include="Properties\Strings.ko-KR.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Strings.ko-KR.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ImageEnhancement\ImageEnhancement.vcxproj">
+      <Project>{3700589F-9CC7-43AB-8DF8-F5E1D222CF6C}</Project>
+      <Name>ImageEnhancement</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\autostage.ico" />
+    <Resource Include="Images\autostage01.png" />
+    <Resource Include="Images\autostage256.png" />
+    <Resource Include="Images\autostage64.png" />
+    <Resource Include="Images\back.png" />
+    <Resource Include="Images\Capture1.png" />
+    <Resource Include="Images\Capture2.png" />
+    <Resource Include="Images\check.png" />
+    <Resource Include="Images\close.png" />
+    <Resource Include="Images\config.png" />
+    <Resource Include="Images\coord.png" />
+    <Resource Include="Images\exit.png" />
+    <Resource Include="Images\handglass.png" />
+    <Resource Include="Images\ImageFile.png" />
+    <Resource Include="Images\init.png" />
+    <Resource Include="Images\lang.png" />
+    <Resource Include="Images\LargeIcon.png" />
+    <Resource Include="Images\LeftArrow.png" />
+    <Resource Include="Images\lens.png" />
+    <Resource Include="Images\microscope.png" />
+    <Resource Include="Images\miku01.jpg" />
+    <Resource Include="Images\move01.png" />
+    <Resource Include="Images\new.png" />
+    <Resource Include="Images\open.png" />
+    <Resource Include="Images\RetturnArrow.png" />
+    <Resource Include="Images\RightArrow.png" />
+    <Resource Include="Images\SmallIcon.png" />
+    <Resource Include="Images\spiral.png" />
+    <SplashScreen Include="Images\splash01.jpg" />
+    <Resource Include="Images\start.png" />
+    <Resource Include="Images\stop.png" />
+    <Resource Include="Images\stop2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Configure\ccdreso.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 および x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.4.5">
+      <Visible>False</Visible>
+      <ProductName>Windows インストーラー 4.5
+</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="apci59.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="VP900CMD.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="VP900DRV.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="VP900PCI.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="VP900STD.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="VP900TCP.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

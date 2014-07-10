@@ -28,9 +28,9 @@ _ReSharper*/
 *.vssscc
 $tf*/
 .bzr*
-*.csproj
 *.dll
 *.png
 *.opensdf
 *.sdf
 *.ipch
+VP910SDK
