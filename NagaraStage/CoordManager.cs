@@ -329,41 +329,45 @@ namespace NagaraStage {
         /// 与えられたエンコーダ座標系の地点から最も近いグリッドマーク情報を取得します。
         /// </summary>
         /// <param name="point">エンコーダ座標系の座標</param>
-        /// <returns>最も近いグッドマーク</returns>
-        public GridMark GetTheNearestGridMark(Vector2 point) {
-            GridMark retval = null;
+        /// <returns>最も近いグッドマークをエンコーダ座標系で</returns>
+        public GridMark GetTheNearestGridMark(Vector2 pstage) {
+            GridParameter gridParam = parameterManager.GridParameter;
+            if(gridParam.LoadedGridOriginalFine==false){
+                throw new Exception("null");
+            }
 
-            Vector2Int iId = new Vector2Int();
+            Vector2 pmover = new Vector2();
+            Vector2 gmover = new Vector2();
+            Vector2 gstage = new Vector2();
 
-            //なんで　this.FineGrStep2　でアクセスできんのじゃああ
-            double x = (point.X + GridParameter.FineGridArea2) / GridParameter.FineGridStep2;
-            double y = (point.Y + GridParameter.FineGridArea2) / GridParameter.FineGridStep2;
-            int ix = (int)x;
-            int iy = (int)y;
+            try {
+                double[,] gridOriginalFineX = gridParam.GridOriginalFineX;
+                double[,] gridOriginalFineY = gridParam.GridOriginalFineY;
 
+                double minDistance = 99999999.9;
 
-            //なんでアクセスできんのじゃああ
-            double[,] gridOriginalFineX = GridParameter.getGridOriginalFineX();
-            double[,] gridOriginalFineY = GridParameter.getGridOriginalFineY();
+                for (int ix = 0; ix < gridOriginalFineX.GetLength(0) ; ++ix ) {
+                   for (int iy = 0; iy < gridOriginalFineX.GetLength(1) ; ++iy ) {
 
-            double emX = new double();
-            double emY = new double();
-            Ipt.GToM("p", gridOriginalFineX[iId.X, iId.Y], gridOriginalFineY[iId.X, iId.Y],  ref emX, ref emY);
+                       Ipt.GToM("p", pstage.X, pstage.Y, ref gstage.X, ref gstage.Y);
 
-            /*
-            double minDistance = 99999999.9;
-            for (int i = 0; i < gridMarks.Length; ++i ) {
-                if( this.   gridMarks[i].Existed) {
-                    double distanceX = gridMarks[i].x - point.X;
-                    double distanceY = gridMarks[i].y - point.Y;
-                    double distance = Math.Sqrt(distanceX * distanceX + distanceY * distanceY);
-                    if(distance < minDistance) {
-                        minDistance = distance;
-                        retval = gridMarks[i];
+                        double distanceX = gridOriginalFineX[ix,iy] - pmover.X;
+                        double distanceY = gridOriginalFineY[ix,iy] - pmover.Y;
+                        double distance = Math.Sqrt(distanceX * distanceX + distanceY * distanceY);
+                        if(distance < minDistance) {
+                            minDistance = distance;
+                            gmover.X = gridOriginalFineX[ix,iy];
+                            gmover.Y = gridOriginalFineY[ix, iy];
+                        }
                     }
                 }
+            } catch {
+                throw new Exception("null");
             }
-             * */
+            Ipt.MtoG(0, gmover.X, gmover.Y, ref gstage.X, ref gstage.Y);
+            GridMark retval = new GridMark();
+            retval.x = gstage.X;
+            retval.y = gstage.Y;
             return retval;
         }
 
