@@ -930,6 +930,8 @@ namespace NagaraStage.Ui {
                 //mc.MovePointXY(nearestMark.x, nearestMark.y);
                 //mc.Join();
                 System.Diagnostics.Debug.WriteLine(String.Format("{0},  {1}", nearestMark.x, nearestMark.y));
+                mc.MovePointXY(nearestMark.x, nearestMark.y);
+
             } catch (GridMarkNotFoundException ex) {
                 System.Diagnostics.Debug.WriteLine(String.Format("{0}", ex.ToString()));
             }
@@ -937,7 +939,12 @@ namespace NagaraStage.Ui {
 
 
         private void setHyperFineParamButton_Click(object sender, RoutedEventArgs e) {
+            try { 
             Ipt.SetHyperFineXY(0.0, 0.0);
+            }catch(EntryPointNotFoundException ex){
+                MessageBox.Show("エントリポイントが見当たりません。 " + ex.Message);
+                System.Diagnostics.Debug.WriteLine("エントリポイントが見当たりません。 " + ex.Message);
+            }
         }
         
 
