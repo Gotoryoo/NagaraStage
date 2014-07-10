@@ -726,6 +726,46 @@ namespace NagaraStage {
             }
 
             /// <summary>
+            /// らせん移動を一視野もどします．
+            /// <para></para>
+            /// </summary>
+            /// <param name="wait">
+            /// 移動処理が完了するまで待機するまではtrue,待機しない場合はfalseを指定します．
+            /// デフォルト値はfalseです．
+            /// <para>trueに為た場合，移動が完了するまでこのメソッドを実行したスレッドを占有します．</para>
+            /// </param>
+            /// <exception cref="MotorActiveException"></exception>
+            public void SpiralBack(bool wait = false)
+            {
+                if (IsMoving)
+                {
+                    throw new MotorActiveException();
+                }
+                //「すでにスパイラル原点です」と例外メッセージを出すようにしたい
+                if (SpiralIndex > 0)
+                {
+                    SpiralIndex--;
+                    Vector2Int i = getSpiralPosition(SpiralIndex);
+                    double mx = spiralCentralPosition.X + i.X * parameterManager.SpiralShiftX;
+                    double my = spiralCentralPosition.Y + i.Y * parameterManager.SpiralShiftY;
+                    MovePointXY(mx, my, delegate
+                    {
+                        if (SpiralMoved != null)
+                        {
+                            SpiralMoved(this, new SpiralEventArgs(i.X, i.Y));
+                        }
+                    });
+                    spiralCounter = i;
+                    if (wait)
+                    {
+                        movingThread.Join();
+                    }
+                }
+            }
+
+
+
+            /// <summary>
             /// らせん移動における次の移動先を算出します．
             /// </summary>
             /// <param name="n"></param>
