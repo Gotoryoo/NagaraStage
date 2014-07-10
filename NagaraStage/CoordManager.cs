@@ -330,15 +330,15 @@ namespace NagaraStage {
         /// </summary>
         /// <param name="point">エンコーダ座標系の座標</param>
         /// <returns>最も近いグッドマークをエンコーダ座標系で</returns>
-        public GridMark GetTheNearestGridMark(Vector2 pstage) {
+        public GridMark GetTheNearestGridMark(Vector2 encoderPoint) {
             GridParameter gridParam = parameterManager.GridParameter;
             if(gridParam.LoadedGridOriginalFine==false){
                 throw new Exception("null");
             }
-
+            GridMark retval = new GridMark();
             Vector2 pmover = new Vector2();
-            Vector2 gmover = new Vector2();
-            Vector2 gstage = new Vector2();
+            //Vector2 gmover = new Vector2();
+            //Vector2 gstage = new Vector2();
 
             try {
                 double[,] gridOriginalFineX = gridParam.GridOriginalFineX;
@@ -349,25 +349,24 @@ namespace NagaraStage {
                 for (int ix = 0; ix < gridOriginalFineX.GetLength(0) ; ++ix ) {
                    for (int iy = 0; iy < gridOriginalFineX.GetLength(1) ; ++iy ) {
 
-                       Ipt.GToM("p", pstage.X, pstage.Y, ref gstage.X, ref gstage.Y);
+                       //Ipt.GToM("p", encoderPoint.X, encoderPoint.Y, ref gstage.X, ref gstage.Y);
 
-                        double distanceX = gridOriginalFineX[ix,iy] - pmover.X;
-                        double distanceY = gridOriginalFineY[ix,iy] - pmover.Y;
+                       double distanceX = gridOriginalFineX[ix, iy] - encoderPoint.X;
+                       double distanceY = gridOriginalFineY[ix, iy] - encoderPoint.Y;
                         double distance = Math.Sqrt(distanceX * distanceX + distanceY * distanceY);
                         if(distance < minDistance) {
                             minDistance = distance;
-                            gmover.X = gridOriginalFineX[ix,iy];
-                            gmover.Y = gridOriginalFineY[ix, iy];
+                            retval.x = gridOriginalFineX[ix,iy];
+                            retval.y = gridOriginalFineY[ix, iy];
                         }
                     }
                 }
             } catch {
                 throw new Exception("null");
             }
-            Ipt.MtoG(0, gmover.X, gmover.Y, ref gstage.X, ref gstage.Y);
-            GridMark retval = new GridMark();
-            retval.x = gstage.X;
-            retval.y = gstage.Y;
+            //Ipt.MtoG(0, gmover.X, gmover.Y, ref gstage.X, ref gstage.Y);
+            //retval.x = gstage.X;
+            //retval.y = gstage.Y;
             return retval;
         }
 
