@@ -797,6 +797,7 @@ namespace NagaraStage.Ui {
             Vector2 p = util.GetGridMarkCoord(util.NextPoint);
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             mc.MovePointXY(p);
+            mc.SetSpiralCenterPoint();
         }
 
         private void otherGridMarkButton_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
@@ -830,7 +831,7 @@ namespace NagaraStage.Ui {
         /// <summary>
         /// 指定したグリッドマークに移動します．
         /// <para>グリッドマークが未定義の場合や他の処理が実行中の場合はダイアログな
-        /// どでユーザーに確認をとります．</para>
+        /// どでユーザーに確認をとります．移動先をスパイラルの原点にします。</para>
         /// </summary>
         /// <param name="mark"></param>
         private void moveToGridMark(GridMarkPoint mark) {
@@ -858,6 +859,7 @@ namespace NagaraStage.Ui {
                 GridMarkDefinitionUtil utility = new GridMarkDefinitionUtil(coordManager);
                 MotorControler mc = MotorControler.GetInstance(parameterManager);
                 mc.MovePointXY(utility.GetGridMarkCoord(mark));
+                mc.SetSpiralCenterPoint();
             }
         }
 
