@@ -312,9 +312,10 @@ namespace NagaraStage {
                 return flag;
             }
 
-
-            public Thread CreateTaskThread() {
-                throw new NotImplementedException();
+            public List<Thread> CreateTask() {
+                List<Thread> taskList = new List<Thread>();
+                taskList.Add(Create(new ThreadStart(shootingThreadTask)));
+                return taskList;
             }
         }
     }

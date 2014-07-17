@@ -338,7 +338,7 @@ namespace NagaraStage {
             GridMark retval = new GridMark();
             Vector2 pmover = new Vector2();
             //Vector2 gmover = new Vector2();
-            //Vector2 gstage = new Vector2();
+            Vector2 gstage = new Vector2();
 
             try {
                 double[,] gridOriginalFineX = gridParam.GridOriginalFineX;
@@ -349,7 +349,7 @@ namespace NagaraStage {
                 for (int ix = 0; ix < gridOriginalFineX.GetLength(0) ; ++ix ) {
                    for (int iy = 0; iy < gridOriginalFineX.GetLength(1) ; ++iy ) {
 
-                       //Ipt.GToM("p", encoderPoint.X, encoderPoint.Y, ref gstage.X, ref gstage.Y);
+                       
 
                        double distanceX = gridOriginalFineX[ix, iy] - encoderPoint.X;
                        double distanceY = gridOriginalFineY[ix, iy] - encoderPoint.Y;
@@ -365,8 +365,9 @@ namespace NagaraStage {
                 throw new Exception("null");
             }
             //Ipt.MtoG(0, gmover.X, gmover.Y, ref gstage.X, ref gstage.Y);
-            //retval.x = gstage.X;
-            //retval.y = gstage.Y;
+            Ipt.GToM("p", retval.x,retval.y, ref gstage.X, ref gstage.Y);
+            retval.x = gstage.X;
+            retval.y = gstage.Y;
             return retval;
         }
 

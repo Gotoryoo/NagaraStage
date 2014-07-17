@@ -808,8 +808,10 @@ namespace NagaraStage.Activities {
         /// このクラスはActivityManagerからのみ呼び出すようにしてください。
         /// </summary>
         /// <returns></returns>
-        public Thread CreateTaskThread() {
-            return Create(new ThreadStart(recogThread_Task));
+        public List<Thread> CreateTask() {
+            List<Thread> taskList = new List<Thread>();
+            taskList.Add(Create(new ThreadStart(recogThread_Task)));
+            return taskList;
         }
     }
 

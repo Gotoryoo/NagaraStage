@@ -7,6 +7,49 @@ using System.Threading;
 using NagaraStage.IO;
 using NagaraStage.Parameter;
 
+namespace NagaraStage.Activities {
+    public class TigerScan : Activity, IActivity {
+
+
+        public event EventHandler<EventArgs> Started;
+        public event ActivityEventHandler Exited;
+        private ParameterManager parameterManager;
+
+        public TigerScan(ParameterManager _parameterManager): base(_parameterManager) {
+            this.parameterManager = _parameterManager;
+        }
+
+        [Obsolete]
+        public void Start() {
+            throw new NotImplementedException();
+        }
+        
+        public List<Thread> CreateTask() {
+            List<Thread> taskList = new List<Thread>();
+
+            MotorMove mm = new MotorMove(parameterManager);
+            mm.X = 20;
+            mm.Y = 10;
+            taskList.AddRange(mm.CreateTask());
+
+            AccumImage ai = AccumImage.GetInstance(parameterManager);
+            ai.StartPoint = 0;
+            ai.EndPoint = 0.05;
+            ai.IntervalUm = 100;
+            taskList.AddRange(ai.CreateTask());
+
+            taskList.Add(new Thread(new ThreadStart(delegate {
+                Led led = Led.GetInstance();
+                led.DAout(10, parameterManager);
+            })));
+
+            return taskList;
+        }
+
+          
+    }
+}
+
 #if false
 namespace NagaraStage.Activities {
     /// <summary>

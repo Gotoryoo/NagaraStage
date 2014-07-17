@@ -56,8 +56,10 @@ namespace NagaraStage.Activities {
         }
 
 
-        public Thread CreateTaskThread() {
-            return Create(new ThreadStart(task));
+        public List<Thread> CreateTask() {
+            List<Thread> taskList = new List<Thread>();
+            taskList.Add(Create(new ThreadStart(task)));
+            return taskList;
         }
 
         private void task() {
