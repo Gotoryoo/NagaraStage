@@ -19,6 +19,9 @@ using NagaraStage.IO;
 using NagaraStage.IO.Driver;
 using NagaraStage.Parameter;
 
+using OpenCvSharp;
+using OpenCvSharp.CPlusPlus;
+
 namespace NagaraStage.Ui {
 
     /// <summary>
@@ -93,6 +96,9 @@ namespace NagaraStage.Ui {
             led.OnPulse();
 #endif
             this.Focus();
+
+            Mat mat = new Mat(512, 440, MatType.CV_8U);
+            mat.ImWrite("c:\aaaaaa.bmp");
         }
 
         /// <summary>
