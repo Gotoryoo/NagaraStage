@@ -93,6 +93,11 @@ namespace NagaraStage.Ui {
             led.OnPulse();
 #endif
             this.Focus();
+
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            TigerScan scan = new TigerScan(parameterManager);
+            manager.Enqueue(scan);
+            manager.Start();
         }
 
         /// <summary>

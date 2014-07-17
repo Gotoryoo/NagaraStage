@@ -14,9 +14,11 @@ namespace NagaraStage.Activities {
         public event EventHandler<EventArgs> Started;
         public event ActivityEventHandler Exited;
         private ParameterManager parameterManager;
+        private Track targetTrack;
 
-        public TigerScan(ParameterManager _parameterManager): base(_parameterManager) {
+        public TigerScan(ParameterManager _parameterManager, Track target=null): base(_parameterManager) {
             this.parameterManager = _parameterManager;
+            this.targetTrack = target;
         }
 
         [Obsolete]
@@ -28,20 +30,23 @@ namespace NagaraStage.Activities {
             List<Thread> taskList = new List<Thread>();
 
             MotorMove mm = new MotorMove(parameterManager);
+            //mm.X = targetTrack.X;
+            //mm.Y = targetTrack.Y;
             mm.X = 20;
-            mm.Y = 10;
+            mm.Y = -10;
             taskList.AddRange(mm.CreateTask());
 
             AccumImage ai = AccumImage.GetInstance(parameterManager);
-            ai.StartPoint = 0;
-            ai.EndPoint = 0.05;
-            ai.IntervalUm = 100;
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            ai.StartPoint = mc.GetPoint().Z;
+            ai.EndPoint = mc.GetPoint().Z - 0.03;
+            ai.IntervalUm = 3;
             taskList.AddRange(ai.CreateTask());
 
-            taskList.Add(new Thread(new ThreadStart(delegate {
-                Led led = Led.GetInstance();
-                led.DAout(10, parameterManager);
-            })));
+            //taskList.Add(new Thread(new ThreadStart(delegate {
+            //    Led led = Led.GetInstance();
+            //    led.DAout(10, parameterManager);
+            //})));
 
             return taskList;
         }

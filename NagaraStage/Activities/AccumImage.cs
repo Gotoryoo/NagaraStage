@@ -89,7 +89,7 @@ namespace NagaraStage {
                         string message = string.Format(Properties.Strings.ValMustPositiveNotZero, Properties.Strings.Interval);
                         throw new ArgumentOutOfRangeException(message);
                     }
-                    interval = value;
+                    interval = value / 1000;
                 }
             }
 
