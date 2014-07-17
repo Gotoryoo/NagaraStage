@@ -796,8 +796,12 @@ namespace NagaraStage.Ui {
             GridMarkDefinitionUtil util = new GridMarkDefinitionUtil(coordManager);
             Vector2 p = util.GetGridMarkCoord(util.NextPoint);
             MotorControler mc = MotorControler.GetInstance(parameterManager);
-            mc.MovePointXY(p);
-            mc.SetSpiralCenterPoint();
+            mc.MovePointXY(p, delegate() {
+                mc.SetSpiralCenterPoint();
+                Led led = Led.GetInstance();
+                led.AdjustLight(parameterManager);
+            });
+            
         }
 
         private void otherGridMarkButton_PreviewMouseDown(object sender, MouseButtonEventArgs e) {
