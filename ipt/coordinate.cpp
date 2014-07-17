@@ -194,13 +194,13 @@ DLLEXPORT void __stdcall IP_SetFineGr(short ix, short iy, double dx, double dy)
   GrOfsFineX[ix][iy] = dx;
   GrOfsFineY[ix][iy] = dy;
 }
-
+#endif
 DLLEXPORT void __stdcall IP_SetHyperFineXY(double dx, double dy)
 {
   hfdx = dx;
   hfdy = dy;
 }
-#endif
+
 static point GOffsetFine(double gx, double gy)
 {
   point delta;

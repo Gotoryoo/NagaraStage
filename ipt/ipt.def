@@ -39,3 +39,5 @@ EXPORTS
     IP_SetEmulsionIndex @32
     IP_SetEmulsionIndexUp @33
     IP_SetEmulsionIndexDown @34
+
+	IP_SetHyperFineXY @35

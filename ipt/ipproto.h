@@ -103,7 +103,7 @@ extern "C" {
     DLLEXPORT void __stdcall IP_EMtoG2angle(double emx, double emy, double *gx, double *gy);
     //DLLEXPORT void __stdcall IP_G2toEMangle(double gx, double gy, double *emx, double *emy);
     //DLLEXPORT void __stdcall IP_GelThickness(double msx, double msy, double t1, double t2);
-    //DLLEXPORT void __stdcall IP_SetHyperFineXY(double dx, double dy);
+    DLLEXPORT void __stdcall IP_SetHyperFineXY(double dx, double dy);
 
     void LogPar(FILE *logfp);
 
