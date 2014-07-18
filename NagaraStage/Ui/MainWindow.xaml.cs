@@ -963,7 +963,7 @@ namespace NagaraStage.Ui {
             }
 
             Mat mat = new Mat(440, 512, MatType.CV_8U, camera.ArrayImage);
-
+            Cv2.Threshold(mat, mat, 30, 255, ThresholdType.Otsu);
             //Mat mat = Mat.Eye(440, 512, MatType.CV_8U) * 255;
             //Mat mat2 =  new Mat(440, 512, MatType.CV_8U);
             mat.ImWrite(@"c:\aaaaaa.bmp");
