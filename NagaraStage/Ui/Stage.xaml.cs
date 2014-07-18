@@ -19,9 +19,6 @@ using NagaraStage.IO;
 using NagaraStage.IO.Driver;
 using NagaraStage.Parameter;
 
-using OpenCvSharp;
-using OpenCvSharp.CPlusPlus;
-
 namespace NagaraStage.Ui {
 
     /// <summary>
@@ -97,10 +94,6 @@ namespace NagaraStage.Ui {
 #endif
             this.Focus();
 
-            Mat mat =  Mat.Eye(440, 512, MatType.CV_8U)*255;
-            //Mat mat2 =  new Mat(440, 512, MatType.CV_8U);
-            mat.ImWrite(@"c:\aaaaaa.bmp");
-            Ipt.SetHyperFineXY(0.04, 0.01);
         }
 
         /// <summary>
