@@ -117,6 +117,23 @@ namespace NagaraStage {
         }
 
         /// <summary>
+        /// 乾板の変形を補正する値を格納します．最寄のグリッドマークの場所が予測からどれだけずれているかによって決定します．
+        /// <para>unit of mm</para>
+        /// </summary>
+        private double hfdx, hfdy;
+
+        public double HFDX {
+            set { this.hfdx = value; }
+            get { return hfdx; }
+        }
+
+        public double HFDY {
+            set { this.hfdy = value; }
+            get { return hfdy; }
+        }
+
+
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="_parameterManager">値が設定されているParameterManagerのインスタンス</param>
@@ -129,6 +146,8 @@ namespace NagaraStage {
             }
             this.gridOrgX = emulsionParameter.GridOrgX;
             this.gridOrgY = emulsionParameter.GridOrgY;
+            this.hfdx = 0.0;
+            this.hfdy = 0.0;
         }
 
         /// <summary>
