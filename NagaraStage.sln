@@ -61,6 +61,7 @@ Global
 		{53849D65-AFF8-4C80-85BA-8CCA7855F59F}.Release|Win32.ActiveCfg = Release|Win32
 		{53849D65-AFF8-4C80-85BA-8CCA7855F59F}.Release|Win32.Build.0 = Release|Win32
 		{53849D65-AFF8-4C80-85BA-8CCA7855F59F}.Release|x86.ActiveCfg = Release|Win32
+		{53849D65-AFF8-4C80-85BA-8CCA7855F59F}.Release|x86.Build.0 = Release|Win32
 		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Debug_NoHardware|Mixed Platforms.ActiveCfg = Debug_NoHardware|x64
 		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Debug_NoHardware|Mixed Platforms.Build.0 = Debug_NoHardware|x64
 		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Debug_NoHardware|Win32.ActiveCfg = Debug_NoHardware|Win32
@@ -76,7 +77,8 @@ Global
 		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Release|Mixed Platforms.Build.0 = Release|x64
 		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Release|Win32.ActiveCfg = Release|Win32
 		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Release|Win32.Build.0 = Release|Win32
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Release|x86.ActiveCfg = Release|x64
+		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Release|x86.ActiveCfg = Release|Win32
+		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Release|x86.Build.0 = Release|Win32
 		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Debug_NoHardware|Mixed Platforms.ActiveCfg = Debug|x86
 		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Debug_NoHardware|Mixed Platforms.Build.0 = Debug|x86
 		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Debug_NoHardware|Win32.ActiveCfg = Debug|x86
@@ -130,6 +132,7 @@ Global
 		{3700589F-9CC7-43AB-8DF8-F5E1D222CF6C}.Release|Win32.ActiveCfg = Release|Win32
 		{3700589F-9CC7-43AB-8DF8-F5E1D222CF6C}.Release|Win32.Build.0 = Release|Win32
 		{3700589F-9CC7-43AB-8DF8-F5E1D222CF6C}.Release|x86.ActiveCfg = Release|Win32
+		{3700589F-9CC7-43AB-8DF8-F5E1D222CF6C}.Release|x86.Build.0 = Release|Win32
 		{ED0C5141-448C-48AD-AC01-926A3549436C}.Debug_NoHardware|Mixed Platforms.ActiveCfg = Debug_NoHardware|x86
 		{ED0C5141-448C-48AD-AC01-926A3549436C}.Debug_NoHardware|Mixed Platforms.Build.0 = Debug_NoHardware|x86
 		{ED0C5141-448C-48AD-AC01-926A3549436C}.Debug_NoHardware|Win32.ActiveCfg = Debug_NoHardware|x86
