@@ -22,6 +22,9 @@ using NagaraStage.Activities;
 using NagaraStage.Parameter;
 using NagaraStage.ImageEnhancement;
 
+using OpenCvSharp;
+using OpenCvSharp.CPlusPlus;
+
 namespace NagaraStage.Ui {
     /// <summary>
     /// アプリケーションのメインウィンドウとなるユーザーインタフェイスを提供するクラスです．
@@ -951,6 +954,19 @@ namespace NagaraStage.Ui {
                 MessageBox.Show("エントリポイントが見当たりません。 " + ex.Message);
                 System.Diagnostics.Debug.WriteLine("エントリポイントが見当たりません。 " + ex.Message);
             }
+
+            Camera camera = Camera.GetInstance();
+            if (!camera.IsRunning)
+            {
+                MessageBox.Show(Properties.Strings.CameraNotWork, Properties.Strings.Error);
+                return;
+            }
+
+            Mat mat = new Mat(440, 512, MatType.CV_8U, camera.ArrayImage);
+
+            //Mat mat = Mat.Eye(440, 512, MatType.CV_8U) * 255;
+            //Mat mat2 =  new Mat(440, 512, MatType.CV_8U);
+            mat.ImWrite(@"c:\aaaaaa.bmp");
         }
         
 
