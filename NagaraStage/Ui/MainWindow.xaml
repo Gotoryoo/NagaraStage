@@ -185,6 +185,10 @@
                         Name="setHyperFineParamButton" 
                         SmallImageSource="/Images/init.png"
                         Label="{Binding Source={StaticResource strings}, Path=SetHyperFineParam}" Click="setHyperFineParamButton_Click" />
+                    <ribbon:RibbonButton 
+                        Name="GetCenterPositionButton" 
+                        SmallImageSource="/Images/init.png"
+                        Label="{Binding Source={StaticResource strings}, Path=GetPoint}" Click="GetCenterPoint_Click" />
                 </ribbon:RibbonGroup>
                 <ribbon:RibbonGroup Header="{Binding Source={StaticResource strings}, Path=BeamDetect}">                    
                 </ribbon:RibbonGroup>
