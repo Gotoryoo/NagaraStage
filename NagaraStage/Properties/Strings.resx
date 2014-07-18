@@ -929,4 +929,10 @@ Last, Click OK button to start new stage.</value>
   <data name="GridMarkRecog" xml:space="preserve">
     <value>GridMarkRecog</value>
   </data>
+  <data name="GoTheNearestGridMark" xml:space="preserve">
+    <value>GoTheNearestGridMark</value>
+  </data>
+  <data name="SetHyperFineParam" xml:space="preserve">
+    <value>SetHyperFineParam</value>
+  </data>
 </root>

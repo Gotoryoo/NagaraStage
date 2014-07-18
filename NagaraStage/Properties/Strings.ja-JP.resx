@@ -907,4 +907,10 @@
   <data name="GridMarkRecog" xml:space="preserve">
     <value>グリッドマーク認識</value>
   </data>
+  <data name="GoTheNearestGridMark" xml:space="preserve">
+    <value>最寄のグリッドマークへ行く</value>
+  </data>
+  <data name="SetHyperFineParam" xml:space="preserve">
+    <value>グリッドマーク補正</value>
+  </data>
 </root>
