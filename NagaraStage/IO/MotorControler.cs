@@ -877,7 +877,7 @@ namespace NagaraStage {
                         delta0.Z = z - point.Z;
                         delta.Z = (isAcceptableRangeOfError(delta0.Z, VectorId.Z) ? 0 : delta0.Z);
 
-                        System.Console.WriteLine(string.Format("dx,dy,dx={0},{1},{2}", delta.X, delta.Y, delta.Z));
+                        System.Console.WriteLine(string.Format("dx,dy,dz={0},{1},{2}", delta.X, delta.Y, delta.Z));
                         continueFlag = isMovingPointContinue(delta.X, delta.Y, delta.Z, motorState);
                         motorState = moveBasic(delta.X, delta.Y, delta.Z);
 #endif

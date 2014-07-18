@@ -199,7 +199,7 @@ namespace NagaraStage.Ui {
             try {
                 double distance = double.Parse(distanceTextBox.Text);
                 MotorControler mc = MotorControler.GetInstance(parameterManager);
-                accumImage.IntervalUm = double.Parse(intervalTextBox.Text) / 1000;
+                accumImage.IntervalUm = double.Parse(intervalTextBox.Text);
                 accumImage.StartPoint = mc.GetPoint().Z;
                 accumImage.EndPoint = accumImage.StartPoint
                                         + ((bool)minusRadioButton.IsChecked ? -distance : distance);

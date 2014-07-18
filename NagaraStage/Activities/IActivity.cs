@@ -39,7 +39,6 @@ namespace NagaraStage {
             /// <summary>
             /// アクティビティを開始します．
             /// </summary>
-            [Obsolete("アクティビティキューに移行するため廃止予定です。")]
             void Start();
 
             /// <summary>
@@ -52,7 +51,7 @@ namespace NagaraStage {
             /// アクティビティを実行するスレッドを作成します。
             /// </summary>
             /// <returns>実行スレッド</returns>
-            Thread CreateTaskThread();
+            List<Thread> CreateTask();
         }
     }
 }

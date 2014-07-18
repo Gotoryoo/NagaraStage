@@ -94,10 +94,13 @@ namespace NagaraStage.Ui {
 #endif
             this.Focus();
 
+<<<<<<< HEAD
+=======
             //ActivityManager manager = ActivityManager.GetInstance(parameterManager);
             //TigerScan scan = new TigerScan(parameterManager);
             //manager.Enqueue(scan);
             //manager.Start();
+>>>>>>> 185dc257391d16c31c024907e79d56008d514d23
         }
 
         /// <summary>

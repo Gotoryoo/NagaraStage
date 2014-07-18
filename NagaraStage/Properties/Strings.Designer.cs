@@ -790,6 +790,15 @@ namespace NagaraStage.Properties {
         }
         
         /// <summary>
+        ///   GoTheNearestGridMark に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string GoTheNearestGridMark {
+            get {
+                return ResourceManager.GetString("GoTheNearestGridMark", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Center Top Grid mark に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string GridMakrCenterTop {
@@ -1853,6 +1862,15 @@ namespace NagaraStage.Properties {
         public static string SetBoundaryFlag {
             get {
                 return ResourceManager.GetString("SetBoundaryFlag", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   SetHyperFineParam に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string SetHyperFineParam {
+            get {
+                return ResourceManager.GetString("SetHyperFineParam", resourceCulture);
             }
         }
         

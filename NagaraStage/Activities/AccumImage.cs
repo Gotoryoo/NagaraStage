@@ -89,7 +89,7 @@ namespace NagaraStage {
                         string message = string.Format(Properties.Strings.ValMustPositiveNotZero, Properties.Strings.Interval);
                         throw new ArgumentOutOfRangeException(message);
                     }
-                    interval = value;
+                    interval = value / 1000;
                 }
             }
 
@@ -312,9 +312,10 @@ namespace NagaraStage {
                 return flag;
             }
 
-
-            public Thread CreateTaskThread() {
-                throw new NotImplementedException();
+            public List<Thread> CreateTask() {
+                List<Thread> taskList = new List<Thread>();
+                taskList.Add(Create(new ThreadStart(shootingThreadTask)));
+                return taskList;
             }
         }
     }

@@ -182,9 +182,9 @@
                         SmallImageSource="/Images/init.png"
                         Label="{Binding Source={StaticResource strings}, Path=GoTheNearestGridMark}" Click="goTheNearestGridMarkButton_Click" />
                     <ribbon:RibbonButton 
-                        Name="setHyperFineParamButton" 
+                        Name="SetHyperFineParamButton" 
                         SmallImageSource="/Images/init.png"
-                        Label="{Binding Source={StaticResource strings}, Path=SetHyperFineParam}" Click="setHyperFineParamButton_Click" />
+                        Label="{Binding Source={StaticResource strings}, Path=SetHyperFineParam}" Click="SetHyperFineParam_Click" />
                 </ribbon:RibbonGroup>
                 <ribbon:RibbonGroup Header="{Binding Source={StaticResource strings}, Path=BeamDetect}">                    
                 </ribbon:RibbonGroup>

@@ -46,7 +46,7 @@ static double GridMagnit = 1.0, GridSita, GridCos = 1.0, GridSin;
 #define FineGrStep 20.0
 static char GrOfsFile[80];
 static double GrOfsFineX[NFineGrX + 1][NFineGrY + 1],
-    GrOfsFineY[NFineGrX + 1][NFineGrY + 1];
+	GrOfsFineY[NFineGrX + 1][NFineGrY + 1];
 
 // Hyper Fine Correction
 static double hfdx, hfdy;
@@ -67,12 +67,12 @@ void LogPar(FILE * emio_log)
   fprintf(emio_log, "Origin : (%7.3f,%7.3f)    gata : %6.3f\n",
 	  EMorgX, EMorgY, EMgataX[0]);
   if (PlateNo < 3)
-    fprintf(emio_log,
-	    "XrayMark  %8.3f   %8.3f   %8.3f   %8.3f   %8.3f   %8.3f   %8.3f   %8.3f\n",
-	    XrayMarkX[PlateNo][1], XrayMarkY[PlateNo][1],
-	    XrayMarkX[PlateNo][2], XrayMarkY[PlateNo][2],
-	    XrayMarkX[PlateNo][3], XrayMarkY[PlateNo][3],
-	    XrayMarkX[PlateNo][4], XrayMarkY[PlateNo][4]);
+	fprintf(emio_log,
+		"XrayMark  %8.3f   %8.3f   %8.3f   %8.3f   %8.3f   %8.3f   %8.3f   %8.3f\n",
+		XrayMarkX[PlateNo][1], XrayMarkY[PlateNo][1],
+		XrayMarkX[PlateNo][2], XrayMarkY[PlateNo][2],
+		XrayMarkX[PlateNo][3], XrayMarkY[PlateNo][3],
+		XrayMarkX[PlateNo][4], XrayMarkY[PlateNo][4]);
 
   fprintf(emio_log, "\nGlobal Grid Coordinate Parameters\n");
   fprintf(emio_log, "GGoffset (%6.3f,%6.3f)\n", GGdx[PlateNo], GGdy[PlateNo]);
@@ -90,12 +90,12 @@ DLLEXPORT void __stdcall IP_InitCo(int mode, short nplate)
   int iplate;
 
   if (mode) {
-    for (iplate = 1; iplate < NUMPLATEp; iplate++)
-      GGmag[iplate] = 1.0;
+	for (iplate = 1; iplate < NUMPLATEp; iplate++)
+	  GGmag[iplate] = 1.0;
   }
   for (iplate = 1; iplate < NUMPLATEp; iplate++) {
-    GGcos[iplate] = cos(GGsita[iplate]);
-    GGsin[iplate] = sin(GGsita[iplate]);
+	GGcos[iplate] = cos(GGsita[iplate]);
+	GGsin[iplate] = sin(GGsita[iplate]);
   }
   PlateNo = nplate;
   return;
@@ -111,39 +111,39 @@ static void WriteGrFine(char *filename, double EMthick)
   ithick = (int) (EMthick * 1000.0);
   fprintf(fp, "thickness %d\n", ithick);
   for (iy = 0; iy <= NFineGrY; iy++)
-    for (ix = 0; ix <= NFineGrX; ix++)
-      fprintf(fp, "  %2d  %2d  %7.4f  %7.4f\n",ix, iy, GrOfsFineX[ix][iy], GrOfsFineY[ix][iy]);
+	for (ix = 0; ix <= NFineGrX; ix++)
+	  fprintf(fp, "  %2d  %2d  %7.4f  %7.4f\n",ix, iy, GrOfsFineX[ix][iy], GrOfsFineY[ix][iy]);
   fclose(fp);
 }
 
 static int ReadGrFine(char *filename, double *EMthick)
 {
-    FILE *fp;
-    int ix, iy, iix, iiy, iplate, ithick;
-    char dummy[256];
+	FILE *fp;
+	int ix, iy, iix, iiy, iplate, ithick;
+	char dummy[256];
 
-    fp = fopen(filename, "r");
-    fgets(dummy, 256, fp);
-    if (sscanf(dummy, "#plate-%d", &iplate) != 1)
-        return IP_ERROR;
-    if (iplate != PlateNo)
-        return IP_ERROR;
-    fgets(dummy, 256, fp);
-    if (sscanf(dummy, "thickness %d", &ithick) != 1)
-        return IP_ERROR;
-    *EMthick = ithick / 1000.0;
-    if (iplate != PlateNo)
-        return -iplate;
-    for (iy = 0; iy <= NFineGrY; iy++)
-        for (ix = 0; ix <= NFineGrX; ix++) {
-            fscanf(fp, "  %d  %d  %lf  %lf",
-                &iix, &iiy, &(GrOfsFineX[ix][iy]), &(GrOfsFineY[ix][iy]));
-            if ((ix != iix) || (iy != iiy))
-                return IP_ERROR;
-        }
-        fclose(fp);
-        strcpy(GrOfsFile, filename);
-        return IP_NORMAL;
+	fp = fopen(filename, "r");
+	fgets(dummy, 256, fp);
+	if (sscanf(dummy, "#plate-%d", &iplate) != 1)
+		return IP_ERROR;
+	if (iplate != PlateNo)
+		return IP_ERROR;
+	fgets(dummy, 256, fp);
+	if (sscanf(dummy, "thickness %d", &ithick) != 1)
+		return IP_ERROR;
+	*EMthick = ithick / 1000.0;
+	if (iplate != PlateNo)
+		return -iplate;
+	for (iy = 0; iy <= NFineGrY; iy++)
+		for (ix = 0; ix <= NFineGrX; ix++) {
+			fscanf(fp, "  %d  %d  %lf  %lf",
+				&iix, &iiy, &(GrOfsFineX[ix][iy]), &(GrOfsFineY[ix][iy]));
+			if ((ix != iix) || (iy != iiy))
+				return IP_ERROR;
+		}
+		fclose(fp);
+		strcpy(GrOfsFile, filename);
+		return IP_NORMAL;
 }
 
 DLLEXPORT int __stdcall IP_RWGrFine(char *mode, char *filename, double *EMthick)
@@ -162,7 +162,7 @@ DLLEXPORT int __stdcall IP_RWGrFine(char *mode, char *filename, double *EMthick)
 DLLEXPORT void __stdcall IP_GelThickness(double msx, double msy, double t1, double t2)
 {
   if (emio_log == NULL)
-    return;
+	return;
   fprintf(emio_log, "Gel Thickness 1 : %6.4f, 2 : %6.4f at (%8.3f,%8.3f)\n", t1, t2, msx, msy);
   return;
 }
@@ -180,12 +180,12 @@ DLLEXPORT void __stdcall IP_SetGridLocal(short iplate, double magnit, double sit
   hfdx = hfdy = 0.0;
 
   if (emio_log != NULL) {
-    time(&ltime);
-    fprintf(emio_log, "\n%s", ctime(&ltime));
-    fprintf(emio_log, "current trackid is %d %d\n", EMscanData.iTrack, EMscanData.sub);
-    fprintf(emio_log, "Magni : %7.5f     Sita  : %7.5f\n", GridMagnit, GridSita);
-    fprintf(emio_log, "EMindex  %5.3f    %5.3f\n", EMindex1, EMindex2);
-    fflush(emio_log);
+	time(&ltime);
+	fprintf(emio_log, "\n%s", ctime(&ltime));
+	fprintf(emio_log, "current trackid is %d %d\n", EMscanData.iTrack, EMscanData.sub);
+	fprintf(emio_log, "Magni : %7.5f     Sita  : %7.5f\n", GridMagnit, GridSita);
+	fprintf(emio_log, "EMindex  %5.3f    %5.3f\n", EMindex1, EMindex2);
+	fflush(emio_log);
   }
 }
 #if 0
@@ -210,56 +210,56 @@ static point GOffsetFine(double gx, double gy)
   ix = (int) ((gx + FineGrArea) / FineGrStep);
   iy = (int) ((gy + FineGrArea) / FineGrStep);
   if ((ix >= 0) && (ix < NFineGrX) && (iy >= 0) && (iy < NFineGrY)) {
-    t = (gx - (ix * FineGrStep - FineGrArea)) / FineGrStep;
-    t = t < 0 ? 0.0 : t;
-    t = t > 1 ? 1.0 : t;
-    u = (gy - (iy * FineGrStep - FineGrArea)) / FineGrStep;
-    u = u < 0 ? 0.0 : u;
-    u = u > 1 ? 1.0 : u;
-    delta.x =
-      (1 - t) * (1 - u) * GrOfsFineX[ix][iy]
-      + (1 - t) * u * GrOfsFineX[ix][iy + 1]
-      + t * (1 - u) * GrOfsFineX[ix + 1][iy]
-      + t * u * GrOfsFineX[ix + 1][iy + 1];
-    delta.y =
-      (1 - t) * (1 - u) * GrOfsFineY[ix][iy]
-      + (1 - t) * u * GrOfsFineY[ix][iy + 1]
-      + t * (1 - u) * GrOfsFineY[ix + 1][iy]
-      + t * u * GrOfsFineY[ix + 1][iy + 1];
+	t = (gx - (ix * FineGrStep - FineGrArea)) / FineGrStep;
+	t = t < 0 ? 0.0 : t;
+	t = t > 1 ? 1.0 : t;
+	u = (gy - (iy * FineGrStep - FineGrArea)) / FineGrStep;
+	u = u < 0 ? 0.0 : u;
+	u = u > 1 ? 1.0 : u;
+	delta.x =
+	  (1 - t) * (1 - u) * GrOfsFineX[ix][iy]
+	  + (1 - t) * u * GrOfsFineX[ix][iy + 1]
+	  + t * (1 - u) * GrOfsFineX[ix + 1][iy]
+	  + t * u * GrOfsFineX[ix + 1][iy + 1];
+	delta.y =
+	  (1 - t) * (1 - u) * GrOfsFineY[ix][iy]
+	  + (1 - t) * u * GrOfsFineY[ix][iy + 1]
+	  + t * (1 - u) * GrOfsFineY[ix + 1][iy]
+	  + t * u * GrOfsFineY[ix + 1][iy + 1];
   }
   else {
-    if ((iy >= 0) && (iy < NFineGrY)) {
-      if (ix < 0)
+	if ((iy >= 0) && (iy < NFineGrY)) {
+	  if (ix < 0)
 		  ix = 0;
-      else if (ix > NFineGrX)
+	  else if (ix > NFineGrX)
 		  ix = NFineGrX;
-      u = (gy - (iy * FineGrStep - FineGrArea)) / FineGrStep;
-      u = u < 0 ? 0.0 : u;
-      u = u > 1 ? 1.0 : u;
-      delta.x = (1 - u) * GrOfsFineX[ix][iy] + u * GrOfsFineX[ix][iy + 1];
-      delta.y = (1 - u) * GrOfsFineY[ix][iy] + u * GrOfsFineY[ix][iy + 1];
-    } else if ((ix >= 0) && (ix < NFineGrX)) {
-      if (iy < 0)
+	  u = (gy - (iy * FineGrStep - FineGrArea)) / FineGrStep;
+	  u = u < 0 ? 0.0 : u;
+	  u = u > 1 ? 1.0 : u;
+	  delta.x = (1 - u) * GrOfsFineX[ix][iy] + u * GrOfsFineX[ix][iy + 1];
+	  delta.y = (1 - u) * GrOfsFineY[ix][iy] + u * GrOfsFineY[ix][iy + 1];
+	} else if ((ix >= 0) && (ix < NFineGrX)) {
+	  if (iy < 0)
 		  iy = 0;
-      else if (iy > NFineGrY)
+	  else if (iy > NFineGrY)
 		  iy = NFineGrY;
-      t = (gx - (ix * FineGrStep - FineGrArea)) / FineGrStep;
-      t = t < 0 ? 0.0 : t;
-      t = t > 1 ? 1.0 : t;
-      delta.x = (1 - t) * GrOfsFineX[ix][iy] + t * GrOfsFineX[ix + 1][iy];
-      delta.y = (1 - t) * GrOfsFineY[ix][iy] + t * GrOfsFineY[ix + 1][iy];
-    } else {
-      if (ix < 0)
+	  t = (gx - (ix * FineGrStep - FineGrArea)) / FineGrStep;
+	  t = t < 0 ? 0.0 : t;
+	  t = t > 1 ? 1.0 : t;
+	  delta.x = (1 - t) * GrOfsFineX[ix][iy] + t * GrOfsFineX[ix + 1][iy];
+	  delta.y = (1 - t) * GrOfsFineY[ix][iy] + t * GrOfsFineY[ix + 1][iy];
+	} else {
+	  if (ix < 0)
 		  ix = 0;
-      else if (ix > NFineGrX)
+	  else if (ix > NFineGrX)
 		  ix = NFineGrX;
-      if (iy < 0)
+	  if (iy < 0)
 		  iy = 0;
-      else if (iy > NFineGrY)
+	  else if (iy > NFineGrY)
 		  iy = NFineGrY;
-      delta.x = GrOfsFineX[ix][iy];
-      delta.y = GrOfsFineY[ix][iy];
-    }
+	  delta.x = GrOfsFineX[ix][iy];
+	  delta.y = GrOfsFineY[ix][iy];
+	}
   }
   return delta;
 }
@@ -270,12 +270,12 @@ DLLEXPORT void __stdcall IP_GtoM(char *mode, double gx, double gy, double *msx, 
   double dx, dy;
 
   if ((mode[0] == 'p') || (mode[0] == 'P')) {
-    delta = GOffsetFine(gx, gy);
-    dx = delta.x + hfdx;
-    dy = delta.y + hfdy;
+	delta = GOffsetFine(gx, gy);
+	dx = delta.x + hfdx;
+	dy = delta.y + hfdy;
   }
   else {
-    dx = dy = 0.0;
+	dx = dy = 0.0;
   }
 
   *msx = (gx * GridCos - gy * GridSin + dx) * GridMagnit;
@@ -289,9 +289,9 @@ DLLEXPORT void __stdcall IP_MtoG(int mode, double msx, double msy, double *gx, d
   *gx = (msx * GridCos + msy * GridSin) / GridMagnit;
   *gy = (-msx * GridSin + msy * GridCos) / GridMagnit;
   if (mode) {
-    delta = GOffsetFine(*gx, *gy);
-    *gx -= delta.x + hfdx;
-    *gy -= delta.y + hfdy;
+	delta = GOffsetFine(*gx, *gy);
+	*gx -= delta.x + hfdx;
+	*gy -= delta.y + hfdy;
   }
 }
 
@@ -301,16 +301,16 @@ DLLEXPORT void __stdcall IP_EMtoG2(int mode, double emx, double emy, int yflag, 
   *gx = (-emx * EMovCos - emy * EMovSin) * EMovMagnit;
   *gy = (-emx * EMovSin + emy * EMovCos) * EMovMagnit;
   if (mode) {
-    *gx += EMorgX;
-    *gy += EMorgY;
+	*gx += EMorgX;
+	*gy += EMorgY;
   }
 }
 
 DLLEXPORT void __stdcall IP_G2toEM(int mode, double gx, double gy, int yflag, double *emx, double *emy)
 {
   if (mode) {
-    gx -= EMorgX;
-    gy -= EMorgY;
+	gx -= EMorgX;
+	gy -= EMorgY;
   }
   *emx = (-gx * EMovCos - gy * EMovSin) / EMovMagnit;
   *emy = (-gx * EMovSin + gy * EMovCos) / EMovMagnit;
@@ -340,8 +340,8 @@ DLLEXPORT void __stdcall IP_G2toEMangle(double gx, double gy, double *emx, doubl
 DLLEXPORT void __stdcall IP_G2toG(int mode, double g2x, double g2y, double *gx, double *gy)
 {
   if (mode) {
-    g2x -= GGdx[PlateNo];
-    g2y -= GGdy[PlateNo];
+	g2x -= GGdx[PlateNo];
+	g2y -= GGdy[PlateNo];
   }
   *gx = (g2x * GGcos[PlateNo] + g2y * GGsin[PlateNo]) * GGmag[PlateNo];
   *gy = (-g2x * GGsin[PlateNo] + g2y * GGcos[PlateNo]) * GGmag[PlateNo];
@@ -352,8 +352,8 @@ DLLEXPORT void __stdcall IP_GtoG2(int mode, int nplate, double gx, double gy, do
   *g2x = (gx * GGcos[nplate] - gy * GGsin[nplate]) / GGmag[nplate];
   *g2y = (gx * GGsin[nplate] + gy * GGcos[nplate]) / GGmag[nplate];
   if (mode) {
-    *g2x += GGdx[nplate];
-    *g2y += GGdy[nplate];
+	*g2x += GGdx[nplate];
+	*g2y += GGdy[nplate];
   }
 }
 #if 0
@@ -363,8 +363,8 @@ DLLEXPORT void __stdcall IP_CorrectGrOfsFine()
   double dx, dy;
 
   for (iy = 0; iy <= NFineGrY; iy++)
-    for (ix = 0; ix <= NFineGrX; ix++)
-      if ((GrOfsFineX[ix][iy] == 0) && (GrOfsFineY[ix][iy] == 0)) {
+	for (ix = 0; ix <= NFineGrX; ix++)
+	  if ((GrOfsFineX[ix][iy] == 0) && (GrOfsFineY[ix][iy] == 0)) {
 	//何らかの理由で値が決まらなかった。
 	dx = dy = 0.0;
 	npoint = 0;
@@ -390,7 +390,7 @@ DLLEXPORT void __stdcall IP_CorrectGrOfsFine()
 	}
 	GrOfsFineX[ix][iy] = dx / npoint;
 	GrOfsFineY[ix][iy] = dy / npoint;
-      }
+	  }
 }
 
 DLLEXPORT void __stdcall IP_DecideGG(short iplate, double GGsita0, double GGdx0, double GGdy0, double GGmag0) {
@@ -411,47 +411,47 @@ static int ReadGridData(char *filename)
 
   stat = -1;
   if ((fp = fopen(filename, "r")) == NULL)
-    return -1;
+	return -1;
 
   i = 1;
   while (1) {
-    if (fgets(dummy, 256, fp) == NULL) {
-      stat = -111;
-      goto error;
-    }
-    if (dummy[0] == '#' || dummy[0] == '\n' || dummy[0] == '\0')
-      continue;
-    if (sscanf(dummy, "%d %lf %lf %lf %lf %lf %lf %lf %lf", &iplate,
-	       &(XrayMarkX[i][1]), &(XrayMarkY[i][1]), &(XrayMarkX[i][2]),
-	       &(XrayMarkY[i][2]), &(XrayMarkX[i][3]), &(XrayMarkY[i][3]),
-	       &(XrayMarkX[i][4]), &(XrayMarkY[i][4])) != 9) {
-      stat = -2;
-      goto error;
-    }
-    if (iplate != i) {
-      stat = -3;
-      goto error;
-    }
-    i++;
-    if (i > 2)
-      break;
+	if (fgets(dummy, 256, fp) == NULL) {
+	  stat = -111;
+	  goto error;
+	}
+	if (dummy[0] == '#' || dummy[0] == '\n' || dummy[0] == '\0')
+	  continue;
+	if (sscanf(dummy, "%d %lf %lf %lf %lf %lf %lf %lf %lf", &iplate,
+		   &(XrayMarkX[i][1]), &(XrayMarkY[i][1]), &(XrayMarkX[i][2]),
+		   &(XrayMarkY[i][2]), &(XrayMarkX[i][3]), &(XrayMarkY[i][3]),
+		   &(XrayMarkX[i][4]), &(XrayMarkY[i][4])) != 9) {
+	  stat = -2;
+	  goto error;
+	}
+	if (iplate != i) {
+	  stat = -3;
+	  goto error;
+	}
+	i++;
+	if (i > 2)
+	  break;
   }
   stat = -10;
   i = 3;
   while (fgets(dummy, 256, fp) != NULL) {
-    if (dummy[0] == '#' || dummy[0] == '\n' || dummy[0] == '\0')
-      continue;
-    if (sscanf(dummy, "%d %lf %lf %lf %lf",
-	       &iplate, &GGdx[i], &GGdy[i], &GGsita[i], &GGmag[i]) != 5)
-      goto error;
-    GGcos[i] = cos(GGsita[i]);
-    GGsin[i] = sin(GGsita[i]);
-    if (iplate != i)
-      goto error;
-    i++;
+	if (dummy[0] == '#' || dummy[0] == '\n' || dummy[0] == '\0')
+	  continue;
+	if (sscanf(dummy, "%d %lf %lf %lf %lf",
+		   &iplate, &GGdx[i], &GGdy[i], &GGsita[i], &GGmag[i]) != 5)
+	  goto error;
+	GGcos[i] = cos(GGsita[i]);
+	GGsin[i] = sin(GGsita[i]);
+	if (iplate != i)
+	  goto error;
+	i++;
   }
   if (i != NUMPLATEp)
-    goto error;
+	goto error;
   stat = IP_NORMAL;
 error:
   fclose(fp);
@@ -467,17 +467,17 @@ static void WriteGridData(char *filename)
   fprintf(fp,
 	  "#  plate  XrayX1    XrayY1    XrayX2    XrayY2    XrayX3    XrayY3    XrayX4    XrayY4\n");
   for (iplate = 1; iplate <= 2; iplate++)
-    fprintf(fp,
-	    "   %2d   %8.3f   %8.3f   %8.3f   %8.3f   %8.3f   %8.3f   %8.3f   %8.3f\n",
-	    iplate, XrayMarkX[iplate][1], XrayMarkY[iplate][1],
-	    XrayMarkX[iplate][2], XrayMarkY[iplate][2],
-	    XrayMarkX[iplate][3], XrayMarkY[iplate][3],
-	    XrayMarkX[iplate][4], XrayMarkY[iplate][4]);
+	fprintf(fp,
+		"   %2d   %8.3f   %8.3f   %8.3f   %8.3f   %8.3f   %8.3f   %8.3f   %8.3f\n",
+		iplate, XrayMarkX[iplate][1], XrayMarkY[iplate][1],
+		XrayMarkX[iplate][2], XrayMarkY[iplate][2],
+		XrayMarkX[iplate][3], XrayMarkY[iplate][3],
+		XrayMarkX[iplate][4], XrayMarkY[iplate][4]);
   fprintf(fp, "#plate delatx  deltay    sita   magni\n");
   for (iplate = 3; iplate < NUMPLATEp; iplate++)
-    fprintf(fp, " %2d   %6.3f  %6.3f %8.5f %7.5f\n",
-	    iplate, GGdx[iplate], GGdy[iplate], GGsita[iplate],
-	    GGmag[iplate]);
+	fprintf(fp, " %2d   %6.3f  %6.3f %8.5f %7.5f\n",
+		iplate, GGdx[iplate], GGdy[iplate], GGsita[iplate],
+		GGmag[iplate]);
   fclose(fp);
   return;
 }
@@ -486,10 +486,10 @@ DLLEXPORT int __stdcall IP_RWGridData(char *mode, char *filename)
 {
   switch (mode[0]) {
   case 'r':
-    return ReadGridData(filename);
+	return ReadGridData(filename);
   case 'w':
-    WriteGridData(filename);
-    return IP_NORMAL;
+	WriteGridData(filename);
+	return IP_NORMAL;
   }
   return IP_ERROR;
 }
@@ -509,35 +509,35 @@ static void coord_make_beam_coord(int iplate, double *orgx, double *orgy,
   double sin_theta, cos_theta;
 
   for (imark = 1; imark <= 4; imark++) {
-    x = XrayMarkX[iplate][imark];
-    y = XrayMarkY[iplate][imark];
-    if (x > 0) {
-      if (y > 0) {
+	x = XrayMarkX[iplate][imark];
+	y = XrayMarkY[iplate][imark];
+	if (x > 0) {
+	  if (y > 0) {
 	UR[0] = x;
 	UR[1] = y;
-      } else {
+	  } else {
 	DR[0] = x;
 	DR[1] = y;
-      }
-    } else {
-      if (y > 0) {
+	  }
+	} else {
+	  if (y > 0) {
 	UL[0] = x;
 	UL[1] = y;
-      } else {
+	  } else {
 	DL[0] = x;
 	DL[1] = y;
-      }
-    }
+	  }
+	}
   }
   *theta = (atan((UR[1] - UL[1]) / (UR[0] - UL[0]))
-	    - atan((UL[0] - DL[0]) / (UL[1] - DL[1]))
-	    + atan((DR[1] - DL[1]) / (DR[0] - DL[0]))) / 3;
+		- atan((UL[0] - DL[0]) / (UL[1] - DL[1]))
+		+ atan((DR[1] - DL[1]) / (DR[0] - DL[0]))) / 3;
   cos_theta = cos(*theta);
   sin_theta = sin(*theta);
 
   dist = sqrt((UR[0] - UL[0]) * (UR[0] - UL[0]) +
-	      (UR[1] - UL[1]) * (UR[1] - UL[1]))
-    + sqrt((UL[0] - DL[0]) * (UL[0] - DL[0]) +
+		  (UR[1] - UL[1]) * (UR[1] - UL[1]))
+	+ sqrt((UL[0] - DL[0]) * (UL[0] - DL[0]) +
 	   (UL[1] - DL[1]) * (UL[1] - DL[1]));
   *magni = dist / 2.0 / (XRAYDIST * 2.0);
 
@@ -555,7 +555,7 @@ static void coord_make_beam_coord(int iplate, double *orgx, double *orgy,
   *orgy /= 3.0;
   mx = -XRAYDIST;		//右下
   *gata = mx
-    + ((DR[0] - *orgx) * cos_theta + (DR[1] - *orgy) * sin_theta) / *magni;
+	+ ((DR[0] - *orgx) * cos_theta + (DR[1] - *orgy) * sin_theta) / *magni;
 }
 
 static void coord_make_global_grid_par_from_xray(int plate)
@@ -586,23 +586,23 @@ static void coord_make_global_grid_par_from_xray(int plate)
 }
 
 DLLEXPORT void __stdcall IP_MakeBeamCo(double *sita, double *magnit,
-				       double *x0, double *y0, double *dx)
+					   double *x0, double *y0, double *dx)
 {
   if (PlateNo == 1)
-    coord_make_global_grid_par_from_xray(0);
+	coord_make_global_grid_par_from_xray(0);
   else
-    coord_make_global_grid_par_from_xray(1);
+	coord_make_global_grid_par_from_xray(1);
 
   if (PlateNo < 3) {
-    *sita = EMovSita;
-    *magnit = EMovMagnit;
-    *x0 = EMorgX;
-    *y0 = EMorgY;
+	*sita = EMovSita;
+	*magnit = EMovMagnit;
+	*x0 = EMorgX;
+	*y0 = EMorgY;
   } else {
-    *sita = GGsita[PlateNo];
-    *magnit = GGmag[PlateNo];
-    *x0 = GGdx[PlateNo];
-    *y0 = GGdy[PlateNo];
+	*sita = GGsita[PlateNo];
+	*magnit = GGmag[PlateNo];
+	*x0 = GGdx[PlateNo];
+	*y0 = GGdy[PlateNo];
   }
   *dx = EMgataX[0];
 }

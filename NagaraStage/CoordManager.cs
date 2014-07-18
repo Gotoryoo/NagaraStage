@@ -117,6 +117,23 @@ namespace NagaraStage {
         }
 
         /// <summary>
+        /// 乾板の変形を補正する値を格納します．最寄のグリッドマークの場所が予測からどれだけずれているかによって決定します．
+        /// <para>unit of mm</para>
+        /// </summary>
+        private double hfdx, hfdy;
+
+        public double HFDX {
+            set { this.hfdx = value; }
+            get { return hfdx; }
+        }
+
+        public double HFDY {
+            set { this.hfdy = value; }
+            get { return hfdy; }
+        }
+
+
+        /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="_parameterManager">値が設定されているParameterManagerのインスタンス</param>
@@ -129,6 +146,8 @@ namespace NagaraStage {
             }
             this.gridOrgX = emulsionParameter.GridOrgX;
             this.gridOrgY = emulsionParameter.GridOrgY;
+            this.hfdx = 0.0;
+            this.hfdy = 0.0;
         }
 
         /// <summary>
@@ -330,7 +349,7 @@ namespace NagaraStage {
         /// </summary>
         /// <param name="point">エンコーダ座標系の座標</param>
         /// <returns>最も近いグッドマークをエンコーダ座標系で</returns>
-        public GridMark GetTheNearestGridMark(Vector2 encoderPoint) {
+        public GridMark GetTheNearestGridMark(Vector3 encoderPoint) {
             GridParameter gridParam = parameterManager.GridParameter;
             if(gridParam.LoadedGridOriginalFine==false){
                 throw new Exception("null");
@@ -338,7 +357,7 @@ namespace NagaraStage {
             GridMark retval = new GridMark();
             Vector2 pmover = new Vector2();
             //Vector2 gmover = new Vector2();
-            //Vector2 gstage = new Vector2();
+            Vector2 gstage = new Vector2();
 
             try {
                 double[,] gridOriginalFineX = gridParam.GridOriginalFineX;
@@ -349,7 +368,7 @@ namespace NagaraStage {
                 for (int ix = 0; ix < gridOriginalFineX.GetLength(0) ; ++ix ) {
                    for (int iy = 0; iy < gridOriginalFineX.GetLength(1) ; ++iy ) {
 
-                       //Ipt.GToM("p", encoderPoint.X, encoderPoint.Y, ref gstage.X, ref gstage.Y);
+                       
 
                        double distanceX = gridOriginalFineX[ix, iy] - encoderPoint.X;
                        double distanceY = gridOriginalFineY[ix, iy] - encoderPoint.Y;
@@ -365,8 +384,9 @@ namespace NagaraStage {
                 throw new Exception("null");
             }
             //Ipt.MtoG(0, gmover.X, gmover.Y, ref gstage.X, ref gstage.Y);
-            //retval.x = gstage.X;
-            //retval.y = gstage.Y;
+            Ipt.GToM("p", retval.x,retval.y, ref gstage.X, ref gstage.Y);
+            retval.x = gstage.X;
+            retval.y = gstage.Y;
             return retval;
         }
 

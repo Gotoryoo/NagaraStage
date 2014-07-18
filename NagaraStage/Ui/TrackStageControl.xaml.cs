@@ -88,7 +88,9 @@ namespace NagaraStage {
                         // モータの移動動作
                         stage.WriteLine(Properties.Strings.Moving);
 #if !NoHardware
-                        mc.MovePointXY(myTrack.MsX, myTrack.MsY, delegate {
+                        double dstx = myTrack.MsX + window.CoordManager.HFDX;
+                        double dsty = myTrack.MsY + window.CoordManager.HFDY;
+                        mc.MovePointXY(dstx, dsty, delegate {
                             stage.WriteLine(Properties.Strings.MovingComplete);
                         });
 #endif

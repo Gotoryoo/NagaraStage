@@ -933,9 +933,7 @@ namespace NagaraStage.Ui {
         private void goTheNearestGridMarkButton_Click(object sender, RoutedEventArgs e) {
             try {
                 MotorControler mc = MotorControler.GetInstance(parameterManager);
-                Vector3 p = mc.GetPoint();
-                Vector2 p2 = new Vector2(p.X, p.Y);
-                GridMark nearestMark = coordManager.GetTheNearestGridMark(p2);
+                GridMark nearestMark = coordManager.GetTheNearestGridMark(mc.GetPoint());
                 //mc.MovePointXY(nearestMark.x, nearestMark.y);
                 //mc.Join();
                 System.Diagnostics.Debug.WriteLine(String.Format("{0},  {1}", nearestMark.x, nearestMark.y));
@@ -947,10 +945,15 @@ namespace NagaraStage.Ui {
         }
 
 
-        private void setHyperFineParamButton_Click(object sender, RoutedEventArgs e) {
-            try { 
-            Ipt.SetHyperFineXY(0.0, 0.0);
-            }catch(EntryPointNotFoundException ex){
+        private void SetHyperFineParam_Click(object sender, RoutedEventArgs e) {
+            try {
+                MotorControler mc = MotorControler.GetInstance(parameterManager);
+                Vector3 CurrentCenterPoint = mc.GetPoint();
+                GridMark nearestMark = coordManager.GetTheNearestGridMark(CurrentCenterPoint);
+                System.Diagnostics.Debug.WriteLine(String.Format("{0},  {1}", CurrentCenterPoint.X, CurrentCenterPoint.Y));
+                coordManager.HFDX = CurrentCenterPoint.X - nearestMark.x;
+                coordManager.HFDY = CurrentCenterPoint.Y - nearestMark.y;
+            } catch (EntryPointNotFoundException ex) {
                 MessageBox.Show("エントリポイントが見当たりません。 " + ex.Message);
                 System.Diagnostics.Debug.WriteLine("エントリポイントが見当たりません。 " + ex.Message);
             }
@@ -968,7 +971,6 @@ namespace NagaraStage.Ui {
             //Mat mat2 =  new Mat(440, 512, MatType.CV_8U);
             //mat.ImWrite(@"c:\aaaaaa.bmp");
         }
-        
 
 
         private void moveToCoordButton_Click(object sender, RoutedEventArgs e) {

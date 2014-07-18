@@ -52,8 +52,10 @@ namespace NagaraStage.Activities {
             throw new NotImplementedException();
         }
 
-        public Thread CreateTaskThread() {
-            return new Thread(new ThreadStart(task));
+        public List<Thread> CreateTask() {
+            List<Thread> taskList = new List<Thread>();
+            taskList.Add(new Thread(new ThreadStart(task)));
+            return taskList;
         }
 
         /// <summary>

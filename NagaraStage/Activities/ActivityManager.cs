@@ -61,8 +61,12 @@ namespace NagaraStage.Activities {
         /// </summary>
         /// <param name="task">追加するアクティビティタスク</param>
         /// <param name="handler">該当タスクが終了したときのイベントハンドラ</param>
-        public void Enqueue(IActivity activity) {            
-            queue.Enqueue(activity.CreateTaskThread());
+        public void Enqueue(IActivity activity) {
+            List<Thread> threads = activity.CreateTask();
+            threads.ForEach(delegate(Thread t) {
+                t.IsBackground = true;
+                queue.Enqueue(t);
+            });
         }
 
         /// <summary>
@@ -79,6 +83,7 @@ namespace NagaraStage.Activities {
 
         public void Start() {
             queuingThread = new Thread(queueing());
+            queuingThread.IsBackground = true;
             queuingThread.Start();
         }
         public void Abort() {
@@ -110,7 +115,7 @@ namespace NagaraStage.Activities {
 
         public event ActivityEventHandler Exited;
 
-        public Thread CreateTaskThread() {
+        public List<Thread> CreateTask() {
             throw new NotImplementedException();
         }
     }
@@ -118,7 +123,7 @@ namespace NagaraStage.Activities {
     /// <summary>
     /// アクティビティのキューイングを行うキュークラスです。
     /// </summary>
-    internal class ActivityQueue : Queue<Thread> {
+    public class ActivityQueue : Queue<Thread> {
     }
 
 }
