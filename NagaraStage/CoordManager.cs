@@ -330,7 +330,7 @@ namespace NagaraStage {
         /// </summary>
         /// <param name="point">エンコーダ座標系の座標</param>
         /// <returns>最も近いグッドマークをエンコーダ座標系で</returns>
-        public GridMark GetTheNearestGridMark(Vector2 encoderPoint) {
+        public GridMark GetTheNearestGridMark(Vector3 encoderPoint) {
             GridParameter gridParam = parameterManager.GridParameter;
             if(gridParam.LoadedGridOriginalFine==false){
                 throw new Exception("null");
