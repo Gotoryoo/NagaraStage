@@ -52,11 +52,21 @@
         <StackPanel Grid.Row="2" Grid.Column="0" Orientation="Horizontal">            
             <GroupBox Grid.Column="0" Grid.Row="2" Header="{Binding Source={StaticResource strings}, Path=Speed}" Height="58" HorizontalAlignment="Left" Margin="0" Name="groupBox1" VerticalAlignment="Top" Width="Auto">
                 <Grid>
-                    <ComboBox Grid.Row="2" Height="24" HorizontalAlignment="Center" Margin="0" Name="speedComboBox" VerticalAlignment="Center" Width="68" Grid.Column="1" Text="speed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="28" />
+                        <RowDefinition Height="28" />
+                    </Grid.RowDefinitions>
+                    <ComboBox Grid.Column="1" Grid.Row="1" Height="20" HorizontalAlignment="Center" Margin="0" Name="speedComboBox" VerticalAlignment="Center" Width="68"  Text="speed">
                         <ComboBoxItem Content="{Binding Source={StaticResource strings}, Path=Speed1}" IsSelected="True" Name="contextSpeed1" Selected="contextSpeed1_Selected" />
                         <ComboBoxItem Content="{Binding Source={StaticResource strings}, Path=Speed2}" Name="contextSpeed2" Selected="contextSpeed2_Selected" />
                         <ComboBoxItem Content="{Binding Source={StaticResource strings}, Path=Speed3}" Name="contextSpeed3" Selected="contextSpeed3_Selected" />
                         <ComboBoxItem Content="{Binding Source={StaticResource strings}, Path=Speed4}" Name="contextSpeed4" Selected="contextSpeed4_Selected" />
+                    </ComboBox>
+                    <ComboBox Grid.Column="1"  Grid.Row="2" Height="20" HorizontalAlignment="Center">
+                        <ComboBoxItem Content="{Binding Source={StaticResource strings}, Path=Speed1}" IsSelected="True" Name="contextSpeedZ1" Selected="contextSpeedZ1_Selected" />
+                        <ComboBoxItem Content="{Binding Source={StaticResource strings}, Path=Speed2}" Name="contextSpeedZ2" Selected="contextSpeedZ2_Selected" />
+                        <ComboBoxItem Content="{Binding Source={StaticResource strings}, Path=Speed3}" Name="contextSpeedZ3" Selected="contextSpeedZ3_Selected" />
+                        <ComboBoxItem Content="{Binding Source={StaticResource strings}, Path=Speed4}" Name="contextSpeedZ4" Selected="contextSpeedZ4_Selected" />
                     </ComboBox>
                 </Grid>
             </GroupBox>

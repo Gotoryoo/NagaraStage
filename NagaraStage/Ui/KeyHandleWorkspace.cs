@@ -38,15 +38,14 @@ namespace NagaraStage.Ui {
         void KeyHandleWorkspace_KeyUp(object sender, System.Windows.Input.KeyEventArgs e) {
             // モータの移動処理を停止する．
             MotorControler mc = MotorControler.GetInstance(parameterManager);
-            if (e.Key == Key.A
-                || e.Key == Key.D
-                || e.Key == Key.W
-                || e.Key == Key.X
-                || e.Key == Key.Q
-                || e.Key == Key.E
-                || e.Key == Key.B)
-            {
-                mc.AbortMoving();
+            if (e.Key == Key.A || e.Key == Key.D) {
+                mc.AbortMoving(MechaAxisAddress.XAddress);
+            }
+            if (e.Key == Key.W || e.Key == Key.X) {
+                mc.AbortMoving(MechaAxisAddress.YAddress);
+            }
+            if (e.Key == Key.Q || e.Key == Key.E) {
+                mc.AbortMoving(MechaAxisAddress.ZAddress);
             }
         }
 
