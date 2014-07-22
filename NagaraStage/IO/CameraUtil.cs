@@ -26,6 +26,7 @@ namespace NagaraStage {
             /// <param name="y">Y座標を格納する変数</param>
             /// <param name="size">検出する円のサイズ</param>
             /// <returns>Ipt.MarkCenterの戻り値に準拠</returns>
+            [Obsolete("廃止予定")]
             public int MarkCenter(ref double x, ref double y, int size) {
                 Camera camera = Camera.GetInstance();
                 bool isStart = camera.IsRunning;
