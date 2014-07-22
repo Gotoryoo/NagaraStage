@@ -245,11 +245,8 @@ namespace NagaraStage {
         /// <returns>グリッドマークの座標</returns>
         /// <exception cref="LensTypeException">レンズが10倍に設定されていない場合</exception>
         /// <exception cref="GridMarkNotFoundException">グリッドマークの探索に失敗した場合</exception>
-        public Vector2 SearchGridMark() {            
-            double x = new double();
-            double y = new double();
-            int gridMarkSize = (int)parameterManager.GridMarkSize;            
-
+        public Vector2 SearchGridMark() {
+            int status = 0;
             // レンズが10倍に設定されていない場合は例外を返す
             if (parameterManager.Magnification != ParameterManager.LensMagnificationOfGridMarkSearch) {
                 throw new LensTypeException(ParameterManager.LensMagnificationOfGridMarkSearch);
@@ -258,21 +255,56 @@ namespace NagaraStage {
 
             Camera c = Camera.GetInstance();
             byte[] b = c.ArrayImage;
-            Mat m = new Mat(440, 512, MatType.CV_8U, b);
+            Mat mat = new Mat(440, 512, MatType.CV_8U, b);
 
-            Cv2.GaussianBlur(m, m, Cv.Size(31, 31), -1);
-            Cv2.Threshold(m, m, 60, 255, ThresholdType.BinaryInv);
-            m.ImWrite(@"c:\iiiiii.bmp");
+            Cv2.GaussianBlur(mat, mat, Cv.Size(5, 5), -1);
+            //Cv2.Threshold(mat, mat, 60, 255, ThresholdType.BinaryInv);
+            Cv2.Threshold(mat, mat, 60, 1, ThresholdType.BinaryInv);
 
+            //m.ImWrite(@"c:\iiiiii.bmp");
+            //Cv2.ImShow("aaaa", mat);
 
-#if !NoHardware
-            int status = new CameraUtil().MarkCenter(ref x, ref y, gridMarkSize);
+            Moments mom = new Moments(mat);
+            if (mom.M00 == 0) status++;
+            if (mom.M00 < 100) status++;
             if (status != 0) {
                 throw new GridMarkNotFoundException();
             }
-#endif
 
-            return new Vector2(x, y);
+            double cx = mom.M10 / mom.M00;
+            double cy = mom.M01 / mom.M00;
+            Mat innercir = new Mat(440, 512, MatType.CV_8U);
+            Cv2.Circle(innercir, new Point(cx, cy), 30, new Scalar(255, 255, 255), 3);
+            int innerpath = Cv2.CountNonZero(innercir);
+            Cv2.BitwiseAnd(innercir, mat, innercir);
+            int innersum = Cv2.CountNonZero(innercir);
+            //Cv2.ImShow("inner", innercir);
+
+            Mat outercir = new Mat(440, 512, MatType.CV_8U);
+            Cv2.Circle(outercir, new Point(cx, cy), 200, new Scalar(255, 255, 255), 3);
+            int outerpath = Cv2.CountNonZero(outercir);
+            Cv2.BitwiseAnd(outercir, mat, outercir);
+            int outersum = Cv2.CountNonZero(outercir);
+            //Cv2.ImShow("outer", outercir);
+
+            double innerratio = innersum * 1.0 / innerpath * 1.0;
+            double outerratio = outersum * 1.0 / outerpath * 1.0; 
+            if (innerratio < 0.7) status++;
+            if (outerratio > 0.2) status++;
+            //System.Diagnostics.Debug.WriteLine(String.Format("{0}, {1}, {2}", innerratio, outerratio, mom.M00));
+
+            if (status != 0) {
+                throw new GridMarkNotFoundException();
+            }
+            return new Vector2(cx, cy);
+
+            //#if !NoHardware
+//            int gridMarkSize = (int)parameterManager.GridMarkSize;
+//            int status = new CameraUtil().MarkCenter(ref x, ref y, gridMarkSize);
+//            if (status != 0) {
+//                throw new GridMarkNotFoundException();
+//            }
+//#endif
         }
 
         /// <summary>
