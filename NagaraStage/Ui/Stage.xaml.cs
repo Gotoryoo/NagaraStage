@@ -72,7 +72,7 @@ namespace NagaraStage.Ui {
 
             this.parametersTimer = new DispatcherTimer(DispatcherPriority.Normal);
             this.parametersTimer.Interval = new TimeSpan(ParameterManager.ParamtersIntervalMilliSec * 1000);
-            this.parametersTimer.Tick += parametersTimer_Tick;            
+            this.parametersTimer.Tick += parametersTimer_Tick;
             this.messages = new MessageList();
             this.messages.CallbackOfAdd = delegate(string latestStr) {
                 Dispatcher.BeginInvoke(new Action(delegate() {
@@ -313,7 +313,7 @@ namespace NagaraStage.Ui {
                 Camera camera = Camera.GetInstance();
                 Vector2 emulsionSystemPoint = coordManager.TransToEmulsionCoord((int)x, (int)y);
                 coordManager.SetGridMark(emulsionSystemPoint, sgWindow.GridMarkPoint, camera.ArrayImage);
-                WriteLine(string.Format(Properties.Strings.DefineGridMark, 
+                WriteLine(string.Format(Properties.Strings.DefineGridMark,
                           sgWindow.GridMarkPoint, emulsionSystemPoint.X, emulsionSystemPoint.Y));
             }
             // バツ印を消去
@@ -441,7 +441,7 @@ namespace NagaraStage.Ui {
         private void drawPositionOnViewer(Vector3 value) {
             motorPositionLabel.Content = string.Format(
                 "X:{0,9:+0,000;-0,000;0,000}um , Y:{1,9:+0,000;-0,000;0,000}um , Z:{2,10:+0,000.0;-0,000.0;0,000.0}um",
-                value.X*1000, value.Y*1000, value.Z*1000);
+                value.X * 1000, value.Y * 1000, value.Z * 1000);
         }
 
         private void ledSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
@@ -481,12 +481,12 @@ namespace NagaraStage.Ui {
             } catch (Exception ex) {
                 messages.Add(ex.Message);
             }
-        }     
+        }
 
         private void stage_Unloaded(object sender, RoutedEventArgs e) {
 #if !NoHardware
             Activity activity = new Activity(parameterManager);
-            if(activity.IsActive) {
+            if (activity.IsActive) {
                 activity.Abort();
                 WriteLine(Properties.Strings.ActivityAbort);
             }
@@ -507,25 +507,49 @@ namespace NagaraStage.Ui {
 
         private void contextSpeed1_Selected(object sender, RoutedEventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
-            mc.SetMotorSpeed(MotorSpeed.Speed1);
+            mc.SetMotorSpeed(MotorSpeed.Speed1, VectorId.X);
+            mc.SetMotorSpeed(MotorSpeed.Speed1, VectorId.Y);
         }
 
         private void contextSpeed2_Selected(object sender, RoutedEventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
-            mc.SetMotorSpeed(MotorSpeed.Speed2);
+            mc.SetMotorSpeed(MotorSpeed.Speed2, VectorId.X);
+            mc.SetMotorSpeed(MotorSpeed.Speed2, VectorId.Y);
         }
 
         private void contextSpeed3_Selected(object sender, RoutedEventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
-            mc.SetMotorSpeed(MotorSpeed.Speed3);
+            mc.SetMotorSpeed(MotorSpeed.Speed3, VectorId.X);
+            mc.SetMotorSpeed(MotorSpeed.Speed3, VectorId.Y);
         }
 
         private void contextSpeed4_Selected(object sender, RoutedEventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
-            mc.SetMotorSpeed(MotorSpeed.Speed4);
+            mc.SetMotorSpeed(MotorSpeed.Speed4, VectorId.X);
+            mc.SetMotorSpeed(MotorSpeed.Speed4, VectorId.Y);
         }
 
-        private void KeyHandleStageControl_KeyDown_1(object sender, KeyEventArgs e) {            
+        private void contextSpeedZ1_Selected(object sender, RoutedEventArgs e) {
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            mc.SetMotorSpeed(MotorSpeed.Speed1, VectorId.Z);
+        }
+
+        private void contextSpeedZ2_Selected(object sender, RoutedEventArgs e) {
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            mc.SetMotorSpeed(MotorSpeed.Speed2, VectorId.Z);
+        }
+
+        private void contextSpeedZ3_Selected(object sender, RoutedEventArgs e) {
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            mc.SetMotorSpeed(MotorSpeed.Speed3, VectorId.Z);
+        }
+
+        private void contextSpeedZ4_Selected(object sender, RoutedEventArgs e) {
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            mc.SetMotorSpeed(MotorSpeed.Speed4, VectorId.Z);
+        }
+
+        private void KeyHandleStageControl_KeyDown_1(object sender, KeyEventArgs e) {
             if (e.Key == Key.D1) {
                 contextSpeed1.IsSelected = true;
             } else if (e.Key == Key.D2) {
@@ -534,6 +558,14 @@ namespace NagaraStage.Ui {
                 contextSpeed3.IsSelected = true;
             } else if (e.Key == Key.D4) {
                 contextSpeed4.IsSelected = true;
+            } else if (e.Key == Key.D5) {
+                contextSpeedZ1.IsSelected = true;
+            } else if (e.Key == Key.D6) {
+                contextSpeedZ2.IsSelected = true;
+            } else if (e.Key == Key.D7) {
+                contextSpeedZ3.IsSelected = true;
+            } else if (e.Key == Key.D8) {
+                contextSpeedZ4.IsSelected = true;
             }
         }
     }

@@ -15,6 +15,7 @@ namespace NagaraStage.IO {
     /// LEDコントロールのためのメソッドを提供するクラスです．
     /// </summary>
     /// <author>Hirokazu Yokoyama</author>
+    [System.Runtime.InteropServices.GuidAttribute("BF152505-84E7-40DF-B00D-38ED8C93B4AB")]
     public class Led {
         private static Led instance;
 
@@ -103,9 +104,13 @@ namespace NagaraStage.IO {
         
 
         public void Flush() {
-            char[] dummy = new char[port.BytesToRead];
-            port.Read(dummy, 0, port.BytesToRead);
-            System.Console.WriteLine("dm:" + new string(dummy));
+            try {
+                char[] dummy = new char[port.BytesToRead];
+                port.Read(dummy, 0, port.BytesToRead);
+                System.Console.WriteLine("dm:" + new string(dummy));
+            } catch (InvalidOperationException) {
+                port.Open();
+            }            
         }
 
         public Boolean Command(string command) {
