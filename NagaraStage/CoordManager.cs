@@ -266,7 +266,7 @@ namespace NagaraStage {
 
             Moments mom = new Moments(mat);
             if (mom.M00 == 0) status++;
-            if (mom.M00 < 100) status++;
+            if (mom.M00 < 500) status++;
             if (status != 0) {
                 throw new GridMarkNotFoundException();
             }
@@ -274,14 +274,14 @@ namespace NagaraStage {
             double cx = mom.M10 / mom.M00;
             double cy = mom.M01 / mom.M00;
             Mat innercir = new Mat(440, 512, MatType.CV_8U);
-            Cv2.Circle(innercir, new Point(cx, cy), 30, new Scalar(255, 255, 255), 3);
+            Cv2.Circle(innercir, new Point(cx, cy), 10, new Scalar(255, 255, 255), 3);
             int innerpath = Cv2.CountNonZero(innercir);
             Cv2.BitwiseAnd(innercir, mat, innercir);
             int innersum = Cv2.CountNonZero(innercir);
             //Cv2.ImShow("inner", innercir);
 
             Mat outercir = new Mat(440, 512, MatType.CV_8U);
-            Cv2.Circle(outercir, new Point(cx, cy), 200, new Scalar(255, 255, 255), 3);
+            Cv2.Circle(outercir, new Point(cx, cy), 40, new Scalar(255, 255, 255), 3);
             int outerpath = Cv2.CountNonZero(outercir);
             Cv2.BitwiseAnd(outercir, mat, outercir);
             int outersum = Cv2.CountNonZero(outercir);
@@ -377,9 +377,9 @@ namespace NagaraStage {
                 }
 
                 // モータコントロールボードを初期化し，原点を設定する
-                motor.InitializeMotorControlBoard(MechaAxisAddress.XAddress);
-                motor.InitializeMotorControlBoard(MechaAxisAddress.YAddress);
-                motor.InitializeMotorControlBoard(MechaAxisAddress.ZAddress);
+                //motor.InitializeMotorControlBoard(MechaAxisAddress.XAddress);
+                //motor.InitializeMotorControlBoard(MechaAxisAddress.YAddress);
+                //motor.InitializeMotorControlBoard(MechaAxisAddress.ZAddress);
                 coordDefined = true;
             }));
 
