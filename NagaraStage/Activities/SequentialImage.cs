@@ -56,7 +56,7 @@ namespace NagaraStage.Activities {
         public void SetPhotographySpotsBy(Vector3 startPoint, Vector3 endPoint, double intervalUm) {
         }
 
-        public void SetPhotographySoptBy(double startZ, double endZ, double intervalUm, Vector3 angle) {
+        public void SetPhotographySpotBy(double startZ, double endZ, double intervalUm, Vector3 angle) {
 
         }
 
