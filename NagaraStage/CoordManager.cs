@@ -11,6 +11,9 @@ using System.Threading;
 using NagaraStage.Parameter;
 using NagaraStage.IO;
 
+using OpenCvSharp;
+using OpenCvSharp.CPlusPlus;
+
 namespace NagaraStage {
     /// <summary>
     /// グリッドマークおよび座標を管理するクラスです．
@@ -252,12 +255,23 @@ namespace NagaraStage {
                 throw new LensTypeException(ParameterManager.LensMagnificationOfGridMarkSearch);
             }
 
+
+            Camera c = Camera.GetInstance();
+            byte[] b = c.ArrayImage;
+            Mat m = new Mat(440, 512, MatType.CV_8U, b);
+
+            Cv2.GaussianBlur(m, m, Cv.Size(31, 31), -1);
+            Cv2.Threshold(m, m, 60, 255, ThresholdType.BinaryInv);
+            m.ImWrite(@"c:\iiiiii.bmp");
+
+
 #if !NoHardware
             int status = new CameraUtil().MarkCenter(ref x, ref y, gridMarkSize);
             if (status != 0) {
                 throw new GridMarkNotFoundException();
             }
 #endif
+
             return new Vector2(x, y);
         }
 
