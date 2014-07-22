@@ -321,6 +321,25 @@ namespace NagaraStage {
             }
 
             /// <summary>
+            /// 現在のモータの速度を設定します。
+            /// </summary>
+            /// <param name="speed">スピード</param>
+            /// <param name="axis">変更する軸</param>
+            public void SetMotorSpeed(MotorSpeed speed, VectorId axis) {
+                switch (axis) { 
+                    case VectorId.X:
+                        nowSpeed.X = (int)speed;
+                        break;
+                    case VectorId.Y:
+                        nowSpeed.Y = (int)speed;
+                        break;
+                    case VectorId.Z:
+                        nowSpeed.Z = (int)speed;
+                        break;
+                }
+            }
+
+            /// <summary>
             /// 現在のモータ速度を設定します．
             /// <para>速度値を直接指定できますが，値には十分に注意する必要があります．</para>
             /// </summary>
@@ -813,6 +832,16 @@ namespace NagaraStage {
                 StopInching(MechaAxisAddress.YAddress);
                 StopInching(MechaAxisAddress.ZAddress);
 #endif
+            }
+
+            public void AbortMoving(MechaAxisAddress direction) {
+                if (movingThread != null) {
+                    if (movingThread.IsAlive) {
+                        movingThread.Abort();
+                        movingThread.Join();
+                    }
+                }
+                StopInching(direction);
             }
 
             /// <summary>
