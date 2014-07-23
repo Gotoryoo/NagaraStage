@@ -919,23 +919,40 @@ namespace NagaraStage.Ui {
         }
 
         private void gridMarksRecogButton_Click(object sender, RoutedEventArgs e) {
+            //現在地からスパイラルサーチ30視野でグリッドマークを検出する
+            //検出したら視野の真ん中に持ってくる
             try {
-                IGridMarkRecognizer GridMarkRecognizer = coordManager;
-                Vector2 viewerPoint = GridMarkRecognizer.SearchGridMarkx50();
-                if (viewerPoint.X < 0 || viewerPoint.Y < 0) {
-                    System.Diagnostics.Debug.WriteLine(String.Format("grid mark not found"));
-                } else {
-                    System.Diagnostics.Debug.WriteLine(String.Format("{0}  {1}", viewerPoint.X, viewerPoint.Y));
-                }
-                //Mat mat = new Mat(440, 512, MatType.CV_8U);
-                //mat = ~mat;
-                //Cv2.Line(mat, Cv.Point(100, 150), Cv.Point(300, 1), new Scalar(0, 0, 0));
-                //Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
-                //mat.ImWrite(@"c:\kkkkkk.bmp");
-            } catch(Exception ex) {
-                System.Diagnostics.Debug.WriteLine(String.Format("ex"));
-            }
+                MotorControler mc = MotorControler.GetInstance(parameterManager);
+                mc.SetSpiralCenterPoint();
+                Led led = Led.GetInstance();
+                Vector2 encoderPoint = new Vector2(0, 0);
+                bool continueFlag = true;
+                int spiralCount = 0;
+                while (continueFlag) {
+                    GridMarkEventArgs eventArgs = new GridMarkEventArgs();
+                    led.AdjustLight(parameterManager);
+                    IGridMarkRecognizer GridMarkRecognizer = coordManager;
+                    Vector2 viewerPoint = GridMarkRecognizer.SearchGridMarkx50();
+                    if (viewerPoint.X < 0 || viewerPoint.Y < 0) {
+                        System.Diagnostics.Debug.WriteLine(String.Format("grid mark not found"));
+                        mc.MoveInSpiral(true);
+                        mc.Join();
+                        ++spiralCount;
+                        continueFlag = (spiralCount < 30);
+                    } else {
+                        System.Diagnostics.Debug.WriteLine(String.Format("******** {0}  {1}", viewerPoint.X, viewerPoint.Y));
+                        encoderPoint = coordManager.TransToEmulsionCoord(viewerPoint);
+                        mc.MovePointXY(encoderPoint);
+                        mc.Join();
+                        continueFlag = false;
+                    }
+                } // while
 
+                mc.MovePointXY(encoderPoint);
+                mc.Join();
+            } catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine("exception");
+            }
         }
 
         private void goTheNearestGridMarkButton_Click(object sender, RoutedEventArgs e) {

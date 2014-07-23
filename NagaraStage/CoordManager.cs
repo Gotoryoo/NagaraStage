@@ -313,21 +313,17 @@ namespace NagaraStage {
         /// </summary>
         /// <returns>グリッドマークを検出したピクセル座標。検出できなかった時は(-1,-1)が返される</returns>        
         public Vector2 SearchGridMarkx50() {
-            int status = 0;
 
             Camera c = Camera.GetInstance();
             byte[] b = c.ArrayImage;
             Mat mat = new Mat(440, 512, MatType.CV_8U, b);
-
+            mat.ImWrite(String.Format(@"c:\img\{0}_g.bmp", System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
             Cv2.GaussianBlur(mat, mat, Cv.Size(5, 5), -1);
-            Cv2.Threshold(mat, mat, 60, 1, ThresholdType.BinaryInv);
+            Cv2.Threshold(mat, mat, 60, 255, ThresholdType.BinaryInv);
+            mat.ImWrite(String.Format(@"c:\img\{0}_t.bmp", System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
 
             Moments mom = new Moments(mat);
-            if (mom.M00 == 0) status++;
-            if (mom.M00 < 600) status++;//
-            if (status != 0) {
-                return new Vector2(-1.0, -1.0);
-            }
+            if (mom.M00 < 1000 * 255) return new Vector2(-1.0, -1.0);
 
             double cx = mom.M10 / mom.M00;
             double cy = mom.M01 / mom.M00;
@@ -345,11 +341,10 @@ namespace NagaraStage {
 
             double innerratio = innersum * 1.0 / innerpath * 1.0;
             double outerratio = outersum * 1.0 / outerpath * 1.0;
-            if (innerratio < 0.8) status++;
-            if (outerratio > 0.2) status++;
-            if (status != 0) {
-                return new Vector2(-1.0, -1.0);
-            }
+
+            if (innerratio < 0.8) return new Vector2(-1.0, -1.0);
+            if (outerratio > 0.2) return new Vector2(-1.0, -1.0);
+
             return new Vector2(cx, cy);
         }
 
