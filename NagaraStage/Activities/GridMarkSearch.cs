@@ -164,6 +164,8 @@ namespace NagaraStage.Activities {
                 }));
                 mc.Join();
 
+                Thread.Sleep(2000);
+
                 /* グリッドマークを検出する */
                 // 入力画像にて，グリッドマーク検出を行う．
                 // 見つからなかった場合はNumOfSpiralSearchの回数分だけらせん移動を行い探す．
