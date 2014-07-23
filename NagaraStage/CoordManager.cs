@@ -298,7 +298,7 @@ namespace NagaraStage {
             }
             return new Vector2(cx, cy);
 
-            //#if !NoHardware
+//#if !NoHardware
 //            int gridMarkSize = (int)parameterManager.GridMarkSize;
 //            int status = new CameraUtil().MarkCenter(ref x, ref y, gridMarkSize);
 //            if (status != 0) {
@@ -306,6 +306,53 @@ namespace NagaraStage {
 //            }
 //#endif
         }
+
+        /// <summary>
+        /// この関数を実行すると，カメラから画像を取得し，グリッドマークを検出しその座標を返します．
+        /// 実行時のレンズはx50対物であることを前提とします.
+        /// </summary>
+        /// <returns>グリッドマークを検出したピクセル座標。検出できなかった時は(-1,-1)が返される</returns>        
+        public Vector2 SearchGridMarkx50() {
+            int status = 0;
+
+            Camera c = Camera.GetInstance();
+            byte[] b = c.ArrayImage;
+            Mat mat = new Mat(440, 512, MatType.CV_8U, b);
+
+            Cv2.GaussianBlur(mat, mat, Cv.Size(5, 5), -1);
+            Cv2.Threshold(mat, mat, 60, 1, ThresholdType.BinaryInv);
+
+            Moments mom = new Moments(mat);
+            if (mom.M00 == 0) status++;
+            if (mom.M00 < 600) status++;//
+            if (status != 0) {
+                return new Vector2(-1.0, -1.0);
+            }
+
+            double cx = mom.M10 / mom.M00;
+            double cy = mom.M01 / mom.M00;
+            Mat innercir = new Mat(440, 512, MatType.CV_8U);
+            Cv2.Circle(innercir, new Point(cx, cy), 30, new Scalar(255, 255, 255), 3);
+            int innerpath = Cv2.CountNonZero(innercir);
+            Cv2.BitwiseAnd(innercir, mat, innercir);
+            int innersum = Cv2.CountNonZero(innercir);
+
+            Mat outercir = new Mat(440, 512, MatType.CV_8U);
+            Cv2.Circle(outercir, new Point(cx, cy), 200, new Scalar(255, 255, 255), 3);
+            int outerpath = Cv2.CountNonZero(outercir);
+            Cv2.BitwiseAnd(outercir, mat, outercir);
+            int outersum = Cv2.CountNonZero(outercir);
+
+            double innerratio = innersum * 1.0 / innerpath * 1.0;
+            double outerratio = outersum * 1.0 / outerpath * 1.0;
+            if (innerratio < 0.8) status++;
+            if (outerratio > 0.2) status++;
+            if (status != 0) {
+                return new Vector2(-1.0, -1.0);
+            }
+            return new Vector2(cx, cy);
+        }
+
 
         /// <summary>
         /// 定義したグリッドマークの値をすべて削除します．

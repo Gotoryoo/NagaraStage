@@ -22,8 +22,8 @@ using NagaraStage.Activities;
 using NagaraStage.Parameter;
 using NagaraStage.ImageEnhancement;
 
-//using OpenCvSharp;
-//using OpenCvSharp.CPlusPlus;
+using OpenCvSharp;
+using OpenCvSharp.CPlusPlus;
 
 namespace NagaraStage.Ui {
     /// <summary>
@@ -921,27 +921,24 @@ namespace NagaraStage.Ui {
         private void gridMarksRecogButton_Click(object sender, RoutedEventArgs e) {
             try {
                 IGridMarkRecognizer GridMarkRecognizer = coordManager;
-                Vector2 viewerPoint = GridMarkRecognizer.SearchGridMark();
-                System.Diagnostics.Debug.WriteLine(String.Format("{0}  {1}", viewerPoint.X, viewerPoint.Y));
-            } catch(GridMarkNotFoundException ex) {
-                System.Diagnostics.Debug.WriteLine(String.Format("grid mark not found"));
+                Vector2 viewerPoint = GridMarkRecognizer.SearchGridMarkx50();
+                if (viewerPoint.X < 0 || viewerPoint.Y < 0) {
+                    System.Diagnostics.Debug.WriteLine(String.Format("grid mark not found"));
+                } else {
+                    System.Diagnostics.Debug.WriteLine(String.Format("{0}  {1}", viewerPoint.X, viewerPoint.Y));
+                }
+                //Mat mat = new Mat(440, 512, MatType.CV_8U);
+                //mat = ~mat;
+                //Cv2.Line(mat, Cv.Point(100, 150), Cv.Point(300, 1), new Scalar(0, 0, 0));
+                //Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
+                //mat.ImWrite(@"c:\kkkkkk.bmp");
+            } catch(Exception ex) {
+                System.Diagnostics.Debug.WriteLine(String.Format("ex"));
             }
 
         }
 
-
         private void goTheNearestGridMarkButton_Click(object sender, RoutedEventArgs e) {
-            try {
-                MotorControler mc = MotorControler.GetInstance(parameterManager);
-                GridMark nearestMark = coordManager.GetTheNearestGridMark(mc.GetPoint());
-                //mc.MovePointXY(nearestMark.x, nearestMark.y);
-                //mc.Join();
-                System.Diagnostics.Debug.WriteLine(String.Format("{0},  {1}", nearestMark.x, nearestMark.y));
-                mc.MovePointXY(nearestMark.x, nearestMark.y);
-
-            } catch (GridMarkNotFoundException ex) {
-                System.Diagnostics.Debug.WriteLine(String.Format("{0}", ex.ToString()));
-            }
         }
 
 
