@@ -913,4 +913,10 @@
   <data name="SetHyperFineParam" xml:space="preserve">
     <value>グリッドマーク補正</value>
   </data>
+  <data name="GridMarkSpiralSearch" xml:space="preserve">
+    <value>現在地まわりのGridMarkを検出</value>
+  </data>
+  <data name="SeqHyperFine" xml:space="preserve">
+    <value>最寄GridMarkを検出し補正値を得る</value>
+  </data>
 </root>

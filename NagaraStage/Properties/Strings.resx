@@ -935,4 +935,10 @@ Last, Click OK button to start new stage.</value>
   <data name="SetHyperFineParam" xml:space="preserve">
     <value>SetHyperFineParam</value>
   </data>
+  <data name="GridMarkSpiralSearch" xml:space="preserve">
+    <value>GridMarkSpiralSearch</value>
+  </data>
+  <data name="SeqHyperFine" xml:space="preserve">
+    <value>SeqHyperFine</value>
+  </data>
 </root>

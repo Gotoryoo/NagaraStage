@@ -961,6 +961,15 @@ namespace NagaraStage.Properties {
         }
         
         /// <summary>
+        ///   GridMarkSpiralSearch に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string GridMarkSpiralSearch {
+            get {
+                return ResourceManager.GetString("GridMarkSpiralSearch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Hit# に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string HitSharp {
@@ -1853,6 +1862,15 @@ namespace NagaraStage.Properties {
         public static string SemiAuto {
             get {
                 return ResourceManager.GetString("SemiAuto", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   SeqHyperFine に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string SeqHyperFine {
+            get {
+                return ResourceManager.GetString("SeqHyperFine", resourceCulture);
             }
         }
         
