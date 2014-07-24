@@ -193,6 +193,10 @@
                         Name="SeqHyperFineButton" 
                         SmallImageSource="/Images/init.png"
                         Label="{Binding Source={StaticResource strings}, Path=SeqHyperFine}" Click="SeqHyperFineButton_Click" />
+                    <ribbon:RibbonButton 
+                        Name="BeamDetectionButton" 
+                        SmallImageSource="/Images/init.png"
+                        Label="{Binding Source={StaticResource strings}, Path=BeamDetection}" Click="BeamDetectionButton_Click" />
                 </ribbon:RibbonGroup>
                 <ribbon:RibbonGroup Header="{Binding Source={StaticResource strings}, Path=BeamDetect}">                    
                 </ribbon:RibbonGroup>

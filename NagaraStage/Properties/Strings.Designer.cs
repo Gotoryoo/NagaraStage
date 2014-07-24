@@ -277,6 +277,15 @@ namespace NagaraStage.Properties {
         }
         
         /// <summary>
+        ///   BeamDetection に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string BeamDetection {
+            get {
+                return ResourceManager.GetString("BeamDetection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Threshold for Binarize に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string BinarizeThreshold {

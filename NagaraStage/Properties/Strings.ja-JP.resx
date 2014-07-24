@@ -919,4 +919,7 @@
   <data name="SeqHyperFine" xml:space="preserve">
     <value>最寄GridMarkを検出し補正値を得る</value>
   </data>
+  <data name="BeamDetection" xml:space="preserve">
+    <value>ビーム検出</value>
+  </data>
 </root>

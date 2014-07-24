@@ -941,4 +941,7 @@ Last, Click OK button to start new stage.</value>
   <data name="SeqHyperFine" xml:space="preserve">
     <value>SeqHyperFine</value>
   </data>
+  <data name="BeamDetection" xml:space="preserve">
+    <value>BeamDetection</value>
+  </data>
 </root>
