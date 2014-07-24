@@ -140,7 +140,6 @@
     <Compile Include="IntEventArgs.cs" />
     <Compile Include="IO\Camera.cs" />
     <Compile Include="IO\CameraType.cs" />
-    <Compile Include="IO\CameraUtil.cs" />
     <Compile Include="IO\Driver\Apci54.cs" />
     <Compile Include="IO\Driver\Apci54Resouce.cs" />
     <Compile Include="IO\Driver\Apci59.cs" />

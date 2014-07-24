@@ -4,8 +4,7 @@ EXPORTS
     IP_CapMain @2
     IP_DataPrint @3
     IP_NichiPrint @4
-    IP_BmpSave @5
-    IP_BmpLoad @6
+
     IP_GetDeviceID @7
     IP_GetCamera @8
     IP_SetCameraType @9
@@ -19,7 +18,6 @@ EXPORTS
     IP_CCDreso @15
 
     IP_SetThreshold @16
-    IP_MarkCenter @17
     IP_getAver @18
     IP_getHitNum @19
 

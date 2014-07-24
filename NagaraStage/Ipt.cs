@@ -103,9 +103,6 @@ namespace NagaraStage {
         [DllImport("ipt.dll", EntryPoint = "IP_OpenFile")]
         public static extern int OpenFile(int mode, string file1, string file2, string wamode);
 
-        [DllImport("ipt.dll", EntryPoint = "IP_SetHyperFineXY")]
-        public static extern void SetHyperFineXY(double dx, double dy);
-
         [DllImport("ipt.dll", EntryPoint = "IP_GetNextTrack")]
         public static extern int GetNextTrack(
             double deltaZ, ref short trackId, ref short direction, 
@@ -118,9 +115,6 @@ namespace NagaraStage {
 
         [DllImport("ipt.dll", EntryPoint = "IP_SendMessage")]
         public static extern int SendMessage(string message);
-
-        [DllImport("ipt.dll", EntryPoint = "IP_MarkCenter")]
-        public static extern int MarkCenter(ref double xCenter, ref double yCenter, int size);
 
         [DllImport("ipt.dll", EntryPoint = "IP_SetThreshold")]
         public static extern void SetThreshold(int brightHit, int brightDust, int dust1, int dust2);
