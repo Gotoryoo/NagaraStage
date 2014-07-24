@@ -10,6 +10,9 @@ using NagaraStage.IO;
 using NagaraStage.Parameter;
 using NagaraStage.ImageEnhancement;
 
+using OpenCvSharp;
+using OpenCvSharp.CPlusPlus;
+
 namespace NagaraStage.Activities {
     /// <summary>
     /// 表面認識を行うクラスです．
@@ -540,6 +543,18 @@ namespace NagaraStage.Activities {
         public bool IsInGel() {
             Camera camera = Camera.GetInstance();
             byte[] imageData = camera.ArrayImage;
+
+          	//cv::Mat mat = cv::Mat(height,width,CV_8U,imageData);
+    		//cv::Mat gau = mat.clone();
+	    	//cv::GaussianBlur(gau, gau, cv::Size(31,31), 0);
+		    //cv::subtract(gau, mat, mat);
+		    //cv::threshold(mat, mat, threshold1, 1, cv::THRESH_BINARY);
+		    //
+    		//*brightness0 = cv::countNonZero(mat);
+            //
+	    	//return (*brightness0 > threshold0);    
+
+
             bool retVal = Gel.IsInGel(
                 imageData,
                 Camera.Width, Camera.Height,
