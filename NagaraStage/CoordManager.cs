@@ -320,10 +320,10 @@ namespace NagaraStage {
             Camera c = Camera.GetInstance();
             byte[] b = c.ArrayImage;
             Mat mat = new Mat(440, 512, MatType.CV_8U, b);
-            mat.ImWrite(String.Format(@"c:\img\{0}_g.bmp", System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
+            //mat.ImWrite(String.Format(@"c:\img\{0}_g.bmp", System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
             Cv2.GaussianBlur(mat, mat, Cv.Size(5, 5), -1);
             Cv2.Threshold(mat, mat, 60, 255, ThresholdType.BinaryInv);
-            mat.ImWrite(String.Format(@"c:\img\{0}_t.bmp", System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
+            //mat.ImWrite(String.Format(@"c:\img\{0}_t.bmp", System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
 
             Moments mom = new Moments(mat);
             if (mom.M00 < 1000 * 255) return new Vector2(-1.0, -1.0);
