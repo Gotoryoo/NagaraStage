@@ -313,7 +313,10 @@ namespace NagaraStage {
         /// </summary>
         /// <returns>グリッドマークを検出したピクセル座標。検出できなかった時は(-1,-1)が返される</returns>        
         public Vector2 SearchGridMarkx50() {
-
+            // レンズが50倍に設定されていない場合は例外を返すようにしたいがやり方が分からん(20140724)
+            //if (parameterManager.Magnification != ParameterManager.) {
+            //    throw new LensTypeException(ParameterManager.LensMagnificationOfGridMarkSearch);
+            //}
             Camera c = Camera.GetInstance();
             byte[] b = c.ArrayImage;
             Mat mat = new Mat(440, 512, MatType.CV_8U, b);

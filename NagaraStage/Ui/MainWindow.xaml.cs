@@ -919,6 +919,7 @@ namespace NagaraStage.Ui {
         }
 
         private void gridMarksRecogButton_Click(object sender, RoutedEventArgs e) {
+            // レンズが50倍に設定されていない場合は例外を返すようにしたいがやり方が分からん(20140724)
             try {
                 IGridMarkRecognizer GridMarkRecognizer = coordManager;
                 Vector2 viewerPoint = GridMarkRecognizer.SearchGridMarkx50();
@@ -933,6 +934,8 @@ namespace NagaraStage.Ui {
         }
 
         private void gridMarksSpiralSearchButton_Click(object sender, RoutedEventArgs e) {
+            // レンズが50倍に設定されていない場合は例外を返すようにしたいがやり方が分からん(20140724)
+
             //現在地からスパイラルサーチ30視野でグリッドマークを検出する
             //検出したら視野の真ん中に持ってくる
             try {
@@ -1003,6 +1006,7 @@ namespace NagaraStage.Ui {
         }
 
         private void SeqHyperFineButton_Click(object sender, RoutedEventArgs e) {
+            // レンズが50倍に設定されていない場合は例外を返すようにしたいがやり方が分からん(20140724)
             try {
                 MotorControler mc = MotorControler.GetInstance(parameterManager);
                 GridMark nearestMark = coordManager.GetTheNearestGridMark(mc.GetPoint());
@@ -1040,6 +1044,7 @@ namespace NagaraStage.Ui {
                     }
                 } // while
 
+                //重心検出と移動を2回繰り返して、グリッドマークを視野中心にもっていく
                 mc.MovePointXY(encoderPoint);
                 mc.Join();
                 viewerPoint = GridMarkRecognizer.SearchGridMarkx50();
