@@ -256,31 +256,32 @@ namespace NagaraStage {
             Camera c = Camera.GetInstance();
             byte[] b = c.ArrayImage;
             Mat mat = new Mat(440, 512, MatType.CV_8U, b);
-
+            mat.ImWrite(String.Format(@"c:\img\{0}_b.bmp",
+                System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
+         
             Cv2.GaussianBlur(mat, mat, Cv.Size(5, 5), -1);
             //Cv2.Threshold(mat, mat, 60, 255, ThresholdType.BinaryInv);
-            Cv2.Threshold(mat, mat, 60, 1, ThresholdType.BinaryInv);
-
-            //m.ImWrite(@"c:\iiiiii.bmp");
-            //Cv2.ImShow("aaaa", mat);
-
+            Cv2.Threshold(mat, mat, 60, 255, ThresholdType.BinaryInv);
+            mat.ImWrite(String.Format(@"c:\img\{0}_t.bmp",
+                System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
+        
             Moments mom = new Moments(mat);
             if (mom.M00 == 0) status++;
-            if (mom.M00 < 500) status++;
+            if (mom.M00 < 500*255) status++;
             if (status != 0) {
                 throw new GridMarkNotFoundException();
             }
 
             double cx = mom.M10 / mom.M00;
             double cy = mom.M01 / mom.M00;
-            Mat innercir = new Mat(440, 512, MatType.CV_8U);
+            Mat innercir = Mat.Zeros(440, 512, MatType.CV_8UC1);
             Cv2.Circle(innercir, new Point(cx, cy), 10, new Scalar(255, 255, 255), 3);
             int innerpath = Cv2.CountNonZero(innercir);
             Cv2.BitwiseAnd(innercir, mat, innercir);
             int innersum = Cv2.CountNonZero(innercir);
             //Cv2.ImShow("inner", innercir);
 
-            Mat outercir = new Mat(440, 512, MatType.CV_8U);
+            Mat outercir = Mat.Zeros(440, 512, MatType.CV_8UC1);
             Cv2.Circle(outercir, new Point(cx, cy), 40, new Scalar(255, 255, 255), 3);
             int outerpath = Cv2.CountNonZero(outercir);
             Cv2.BitwiseAnd(outercir, mat, outercir);
@@ -330,13 +331,13 @@ namespace NagaraStage {
 
             double cx = mom.M10 / mom.M00;
             double cy = mom.M01 / mom.M00;
-            Mat innercir = new Mat(440, 512, MatType.CV_8U);
+            Mat innercir = Mat.Zeros(440, 512, MatType.CV_8UC1);
             Cv2.Circle(innercir, new Point(cx, cy), 30, new Scalar(255, 255, 255), 3);
             int innerpath = Cv2.CountNonZero(innercir);
             Cv2.BitwiseAnd(innercir, mat, innercir);
             int innersum = Cv2.CountNonZero(innercir);
 
-            Mat outercir = new Mat(440, 512, MatType.CV_8U);
+            Mat outercir = Mat.Zeros(440, 512, MatType.CV_8UC1);
             Cv2.Circle(outercir, new Point(cx, cy), 200, new Scalar(255, 255, 255), 3);
             int outerpath = Cv2.CountNonZero(outercir);
             Cv2.BitwiseAnd(outercir, mat, outercir);

@@ -1072,7 +1072,7 @@ namespace NagaraStage.Ui {
             Vector3 p = new Vector3();
             int BinarizeThreshold = 10;
             int BrightnessThreshold = 7;
-            Mat sum = new Mat(440, 512, MatType.CV_8U);
+            Mat sum = Mat.Zeros(440, 512, MatType.CV_8UC1);
 
             string datfileName = string.Format(@"c:\img\{0}.dat",System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"));
             BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));

@@ -54,7 +54,7 @@ namespace NagaraStage {
             splashScreen.Show(true);
 
             //Cv2.ImRead(@"c:\aaaaaa.bmp");
-            //Mat mat = new Mat(440, 512, MatType.CV_8U);
+            //Mat mat = Mat.Zeros(440, 512, MatType.CV_8UC1);
             //mat = ~mat;
             //Cv2.Line(mat, Cv.Point(100,150), Cv.Point(300,1), new Scalar(0,0,0));
             //Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
