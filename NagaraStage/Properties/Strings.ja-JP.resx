@@ -736,7 +736,7 @@
   <data name="BeamDetect" xml:space="preserve">
     <value>ビームスポット検出</value>
   </data>
-  <data name="FullScan" xml:space="preserve">
+  <data name="OverallScan" xml:space="preserve">
     <value>全面スキャン</value>
   </data>
   <data name="GridMark" xml:space="preserve">

@@ -749,8 +749,8 @@ Last, Click OK button to start new stage.</value>
   <data name="BeamDetect" xml:space="preserve">
     <value>Beam Sport Detect</value>
   </data>
-  <data name="FullScan" xml:space="preserve">
-    <value>Full Scan</value>
+  <data name="OverallScan" xml:space="preserve">
+    <value>OverallScan</value>
   </data>
   <data name="GridMark" xml:space="preserve">
     <value>Grid mark</value>

@@ -85,8 +85,8 @@ namespace NagaraStage.Ui {
                     case "coordTab":
                         coordTab.IsSelected = true;
                         break;
-                    case "fullScanTab":
-                        fullScanTab.IsSelected = true;
+                    case "overallScanTab":
+                        overallScanTab.IsSelected = true;
                         break;
                     case "imageEnhanceTab":
                         imageEnhanceTab.IsSelected = true;
@@ -122,7 +122,7 @@ namespace NagaraStage.Ui {
                 isTabsEnabled = value;
                 HomeTab.IsEnabled = value;
                 coordTab.IsEnabled = value;
-                fullScanTab.IsEnabled = value;
+                overallScanTab.IsEnabled = value;
                 autoTrackingTab.IsEnabled = value;
                 imageEnhanceTab.IsEnabled = value;
             }
@@ -1210,9 +1210,11 @@ namespace NagaraStage.Ui {
             mc.MovePoint(next_x,next_y,now_z-0.010/2);
             //mc.Join();
         }
-    
-    
-    
+
+
+        private void OverallScanButton_Click(object sender, RoutedEventArgs e) {
+            OverallScan os = OverallScan.GetInstance(parameterManager);
+        }
     
     
     

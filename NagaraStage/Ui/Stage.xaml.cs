@@ -111,7 +111,7 @@ namespace NagaraStage.Ui {
                 case "coordTab":
                     windowCoordTab_Selected(sender, e);
                     break;
-                case "fullscanTab":
+                case "overallscanTab":
                     break;
                 case "imageEnhanceTab":
                     windowImageEnhanceTab_Selected(sender, e);

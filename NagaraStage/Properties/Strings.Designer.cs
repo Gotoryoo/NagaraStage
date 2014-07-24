@@ -781,15 +781,6 @@ namespace NagaraStage.Properties {
         }
         
         /// <summary>
-        ///   Full Scan に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        public static string FullScan {
-            get {
-                return ResourceManager.GetString("FullScan", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Gel に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Gel {
@@ -1655,6 +1646,15 @@ namespace NagaraStage.Properties {
         public static string OutsideGelNow {
             get {
                 return ResourceManager.GetString("OutsideGelNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   OverallScan に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OverallScan {
+            get {
+                return ResourceManager.GetString("OverallScan", resourceCulture);
             }
         }
         

@@ -209,8 +209,14 @@
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>
             <ribbon:RibbonTab
-                x:Name="fullScanTab" 
-                Header="{Binding Source={StaticResource strings}, Path=FullScan}">
+                x:Name="overallScanTab" 
+                Header="{Binding Source={StaticResource strings}, Path=OverallScan}">
+                <ribbon:RibbonGroup Header="{Binding Source={StaticResource strings}, Path=OverallScanGroup}">
+                    <ribbon:RibbonButton
+                        x:Name="OverallScanButton" 
+                        Label="{Binding Source={StaticResource strings}, Path=StartOverallScan}"
+                        LargeImageSource="/Images/start.png" Click="OverallScanButton_Click" />
+                </ribbon:RibbonGroup>
             </ribbon:RibbonTab>             
             <ribbon:RibbonTab
                 x:Name="autoTrackingTab" 
