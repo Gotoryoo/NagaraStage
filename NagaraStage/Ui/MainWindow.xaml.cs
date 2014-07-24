@@ -1068,8 +1068,20 @@ namespace NagaraStage.Ui {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             Vector3 CurrentPoint = mc.GetPoint();
 
-            mc.Inch(MechaAxisAddress.ZAddress, PlusMinus.Minus);
-           
+            for (int i = 0; i < 30; i++ ){
+                    byte[] b = camera.ArrayImage;
+                    Vector3 p = mc.GetPoint();
+                    Mat mat = new Mat(440, 512, MatType.CV_8U, b);
+                    mat.ImWrite(String.Format(@"c:\img\{0}_{1}_{2}_{3}.bmp",
+                            System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
+                            (int)(p.X * 1000),
+                            (int)(p.Y * 1000),
+                            (int)(p.Z * 1000)));
+                    mc.MoveDistance(-0.003, VectorId.Z);
+                    mc.Join();
+                }
+            /*
+            mc.Inch(MechaAxisAddress.ZAddress, PlusMinus.Minus);           
             bool flag = true;
             while (flag) {
                 byte[] b = camera.ArrayImage;
@@ -1080,6 +1092,7 @@ namespace NagaraStage.Ui {
             }
             mc.StopInching(MechaAxisAddress.ZAddress);
             mc.Join();
+            */
         }
 
 
