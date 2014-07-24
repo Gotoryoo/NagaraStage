@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -1067,19 +1068,62 @@ namespace NagaraStage.Ui {
             Camera camera = Camera.GetInstance();
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             Vector3 CurrentPoint = mc.GetPoint();
+            Vector3 p = new Vector3();
+            int BinarizeThreshold = 10;
+            int BrightnessThreshold = 7;
+            Mat sum = new Mat(440, 512, MatType.CV_8U);
 
-            for (int i = 0; i < 30; i++ ){
+            for (int i = 0; i < 10; i++ ){
                     byte[] b = camera.ArrayImage;
-                    Vector3 p = mc.GetPoint();
+                    p = mc.GetPoint();
                     Mat mat = new Mat(440, 512, MatType.CV_8U, b);
                     mat.ImWrite(String.Format(@"c:\img\{0}_{1}_{2}_{3}.bmp",
                             System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
                             (int)(p.X * 1000),
                             (int)(p.Y * 1000),
                             (int)(p.Z * 1000)));
+                    Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
+                    Mat gau = mat.Clone();
+                    Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
+                    Cv2.Subtract(gau, mat, mat);
+                    Cv2.Threshold(mat, mat, BinarizeThreshold, 1, ThresholdType.Binary);
+                    Cv2.Add(sum, mat, sum);
                     mc.MoveDistance(-0.003, VectorId.Z);
                     mc.Join();
                 }
+
+            Cv2.Threshold(sum, sum, BrightnessThreshold, 1, ThresholdType.Binary);
+            sum *= 255;
+            sum.ImWrite(String.Format(@"c:\img\{0}_{1}_{2}.bmp",
+                System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
+                (int)(p.X * 1000),
+                (int)(p.Y * 1000)));
+
+            /*
+            OpenCvSharp.CPlusPlus.Point[][] contours;
+            HiearchyIndex[] hierarchyindexes;
+            Cv2.FindContours(sum, out contours, out hierarchyindexes, ContourRetrieval.External, ContourChain.ApproxSimple);
+
+            string fileName = string.Format(@"c:\img\{0}_{1}_{2}.txt",
+                            System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
+                            (int)(p.X * 1000),
+                            (int)(p.Y * 1000));
+            for (int i = 0; i < contours.Length; i++) {
+                Moments mom = new Moments(contours[i]);
+                if (contours[i].Length < 2) continue;
+                if (mom.M00 == 0.0) continue;
+                double mx = mom.M10 / mom.M00;
+                double my = mom.M01 / mom.M00;
+                File.WriteAllText(fileName, string.Format("{0:F},{1:F}", mx, my));
+            }
+
+            sum *= 255;
+            sum.ImWrite(String.Format(@"c:\img\{0}_{1}_{2}.bmp",
+                System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
+                (int)(p.X * 1000),
+                (int)(p.Y * 1000)));
+             * */
+
             /*
             mc.Inch(MechaAxisAddress.ZAddress, PlusMinus.Minus);           
             bool flag = true;
