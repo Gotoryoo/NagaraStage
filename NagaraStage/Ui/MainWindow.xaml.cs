@@ -17,6 +17,7 @@ using System.Windows.Media.Animation;
 
 using NagaraStage;
 using NagaraStage.IO;
+using NagaraStage.Ui;
 using NagaraStage.IO.Driver;
 using NagaraStage.Activities;
 using NagaraStage.Parameter;
@@ -1003,6 +1004,36 @@ namespace NagaraStage.Ui {
             SetElementOnWorkspace(ss);
         }
 
+
+        private void start_following_Click(object sender, RoutedEventArgs e) {
+            TracksManager tm = parameterManager.TracksManager;
+            Track myTrack = tm.GetTrack(tm.TrackingIndex);
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            double now_x = mc.GetPoint().X;
+            double now_y = mc.GetPoint().Y;
+            double now_z = mc.GetPoint().Z;
+            double next_x = now_x + myTrack.MsDX * 0.01*2;
+            double next_y = now_y + myTrack.MsDY * 0.01*2;
+            mc.MovePoint(next_x,next_y,now_z-0.010/2);
+            //mc.Join();
+        }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     }
 
 }
