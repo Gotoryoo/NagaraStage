@@ -1063,6 +1063,25 @@ namespace NagaraStage.Ui {
             }
         }
 
+        private void BeamDetectionButton_Click(object sender, RoutedEventArgs e) {
+            Camera camera = Camera.GetInstance();
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            Vector3 CurrentPoint = mc.GetPoint();
+
+            mc.Inch(MechaAxisAddress.ZAddress, PlusMinus.Minus);
+           
+            bool flag = true;
+            while (flag) {
+                byte[] b = camera.ArrayImage;
+                Mat mat = new Mat(440, 512, MatType.CV_8U, b);
+                mat.ImWrite(String.Format(@"c:\img\{0}_seq.bmp", System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
+                Vector3 p = mc.GetPoint();
+                if ((CurrentPoint.Z - p.Z) > 0.1) flag = false;
+            }
+            mc.StopInching(MechaAxisAddress.ZAddress);
+            mc.Join();
+        }
+
 
         private void moveToCoordButton_Click(object sender, RoutedEventArgs e) {
             // これから表示するダイアログのテキストボックスのTextChangedイベントハンドラ
