@@ -1074,8 +1074,12 @@ namespace NagaraStage.Ui {
             int BrightnessThreshold = 7;
             Mat sum = new Mat(440, 512, MatType.CV_8U);
 
+            string datfileName = string.Format(@"c:\img\{0}.dat",System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"));
+            BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
+
             for (int i = 0; i < 10; i++ ){
                     byte[] b = camera.ArrayImage;
+                    writer.Write(b);
                     p = mc.GetPoint();
                     Mat mat = new Mat(440, 512, MatType.CV_8U, b);
                     mat.ImWrite(String.Format(@"c:\img\{0}_{1}_{2}_{3}.bmp",
