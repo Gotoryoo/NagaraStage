@@ -12,6 +12,9 @@ using NagaraStage;
 using NagaraStage.Parameter;
 using NagaraStage.IO;
 
+using OpenCvSharp;
+using OpenCvSharp.CPlusPlus;
+
 namespace NagaraStage.Activities {
     /// <summary>
     /// グリッドマークを自動探索する動作を行うクラスです．
@@ -159,12 +162,43 @@ namespace NagaraStage.Activities {
                 GridMarkPoint presentMark = utility.NextPoint;
                 Vector2 nextGridCoord = utility.GetGridMarkCoord(presentMark);                
                 MotorControler mc = MotorControler.GetInstance(parameterManager);
+                Led led = Led.GetInstance();
+
                 mc.MovePointXY(nextGridCoord, new Action(delegate {
                     mc.SetSpiralCenterPoint();
                 }));
                 mc.Join();
 
-                Thread.Sleep(2000);
+                Surface surface = Surface.GetInstance(parameterManager);
+                bool moveContinue = true;
+
+                mc.MoveDistance(0.1, VectorId.Z);
+                mc.Join();
+                Thread.Sleep(100);
+
+                led.AdjustLight(parameterManager);
+
+                while (moveContinue) {
+                    mc.MoveDistance(-0.01, VectorId.Z);
+                    mc.Join();
+                    byte[] b = camera.ArrayImage;
+                    Mat mat = new Mat(440, 512, MatType.CV_8U, b);
+                    Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
+                    //mat.ImWrite(String.Format(@"c:\img\{0}_g.bmp",
+                    //    System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
+                    Mat gau = mat.Clone();
+                    Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
+                    Cv2.Subtract(gau, mat, mat);
+                    Cv2.Threshold(mat, mat, 10, 255, ThresholdType.Binary);
+                    int brightness = Cv2.CountNonZero(mat);
+                    //mat.ImWrite(String.Format(@"c:\img\{0}_t.bmp",
+                    //    System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
+
+                    moveContinue = (brightness < 15000);    
+                }
+
+                led.AdjustLight(parameterManager);
+
 
                 /* グリッドマークを検出する */
                 // 入力画像にて，グリッドマーク検出を行う．
@@ -174,13 +208,20 @@ namespace NagaraStage.Activities {
                     GridMarkEventArgs eventArgs = new GridMarkEventArgs();
                     eventArgs.GridMarkPoint = presentMark;
                     try {
-                        Led led = Led.GetInstance();
-                        led.AdjustLight(parameterManager);
+
                         Vector2 viewerPoint = GridMarkRecognizer.SearchGridMark();
                         Vector2 encoderPoint = coordManager.TransToEmulsionCoord(viewerPoint);
                         mc.MovePointXY(encoderPoint);
                         mc.Join();
+                        Thread.Sleep(100);
+                        viewerPoint = GridMarkRecognizer.SearchGridMark();
+                        encoderPoint = coordManager.TransToEmulsionCoord(viewerPoint);
+                        mc.MovePointXY(encoderPoint);
+                        mc.Join();
+                        Thread.Sleep(100);
+
                         coordManager.SetGridMark(encoderPoint, presentMark, camera.ArrayImage);
+
                         continueFlag = false;
                         if (Found != null) {                            
                             Vector3 position = mc.GetPoint();
