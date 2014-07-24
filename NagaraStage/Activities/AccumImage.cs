@@ -277,7 +277,7 @@ namespace NagaraStage {
             }
 
             private void saveTemp(BitmapSource image) {
-                string name = System.IO.Path.GetTempFileName() + ".png";
+                string name = System.IO.Path.GetTempFileName() + ".bmp";
                 ImageUtility.Save(image, name);
                 imagesUri.Add(name);
             }

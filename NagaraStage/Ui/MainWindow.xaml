@@ -211,6 +211,12 @@
             <ribbon:RibbonTab
                 x:Name="autoTrackingTab" 
                 Header="{Binding Source={StaticResource strings}, Path=AutoTracking}">
+                <ribbon:RibbonGroup Header="{Binding Source={StaticResource strings}, Path=Start_following}">
+                    <ribbon:RibbonButton
+                        x:Name="startfollowingButton" 
+                        Label="{Binding Source={StaticResource strings}, Path=Start_follwing}"
+                        LargeImageSource="/Images/start.png" Click="start_following_Click" />
+                </ribbon:RibbonGroup>
             </ribbon:RibbonTab>                       
             <ribbon:RibbonTab
                 Name="imageEnhanceTab"

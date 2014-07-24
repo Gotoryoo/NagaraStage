@@ -208,7 +208,7 @@ namespace NagaraStage.IO {
         /// <exception cref="System.ArgumentException"></exception>
         /// <exception cref="System.Exception"></exception>
         public int AdjustLight(ParameterManager parameterManager) {
-            double xGrid = new double(), yGrid = new double();
+            //double xGrid = new double(), yGrid = new double();
             int brightness = 0;
             int brightness0 = parameterManager.EmulsionParameter.BasicBrightness;
             int lightStlength = 0, goodLightStlength = 0, goodDiffrence = 255;
@@ -227,10 +227,10 @@ namespace NagaraStage.IO {
                 }
 
                 if (goodDiffrence > 5) {
-                    MotorControler mc = MotorControler.GetInstance();
-                    Vector3 stage = mc.GetPoint();
-                    Ipt.MtoG(1, stage.X, stage.Y, ref xGrid, ref yGrid);
-                    string error = string.Format("Failed to LightAdjust {0}, {1}", xGrid, yGrid);
+                    //MotorControler mc = MotorControler.GetInstance();
+                    //Vector3 stage = mc.GetPoint();
+                    //Ipt.MtoG(1, stage.X, stage.Y, ref xGrid, ref yGrid);
+                    string error = string.Format("Failed to LightAdjust");
                     ErrorLog.OutputError(error);
                 }
 
