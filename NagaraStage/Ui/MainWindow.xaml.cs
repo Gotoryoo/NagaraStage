@@ -462,9 +462,7 @@ namespace NagaraStage.Ui {
             Surface surface = Surface.GetInstance(parameterManager);
             Boolean flag = false;
             try {
-
                 flag = surface.IsInGel();
-
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message, Properties.Strings.Error);
             }

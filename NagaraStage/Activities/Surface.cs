@@ -555,6 +555,7 @@ namespace NagaraStage.Activities {
             return (brightness > BrightnessThreshold);    
 		}
 
+        /*
 		/// <summary>
 		/// 与えられた画像データがゲルの中であるかどうかを取得します．
 		/// <para>ただし8bitグレースケールの画像のみです．</para>
@@ -564,16 +565,20 @@ namespace NagaraStage.Activities {
 		/// <param name="height">画像の縦幅(pixcel)</param>
 		/// <returns></returns>
 		public bool IsInGel(byte[] imageData, int width, int height) {
-			return Gel.IsInGel(
-				imageData,
-				width, height,
-				StartRow, EndRow,
-				ref brightness,
-				NumOfSidePixcel,
-				BrightnessThreshold, BinarizeThreshold,
-				powerOfDiffrence);
-		}
+            Camera camera = Camera.GetInstance();
+            byte[] b = camera.ArrayImage;
+            Mat mat = new Mat(height, width, MatType.CV_8U, b);
+            Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
 
+            Mat gau = mat.Clone();
+            Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
+            Cv2.Subtract(gau, mat, mat);
+            Cv2.Threshold(mat, mat, BinarizeThreshold, 1, ThresholdType.Binary);
+            brightness = Cv2.CountNonZero(mat);
+
+            return (brightness > BrightnessThreshold);    
+		}
+        
 		public bool IsInGel(BitmapSource source) {
 			return Gel.IsInGel(
 				ImageUtility.ToArrayImage(source),
@@ -584,6 +589,7 @@ namespace NagaraStage.Activities {
 				BrightnessThreshold, BinarizeThreshold,
 				powerOfDiffrence);
 		}
+        */
 
 		private void initializeSurfaces() {
 			for (int i = 0; i < surfaces.Length; ++i) {
