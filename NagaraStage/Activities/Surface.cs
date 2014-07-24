@@ -543,19 +543,19 @@ namespace NagaraStage.Activities {
 		public bool IsInGel() {
 			Camera camera = Camera.GetInstance();
 			byte[] b = camera.ArrayImage;
-            Mat mat = new Mat(440, 512, MatType.CV_8U, b);
-            Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
+			Mat mat = new Mat(440, 512, MatType.CV_8U, b);
+			Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
 
-            Mat gau = mat.Clone();
-            Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
-            Cv2.Subtract(gau, mat, mat);
-            Cv2.Threshold(mat, mat, BinarizeThreshold, 1, ThresholdType.Binary);
-            brightness = Cv2.CountNonZero(mat);
+			Mat gau = mat.Clone();
+			Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
+			Cv2.Subtract(gau, mat, mat);
+			Cv2.Threshold(mat, mat, BinarizeThreshold, 1, ThresholdType.Binary);
+			brightness = Cv2.CountNonZero(mat);
 
-            return (brightness > BrightnessThreshold);    
+			return (brightness > BrightnessThreshold);    
 		}
 
-        /*
+		/*
 		/// <summary>
 		/// 与えられた画像データがゲルの中であるかどうかを取得します．
 		/// <para>ただし8bitグレースケールの画像のみです．</para>
@@ -565,20 +565,20 @@ namespace NagaraStage.Activities {
 		/// <param name="height">画像の縦幅(pixcel)</param>
 		/// <returns></returns>
 		public bool IsInGel(byte[] imageData, int width, int height) {
-            Camera camera = Camera.GetInstance();
-            byte[] b = camera.ArrayImage;
-            Mat mat = new Mat(height, width, MatType.CV_8U, b);
-            Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
+			Camera camera = Camera.GetInstance();
+			byte[] b = camera.ArrayImage;
+			Mat mat = new Mat(height, width, MatType.CV_8U, b);
+			Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
 
-            Mat gau = mat.Clone();
-            Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
-            Cv2.Subtract(gau, mat, mat);
-            Cv2.Threshold(mat, mat, BinarizeThreshold, 1, ThresholdType.Binary);
-            brightness = Cv2.CountNonZero(mat);
+			Mat gau = mat.Clone();
+			Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
+			Cv2.Subtract(gau, mat, mat);
+			Cv2.Threshold(mat, mat, BinarizeThreshold, 1, ThresholdType.Binary);
+			brightness = Cv2.CountNonZero(mat);
 
-            return (brightness > BrightnessThreshold);    
+			return (brightness > BrightnessThreshold);    
 		}
-        
+		
 		public bool IsInGel(BitmapSource source) {
 			return Gel.IsInGel(
 				ImageUtility.ToArrayImage(source),
@@ -589,7 +589,7 @@ namespace NagaraStage.Activities {
 				BrightnessThreshold, BinarizeThreshold,
 				powerOfDiffrence);
 		}
-        */
+		*/
 
 		private void initializeSurfaces() {
 			for (int i = 0; i < surfaces.Length; ++i) {
@@ -691,8 +691,8 @@ namespace NagaraStage.Activities {
 			bool previousResult = false, presentResult = false;
 			while (index >= 0) {
 				Thread.Sleep(delayTime);
-                presentZVal = Math.Round(mc.GetPoint().Z, 5);
-                presentResult = IsInGel();
+				presentZVal = Math.Round(mc.GetPoint().Z, 5);
+				presentResult = IsInGel();
 				bool isBorder = isBoudarySurface(previousResult, presentResult, index);
 
 				// 撮像・入力画像の確認のイベントを発生させる．
