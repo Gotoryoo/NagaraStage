@@ -170,7 +170,6 @@ namespace NagaraStage.Activities {
                 // 入力画像にて，グリッドマーク検出を行う．
                 // 見つからなかった場合はNumOfSpiralSearchの回数分だけらせん移動を行い探す．
                 bool continueFlag = true;
-                int spiralCount = 0;
                 while (continueFlag) {
                     GridMarkEventArgs eventArgs = new GridMarkEventArgs();
                     eventArgs.GridMarkPoint = presentMark;
@@ -192,8 +191,7 @@ namespace NagaraStage.Activities {
                         }
                     } catch (GridMarkNotFoundException) {
                         mc.MoveInSpiral(true);
-                        ++spiralCount;
-                        continueFlag = (spiralCount < NumOfSpiralSearch);
+                        continueFlag = ( mc.SpiralIndex < NumOfSpiralSearch);
                         if (!continueFlag && NotFound != null) {
                             NotFound(this, eventArgs);
                         }
