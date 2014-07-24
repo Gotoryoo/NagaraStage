@@ -542,29 +542,17 @@ namespace NagaraStage.Activities {
 		/// <returns>True: ゲルの中, False: ゲルの外</returns>
 		public bool IsInGel() {
 			Camera camera = Camera.GetInstance();
-			byte[] imageData = camera.ArrayImage;
+			byte[] b = camera.ArrayImage;
+            Mat mat = new Mat(440, 512, MatType.CV_8U, b);
+            Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
 
-			//cv::Mat mat = cv::Mat(height,width,CV_8U,imageData);
-			//cv::Mat gau = mat.clone();
-			//cv::GaussianBlur(gau, gau, cv::Size(31,31), 0);
-			//cv::subtract(gau, mat, mat);
-			//cv::threshold(mat, mat, threshold1, 1, cv::THRESH_BINARY);
-			//
-			//*brightness0 = cv::countNonZero(mat);
-			//
-			//return (*brightness0 > threshold0);    
+            Mat gau = mat.Clone();
+            Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
+            Cv2.Subtract(gau, mat, mat);
+            Cv2.Threshold(mat, mat, BinarizeThreshold, 1, ThresholdType.Binary);
+            brightness = Cv2.CountNonZero(mat);
 
-
-			bool retVal = Gel.IsInGel(
-				imageData,
-				Camera.Width, Camera.Height,
-				StartRow, EndRow,
-				ref brightness,
-				NumOfSidePixcel,
-				BrightnessThreshold, BinarizeThreshold,
-				powerOfDiffrence);
-			imageData = null;
-			return retVal;
+            return (brightness > BrightnessThreshold);    
 		}
 
 		/// <summary>
@@ -696,8 +684,9 @@ namespace NagaraStage.Activities {
 			int previousBrightness , presentBrightness;
 			bool previousResult = false, presentResult = false;
 			while (index >= 0) {
-				Thread.Sleep(150);
-				presentResult = IsInGel();
+				Thread.Sleep(delayTime);
+                presentZVal = Math.Round(mc.GetPoint().Z, 5);
+                presentResult = IsInGel();
 				bool isBorder = isBoudarySurface(previousResult, presentResult, index);
 
 				// 撮像・入力画像の確認のイベントを発生させる．
@@ -709,7 +698,6 @@ namespace NagaraStage.Activities {
 				eventArgs.Distance = Math.Abs(points[0] - startPoint);
 #endif
 
-				presentZVal = Math.Round(mc.GetPoint().Z, 5);
 				presentBrightness = brightness;
 				eventArgs.ZValue = presentZVal;
 				eventArgs.Brightness = presentBrightness;
