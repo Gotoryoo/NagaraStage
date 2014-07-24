@@ -26,6 +26,8 @@ using NagaraStage.ImageEnhancement;
 using OpenCvSharp;
 using OpenCvSharp.CPlusPlus;
 
+
+
 namespace NagaraStage.Ui {
     /// <summary>
     /// アプリケーションのメインウィンドウとなるユーザーインタフェイスを提供するクラスです．
@@ -1101,13 +1103,65 @@ namespace NagaraStage.Ui {
             TracksManager tm = parameterManager.TracksManager;
             Track myTrack = tm.GetTrack(tm.TrackingIndex);
             MotorControler mc = MotorControler.GetInstance(parameterManager);
-            double now_x = mc.GetPoint().X;
-            double now_y = mc.GetPoint().Y;
-            double now_z = mc.GetPoint().Z;
-            double next_x = now_x + myTrack.MsDX * 0.01*2;
-            double next_y = now_y + myTrack.MsDY * 0.01*2;
-            mc.MovePoint(next_x,next_y,now_z-0.010/2);
-            //mc.Join();
+            Camera camera = Camera.GetInstance();
+            List<Mat> image_set = new List<Mat>();
+            for (int i = 0 ; i < 8 ; i++ ) {
+                string ii;
+                ii = i.ToString();
+                double now_x = mc.GetPoint().X;
+                double now_y = mc.GetPoint().Y;
+                double now_z = mc.GetPoint().Z;
+                double next_x = now_x + myTrack.MsDX * 0.003 * 2;
+                double next_y = now_y + myTrack.MsDY * 0.003 * 2;
+                mc.MovePoint(next_x, next_y, now_z - 0.003);
+                mc.Join();
+                
+                byte[] b = camera.ArrayImage;
+                Mat image = new Mat(440, 512, MatType.CV_16S, b);
+                image_set.Add(image);
+            }
+
+            Mat superimposed = new Mat(440, 512, MatType.CV_16S);
+            Mat cont = new Mat(440, 512, MatType.CV_16S);
+            Mat gau_1 = new Mat(440, 512, MatType.CV_16S);
+            Mat gau_2 = new Mat(440, 512, MatType.CV_16S);
+            Mat sub = new Mat(440, 512, MatType.CV_16S);
+            Mat two = new Mat(440, 512, MatType.CV_16S);
+
+            double Max_kido;
+            double Min_kido;
+            
+            OpenCvSharp.CPlusPlus.Point minloc;
+            OpenCvSharp.CPlusPlus.Point maxloc;
+
+            List<Mat> two_set = new List<Mat>();
+
+  //          for (int i = 0; i < image_set.Count(); i++) {
+  //              Cv2.GaussianBlur((Mat)image_set[i], gau_1, Cv.Size(3, 3), -1);//パラメータ見ないといけない。
+  //              Cv2.GaussianBlur(gau_1, gau_2, Cv.Size(53, 53), -1);//パラメータ見ないといけない。
+  //              Cv2.Subtract(gau_2, gau_1, sub);
+  //              Cv2.MinMaxLoc(sub, out Min_kido, out Max_kido, out minloc, out maxloc);
+  //              cont = (sub - Min_kido) * 255 / (Max_kido - Min_kido);
+  //              Cv2.Threshold(cont, two, 40, 1, ThresholdType.Binary);//パラメータ見ないといけない。
+  //              two_set.Add(two);
+  //          }
+  //
+  //          for (int i = 0; i < two_set.Count(); i++) {
+  //              superimposed += two_set[i];
+  //          }
+  //
+  //
+  //
+  //          Cv2.Threshold(superimposed, superimposed, 4, 255, ThresholdType.Binary);//パラメータ見ないといけない。
+  //
+  //
+  //          superimposed.ImWrite("C:\\set\\superimposed.bmp");
+               
+
+
+               
+                
+            
         }
     
     
