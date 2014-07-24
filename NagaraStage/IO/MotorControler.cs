@@ -32,16 +32,22 @@ namespace NagaraStage {
             private Vector3 tolerance = new Vector3();
             private Thread movingThread;
             //private Thread isMovingPointContinuemovingThread;
-            /// <summary>らせん移動の位置を保持するカウンタ</summary>            
+            /// <summary>らせん移動の相対的な視野位置(viewx,viewy)を保持するカウンタ</summary>            
             private Vector2Int spiralCounter;
             /// <summary>らせん移動の中心座標</summary>
             private Vector3 spiralCentralPosition;
+
             /// <summary>
             /// らせん移動において，次の行き先を示すインデックスを取得，または設定します．
             /// <para>この値はらせん移動を行うと自動更新されます．通常はこの値を設定する必要ありません．
             /// ただし，らせん移動を中心からやり直す場合は0を設定してください．</para>
             /// </summary>
-            public int SpiralIndex = 0;
+            private int spiralIndex = 0;
+            public int SpiralIndex {
+                get { return spiralIndex; }
+                set { spiralIndex = value; }
+            }
+
             /// <summary>らせん移動をしたときのイベント</summary>
             public event EventHandler<SpiralEventArgs> SpiralMoved;
             /// <summary>目標座標値を保持するために一時的に用いられるメンバ変数</summary>
@@ -692,12 +698,12 @@ namespace NagaraStage {
                     throw new MotorActiveException();
                 }
 
-                if(SpiralIndex == 0){
+                if(spiralIndex == 0){
                     spiralCentralPosition = GetPoint();
                 }
 
-                ++SpiralIndex;
-                Vector2Int i = getSpiralPosition(SpiralIndex);
+                ++spiralIndex;
+                Vector2Int i = getSpiralPosition(spiralIndex);
                 double mx = spiralCentralPosition.X + i.X * parameterManager.SpiralShiftX;
                 double my = spiralCentralPosition.Y + i.Y * parameterManager.SpiralShiftY;
                 MovePointXY(mx, my, delegate {
@@ -730,7 +736,7 @@ namespace NagaraStage {
                 if (wait) {
                     movingThread.Join();
                 }
-                SpiralIndex = 0;
+                spiralIndex = 0;
                 spiralCounter = i;
             }
 
@@ -740,7 +746,7 @@ namespace NagaraStage {
             public void SetSpiralCenterPoint() {
                 SpiralMoved(this, new SpiralEventArgs(0, 0));
                 Vector2Int i = getSpiralPosition(0);
-                SpiralIndex = 0;
+                spiralIndex = 0;
                 spiralCounter = i;
             }
 
@@ -761,10 +767,10 @@ namespace NagaraStage {
                     throw new MotorActiveException();
                 }
                 //「すでにスパイラル原点です」と例外メッセージを出すようにしたい
-                if (SpiralIndex > 0)
+                if (spiralIndex > 0)
                 {
-                    SpiralIndex--;
-                    Vector2Int i = getSpiralPosition(SpiralIndex);
+                    spiralIndex--;
+                    Vector2Int i = getSpiralPosition(spiralIndex);
                     double mx = spiralCentralPosition.X + i.X * parameterManager.SpiralShiftX;
                     double my = spiralCentralPosition.Y + i.Y * parameterManager.SpiralShiftY;
                     MovePointXY(mx, my, delegate

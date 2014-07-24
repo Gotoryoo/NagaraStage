@@ -947,7 +947,6 @@ namespace NagaraStage.Ui {
                 Vector2 viewerPoint = new Vector2(-1, -1);
 
                 bool continueFlag = true;
-                int spiralCount = 0;
                 while (continueFlag) {
                     led.AdjustLight(parameterManager);
                     viewerPoint = GridMarkRecognizer.SearchGridMarkx50();
@@ -955,8 +954,7 @@ namespace NagaraStage.Ui {
                         System.Diagnostics.Debug.WriteLine(String.Format("grid mark not found"));
                         mc.MoveInSpiral(true);
                         mc.Join();
-                        ++spiralCount;
-                        continueFlag = (spiralCount < 30);
+                        continueFlag = ( mc.SpiralIndex < 30);
                     } else {
                         System.Diagnostics.Debug.WriteLine(String.Format("******** {0}  {1}", viewerPoint.X, viewerPoint.Y));
                         encoderPoint = coordManager.TransToEmulsionCoord(viewerPoint);
@@ -1025,7 +1023,6 @@ namespace NagaraStage.Ui {
                 Vector2 viewerPoint = new Vector2(-1, -1);
 
                 bool continueFlag = true;
-                int spiralCount = 0;
                 while (continueFlag) {
                     led.AdjustLight(parameterManager);
                     viewerPoint = GridMarkRecognizer.SearchGridMarkx50();
@@ -1033,8 +1030,7 @@ namespace NagaraStage.Ui {
                         System.Diagnostics.Debug.WriteLine(String.Format("grid mark not found"));
                         mc.MoveInSpiral(true);
                         mc.Join();
-                        ++spiralCount;
-                        continueFlag = (spiralCount < 30);
+                        continueFlag = ( mc.SpiralIndex < 30);
                     } else {
                         System.Diagnostics.Debug.WriteLine(String.Format("******** {0}  {1}", viewerPoint.X, viewerPoint.Y));
                         encoderPoint = coordManager.TransToEmulsionCoord(viewerPoint);
