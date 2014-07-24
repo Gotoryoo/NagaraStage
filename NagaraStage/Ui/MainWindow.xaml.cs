@@ -1064,6 +1064,7 @@ namespace NagaraStage.Ui {
             }
         }
 
+
         private void BeamDetectionButton_Click(object sender, RoutedEventArgs e) {
             Camera camera = Camera.GetInstance();
             MotorControler mc = MotorControler.GetInstance(parameterManager);
@@ -1093,28 +1094,22 @@ namespace NagaraStage.Ui {
                 }
 
             Cv2.Threshold(sum, sum, BrightnessThreshold, 1, ThresholdType.Binary);
-            sum *= 255;
-            sum.ImWrite(String.Format(@"c:\img\{0}_{1}_{2}.bmp",
-                System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
-                (int)(p.X * 1000),
-                (int)(p.Y * 1000)));
 
-            /*
-            OpenCvSharp.CPlusPlus.Point[][] contours;
-            HiearchyIndex[] hierarchyindexes;
-            Cv2.FindContours(sum, out contours, out hierarchyindexes, ContourRetrieval.External, ContourChain.ApproxSimple);
+            //Cv2.FindContoursをつかうとAccessViolationExceptionになる(Release/Debug両方)ので、C-API風に書く
+            using (CvMemStorage storage = new CvMemStorage()) {
+                    using (CvContourScanner scanner = new CvContourScanner(sum.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
+                        string fileName = string.Format(@"c:\img\{0}.txt",
+                                System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"));
 
-            string fileName = string.Format(@"c:\img\{0}_{1}_{2}.txt",
-                            System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
-                            (int)(p.X * 1000),
-                            (int)(p.Y * 1000));
-            for (int i = 0; i < contours.Length; i++) {
-                Moments mom = new Moments(contours[i]);
-                if (contours[i].Length < 2) continue;
-                if (mom.M00 == 0.0) continue;
-                double mx = mom.M10 / mom.M00;
-                double my = mom.M01 / mom.M00;
-                File.WriteAllText(fileName, string.Format("{0:F},{1:F}", mx, my));
+                        foreach (CvSeq<CvPoint> c in scanner) {
+                            CvMoments mom = new CvMoments(c, false);
+                            if (c.ElemSize < 2) continue;
+                            if (mom.M00 == 0.0) continue;
+                            double mx = mom.M10 / mom.M00;
+                            double my = mom.M01 / mom.M00;
+                            File.AppendAllText(fileName, string.Format("{0:F} {1:F}\n", mx, my));
+                        }
+                  }
             }
 
             sum *= 255;
@@ -1122,8 +1117,36 @@ namespace NagaraStage.Ui {
                 System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
                 (int)(p.X * 1000),
                 (int)(p.Y * 1000)));
-             * */
 
+
+            /*
+            OpenCvSharp.CPlusPlus.Point[][] contours;
+            HiearchyIndex[] hierarchyindexes;
+            try {
+                Cv2.FindContours(sum, out contours, out hierarchyindexes, ContourRetrieval.External, ContourChain.ApproxSimple);
+
+                string fileName = string.Format(@"c:\img\{0}_{1}_{2}.txt",
+                                System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
+                                (int)(p.X * 1000),
+                                (int)(p.Y * 1000));
+                for (int i = 0; i < contours.Length; i++) {
+                    Moments mom = new Moments(contours[i]);
+                    if (contours[i].Length < 2) continue;
+                    if (mom.M00 == 0.0) continue;
+                    double mx = mom.M10 / mom.M00;
+                    double my = mom.M01 / mom.M00;
+                    File.WriteAllText(fileName, string.Format("{0:F},{1:F}", mx, my));
+                }
+
+                sum *= 255;
+                sum.ImWrite(String.Format(@"c:\img\{0}_{1}_{2}.bmp",
+                    System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
+                    (int)(p.X * 1000),
+                    (int)(p.Y * 1000)));
+            } catch (AccessViolationException ex) {
+                System.Diagnostics.Debug.WriteLine("exception" + ex.Message);
+            }
+            */
             /*
             mc.Inch(MechaAxisAddress.ZAddress, PlusMinus.Minus);           
             bool flag = true;
