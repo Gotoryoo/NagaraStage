@@ -1213,7 +1213,10 @@ namespace NagaraStage.Ui {
 
 
         private void OverallScanButton_Click(object sender, RoutedEventArgs e) {
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
             OverallScan os = OverallScan.GetInstance(parameterManager);
+            manager.Enqueue(os);
+            manager.Start();
         }
     
     
