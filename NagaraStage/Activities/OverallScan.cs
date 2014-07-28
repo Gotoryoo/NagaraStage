@@ -81,22 +81,21 @@ namespace NagaraStage.Activities {
                     mc.Join();
 
                     p = mc.GetPoint();
-                    string datfileName = string.Format(@"c:\img\{0}_{1}_{2}.bmp",
+                    string datfileName = string.Format(@"c:\img\{0}_{1}_{2}.dat",
                         System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
                         (int)(p.X * 1000),
                         (int)(p.Y * 1000));
-//                    BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
-//                    while (viewcounter < 1) {
+                    BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
+                    while (viewcounter < 10) {
                         byte[] b = camera.ArrayImage;
-                        Mat mat = new Mat(440, 512, MatType.CV_8U, b);
-                        //writer.Write(b);
-                        Mat forsavemat = mat.Clone();
-                        forsavemat.ImWrite(datfileName);
-                        Thread.Sleep(200);
+                        writer.Write(b);
+                        //Mat mat = new Mat(440, 512, MatType.CV_8U, b);
+                        //Mat forsavemat = mat.Clone();
+                        //forsavemat.ImWrite(datfileName);
                         mc.MoveDistance(-0.004, VectorId.Z);
                         mc.Join();
                         viewcounter++;
-//                    }
+                    }
                     viewcounter = 0;
                     colcounter++;
                 }
