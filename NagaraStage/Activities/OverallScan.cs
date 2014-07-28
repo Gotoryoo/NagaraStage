@@ -72,34 +72,35 @@ namespace NagaraStage.Activities {
             int rowcounter = 0;
             int colcounter = 0;
 
-            while (rowcounter < 2) {
-                while (colcounter < 2) {
-                    Vector3 ViewPoint = mc.GetPoint();
-                    string datfileName = string.Format(@"c:\img\{0}_{1}_{2}.dat",
+            while (rowcounter < 4) {
+                while (colcounter < 4) {
+                    mc.MovePoint(
+                        InitPoint.X + (parameterManager.ImageLengthX - 0.01) * colcounter,
+                        InitPoint.Y + (parameterManager.ImageLengthY - 0.01) * rowcounter,
+                        InitPoint.Z);
+                    mc.Join();
+
+                    p = mc.GetPoint();
+                    string datfileName = string.Format(@"c:\img\{0}_{1}_{2}.bmp",
                         System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
-                        (int)(ViewPoint.X * 1000),
-                        (int)(ViewPoint.Y * 1000));
-                    BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
-                    while (viewcounter < 10) {
+                        (int)(p.X * 1000),
+                        (int)(p.Y * 1000));
+//                    BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
+//                    while (viewcounter < 1) {
                         byte[] b = camera.ArrayImage;
-                        writer.Write(b);
+                        Mat mat = new Mat(440, 512, MatType.CV_8U, b);
+                        //writer.Write(b);
+                        Mat forsavemat = mat.Clone();
+                        forsavemat.ImWrite(datfileName);
+                        Thread.Sleep(200);
                         mc.MoveDistance(-0.004, VectorId.Z);
                         mc.Join();
                         viewcounter++;
-                    }
+//                    }
                     viewcounter = 0;
-                    mc.MovePoint(
-                        ViewPoint.X + parameterManager.ImageLengthX - 0.01,
-                        ViewPoint.Y,
-                        ViewPoint.Z);
-                    mc.Join();
                     colcounter++;
                 }
                 colcounter = 0;
-                mc.MovePoint(
-                    InitPoint.X,
-                    InitPoint.Y +  parameterManager.ImageLengthY - 0.01,
-                    InitPoint.Z);
                 rowcounter++;
             }
         }
