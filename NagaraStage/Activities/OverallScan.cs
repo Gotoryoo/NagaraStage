@@ -72,8 +72,8 @@ namespace NagaraStage.Activities {
             int rowcounter = 0;
             int colcounter = 0;
 
-            while (rowcounter < 4) {
-                while (colcounter < 4) {
+            while (rowcounter < 45) {
+                while (colcounter < 40) {
                     mc.MovePoint(
                         InitPoint.X + (parameterManager.ImageLengthX - 0.01) * colcounter,
                         InitPoint.Y + (parameterManager.ImageLengthY - 0.01) * rowcounter,
@@ -86,7 +86,7 @@ namespace NagaraStage.Activities {
                         (int)(p.X * 1000),
                         (int)(p.Y * 1000));
                     BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
-                    while (viewcounter < 10) {
+                    while (viewcounter < 20) {
                         byte[] b = camera.ArrayImage;
                         writer.Write(b);
                         //Mat mat = new Mat(440, 512, MatType.CV_8U, b);
