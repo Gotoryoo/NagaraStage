@@ -72,8 +72,8 @@ namespace NagaraStage.Activities {
             int rowcounter = 0;
             int colcounter = 0;
 
-            while (rowcounter < 3) {
-                while (colcounter < 3) {
+            while (rowcounter < 45) {
+                while (colcounter < 40) {
                     mc.MovePoint(
                         InitPoint.X + (parameterManager.ImageLengthX - 0.01) * colcounter,
                         InitPoint.Y + (parameterManager.ImageLengthY - 0.01) * rowcounter,
