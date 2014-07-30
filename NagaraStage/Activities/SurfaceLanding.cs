@@ -86,8 +86,15 @@ namespace NagaraStage.Activities {
                 viewcounter++;
 
                 if(brightness > 10000 || viewcounter > 30) flag = false;
-
             }
+            byte[] bb = camera.ArrayImage;
+            Mat mat2 = new Mat(440, 512, MatType.CV_8U, bb);
+            Vector3 p = new Vector3();
+            mat2.ImWrite(String.Format(@"c:\img\{0}_{1}_{2}_{3}.bmp",  System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
+                (int)(p.X * 1000),
+                (int)(p.Y * 1000),
+                (int)(p.Z * 1000)));
+
 
         }
 
