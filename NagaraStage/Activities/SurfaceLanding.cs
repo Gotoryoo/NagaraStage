@@ -65,6 +65,8 @@ namespace NagaraStage.Activities {
 
 		private void task() {
 			MotorControler mc = MotorControler.GetInstance(parameterManager);
+			mc.SetMotorSpeed(MotorSpeed.Speed4);
+
 			Camera camera = Camera.GetInstance();
 			Vector3 InitPoint = mc.GetPoint();
 			Vector3 p = new Vector3();
