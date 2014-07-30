@@ -451,8 +451,6 @@ namespace NagaraStage.Ui {
             SetElementOnWorkspace(verif);
         }
 
-       
-
         private void surfaceRecogAbortButton_Click(object sender, RoutedEventArgs e) {
             Surface surface = Surface.GetInstance(parameterManager);
             surface.Abort();
@@ -498,6 +496,13 @@ namespace NagaraStage.Ui {
             Surface surface = Surface.GetInstance(parameterManager);
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             mc.MovePointZ(surface.LowBottom);
+        }
+
+        private void SurfaceLandingButton_Click(object sender, RoutedEventArgs e) {
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            SurfaceLanding sl = SurfaceLanding.GetInstance(parameterManager);
+            manager.Enqueue(sl);
+            manager.Start();
         }
 
         private void openInFile(OpenInFileMode mode) {

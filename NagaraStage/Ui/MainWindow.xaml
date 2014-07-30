@@ -133,8 +133,11 @@
                     <ribbon:RibbonButton
                         Name="surfaceVerifButton"
                         Label="{Binding Source={StaticResource strings}, Path=Verif}"
-                        SmallImageSource="/NagaraStage;component/Images/config.png" Click="surfaceVerifButton_Click"
-                        />
+                        SmallImageSource="/NagaraStage;component/Images/config.png" Click="surfaceVerifButton_Click" />
+                    <ribbon:RibbonButton 
+                        Name="SurfaceLandingButton" 
+                        SmallImageSource="/Images/init.png"
+                        Label="{Binding Source={StaticResource strings}, Path=SurfaceLanding}" Click="SurfaceLandingButton_Click" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>
             <ribbon:RibbonTab x:Name="coordTab" Header="{Binding Source={StaticResource strings}, Path=CoordTab}">
