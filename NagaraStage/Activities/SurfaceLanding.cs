@@ -13,7 +13,7 @@ using OpenCvSharp.CPlusPlus;
 
 namespace NagaraStage.Activities {
     class SurfaceLanding : Activity, IActivity {
-        private static OverallScan instance;
+        private static SurfaceLanding instance;
 
         public bool IsActive {
             get { throw new NotImplementedException(); }
@@ -49,10 +49,10 @@ namespace NagaraStage.Activities {
         /// インスタンスを取得します．
         /// </summary>
         /// <returns></returns>
-        public static OverallScan GetInstance(
+        public static SurfaceLanding GetInstance(
             ParameterManager parameterManger = null) {
             if (instance == null) {
-                instance = new OverallScan(parameterManger);
+                instance = new SurfaceLanding(parameterManger);
             }
             return instance;
         }
