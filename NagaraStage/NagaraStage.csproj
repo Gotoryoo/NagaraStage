@@ -116,6 +116,7 @@
     <Compile Include="Activities\OverallScan.cs" />
     <Compile Include="Activities\SequentialImage.cs" />
     <Compile Include="Activities\SurfaceEventArgs.cs" />
+    <Compile Include="Activities\SurfaceLanding.cs" />
     <Compile Include="Activities\TigerScan.cs" />
     <Compile Include="GelLayer.cs" />
     <Compile Include="Activities\GridMarkSearch.cs" />
