@@ -85,7 +85,7 @@ namespace NagaraStage.Activities {
 
                 viewcounter++;
 
-                if(brightness > 3000 || viewcounter > 30) flag = false;
+                if(brightness > 10000 || viewcounter > 30) flag = false;
 
             }
 
