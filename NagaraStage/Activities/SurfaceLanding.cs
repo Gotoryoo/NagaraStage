@@ -66,6 +66,58 @@ namespace NagaraStage.Activities {
         private void task() {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             Camera camera = Camera.GetInstance();
+            Vector3 InitPoint = mc.GetPoint();
+            Vector3 p = new Vector3();
+            int viewcounter = 0;
+            int rowcounter = 0;
+            int colcounter = 0;
+
+            while (rowcounter < 3) {
+                while (colcounter < 3) {
+                    mc.MovePoint(
+                        InitPoint.X + (parameterManager.ImageLengthX - 0.01) * colcounter,
+                        InitPoint.Y + (parameterManager.ImageLengthY - 0.01) * rowcounter,
+                        InitPoint.Z + 0.01);
+                    mc.Join();
+
+                    p = mc.GetPoint();
+
+                    bool flag = true;
+                    while (flag) {
+                        mc.MoveDistance(-0.003, VectorId.Z);
+                        mc.Join();
+                        byte[] b = camera.ArrayImage;
+                        Mat src = new Mat(440, 512, MatType.CV_8U, b);
+                        Mat mat = src.Clone();
+
+                        Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
+                        Mat gau = mat.Clone();
+                        Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
+                        Cv2.Subtract(gau, mat, mat);
+                        Cv2.Threshold(mat, mat, 10, 1, ThresholdType.Binary);
+                        int brightness = Cv2.CountNonZero(mat);
+
+                        viewcounter++;
+                        if (brightness > 10000 || viewcounter > 30) flag = false;
+                    }
+
+                    p = mc.GetPoint();
+                    byte[] bb = camera.ArrayImage;
+                    Mat mat2 = new Mat(440, 512, MatType.CV_8U, bb);
+                    mat2.ImWrite(String.Format(@"c:\img\{0}_{1}_{2}_{3}.bmp", System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
+                        (int)(p.X * 1000),
+                        (int)(p.Y * 1000),
+                        (int)(p.Z * 1000)));
+
+                    viewcounter = 0;
+                    colcounter++;
+                }
+                colcounter = 0;
+                rowcounter++;
+            }
+            /*
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            Camera camera = Camera.GetInstance();
             int viewcounter = 0;
 
             bool flag =true;
@@ -94,8 +146,7 @@ namespace NagaraStage.Activities {
                 (int)(p.X * 1000),
                 (int)(p.Y * 1000),
                 (int)(p.Z * 1000)));
-
-
+            */
         }
 
         private bool isValidate() {
