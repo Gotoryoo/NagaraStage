@@ -1107,11 +1107,11 @@ namespace NagaraStage.Ui {
         }
 
 
-        double common_dx;
-        double common_dy;
+        static double common_dx;
+        static double common_dy;
 
-        double over_dx;
-        double over_dy;
+        static double over_dx;
+        static double over_dy;
 
 
         private void start_following_Click(object sender, RoutedEventArgs e) {//Ξ追跡アルゴリズム
