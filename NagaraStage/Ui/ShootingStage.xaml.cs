@@ -16,6 +16,7 @@ using System.Windows.Threading;
 using NagaraStage.Activities;
 using NagaraStage.Parameter;
 using NagaraStage.IO;
+using NagaraStage.ImageEnhancement;
 
 namespace NagaraStage.Ui {
     /// <summary>

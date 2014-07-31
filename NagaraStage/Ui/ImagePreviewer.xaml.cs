@@ -12,7 +12,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
 using NagaraStage;
-using NagaraStage.ImageEnhancement;
+//using NagaraStage.ImageEnhancement;
 
 namespace NagaraStage.Ui {
     /// <summary>ImagePreviewer.xaml の相互作用ロジック</summary>

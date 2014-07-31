@@ -8,7 +8,6 @@ using System.Threading;
 using NagaraStage;
 using NagaraStage.IO;
 using NagaraStage.Parameter;
-using NagaraStage.ImageEnhancement;
 
 using OpenCvSharp;
 using OpenCvSharp.CPlusPlus;
