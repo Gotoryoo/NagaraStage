@@ -11,13 +11,13 @@
 
 
 #if _Debug
-#pragma comment(lib, "opencv_core246d.lib")
-#pragma comment(lib, "opencv_highgui246d.lib")
-#pragma comment(lib, "opencv_imgproc246d.lib")
+#pragma comment(lib, "opencv_core248d.lib")
+#pragma comment(lib, "opencv_highgui248d.lib")
+#pragma comment(lib, "opencv_imgproc248d.lib")
 #else 
-#pragma comment(lib, "opencv_core246.lib")
-#pragma comment(lib, "opencv_highgui246.lib")
-#pragma comment(lib, "opencv_imgproc246.lib")
+#pragma comment(lib, "opencv_core248.lib")
+#pragma comment(lib, "opencv_highgui248.lib")
+#pragma comment(lib, "opencv_imgproc248.lib")
 #endif
 
 #endif /* __LIB_PRAGMA_H__ */

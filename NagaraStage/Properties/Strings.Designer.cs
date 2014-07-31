@@ -2082,6 +2082,24 @@ namespace NagaraStage.Properties {
         }
         
         /// <summary>
+        ///   Start_auto_follwing に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Start_auto_follwing {
+            get {
+                return ResourceManager.GetString("Start_auto_follwing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Start_follwing に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string Start_follwing {
+            get {
+                return ResourceManager.GetString("Start_follwing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Started surface recognizing. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string StartedSurfaceRecognizing {
