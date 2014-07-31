@@ -64,6 +64,7 @@ namespace NagaraStage.Activities {
 		}
 
 		private void task() {
+			/*
 			MotorControler mc = MotorControler.GetInstance(parameterManager);
 			mc.SetMotorSpeed(MotorSpeed.Speed4);
 
@@ -144,7 +145,7 @@ namespace NagaraStage.Activities {
 				colcounter = 0;
 				rowcounter++;
 			}
-
+			*/
 			/*
 			MotorControler mc = MotorControler.GetInstance(parameterManager);
 			Camera camera = Camera.GetInstance();
@@ -198,7 +199,7 @@ namespace NagaraStage.Activities {
 				rowcounter++;
 			}
 			*/
-			/*
+			
 			MotorControler mc = MotorControler.GetInstance(parameterManager);
 			Camera camera = Camera.GetInstance();
 			int viewcounter = 0;
@@ -229,7 +230,7 @@ namespace NagaraStage.Activities {
 				(int)(p.X * 1000),
 				(int)(p.Y * 1000),
 				(int)(p.Z * 1000)));
-			*/
+			
 		}
 
 		private bool isValidate() {
