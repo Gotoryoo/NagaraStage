@@ -66,14 +66,15 @@ namespace NagaraStage.Activities {
         private void task() {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             Camera camera = Camera.GetInstance();
+            camera.Stop();
             Vector3 InitPoint = mc.GetPoint();
             Vector3 p = new Vector3();
             int viewcounter = 0;
             int rowcounter = 0;
             int colcounter = 0;
 
-            while (rowcounter < 45) {
-                while (colcounter < 40) {
+            while (rowcounter < 2) {
+                while (colcounter < 2) {
                     mc.MovePoint(
                         InitPoint.X + (parameterManager.ImageLengthX - 0.01) * colcounter,
                         InitPoint.Y + (parameterManager.ImageLengthY - 0.01) * rowcounter,
@@ -86,22 +87,25 @@ namespace NagaraStage.Activities {
                         (int)(p.X * 1000),
                         (int)(p.Y * 1000));
                     BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
-                    while (viewcounter < 20) {
-                        byte[] b = camera.ArrayImage;
+                    //mc.Inch(PlusMinus.Minus, parameterManager.MotorSpeed4.Z, VectorId.Z);
+                    mc.Inch(PlusMinus.Minus, 0.20, VectorId.Z);
+
+                    while (viewcounter < 60) {
+                        byte[] b = Ipt.CaptureMain();
                         writer.Write(b);
                         //Mat mat = new Mat(440, 512, MatType.CV_8U, b);
                         //Mat forsavemat = mat.Clone();
                         //forsavemat.ImWrite(datfileName);
-                        mc.MoveDistance(-0.004, VectorId.Z);
-                        mc.Join();
                         viewcounter++;
                     }
+                    mc.StopInching(MechaAxisAddress.ZAddress);
                     viewcounter = 0;
                     colcounter++;
                 }
                 colcounter = 0;
                 rowcounter++;
             }
+            camera.Start();
         }
 
         private bool isValidate() {
