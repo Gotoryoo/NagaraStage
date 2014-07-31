@@ -1992,7 +1992,7 @@ namespace NagaraStage.Properties {
         }
         
         /// <summary>
-        ///   Auto Stage に類似しているローカライズされた文字列を検索します。
+        ///   Nagara Stage に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string SoftwareName {
             get {
