@@ -919,4 +919,10 @@
   <data name="SeqHyperFine" xml:space="preserve">
     <value>最寄GridMarkを検出し補正値を得る</value>
   </data>
+  <data name="Start_auto_follwing" xml:space="preserve">
+    <value>自動でプレート内追跡</value>
+  </data>
+  <data name="Start_follwing" xml:space="preserve">
+    <value>クイック追跡</value>
+  </data>
 </root>

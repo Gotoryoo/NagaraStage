@@ -216,6 +216,10 @@
                         x:Name="startfollowingButton" 
                         Label="{Binding Source={StaticResource strings}, Path=Start_follwing}"
                         LargeImageSource="/Images/start.png" Click="start_following_Click" />
+                    <ribbon:RibbonButton
+                        x:Name="startautofollowingButton" 
+                        Label="{Binding Source={StaticResource strings}, Path=Start_auto_follwing}"
+                        LargeImageSource="/Images/start.png" Click="start_auto_following_Click" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>                       
             <ribbon:RibbonTab

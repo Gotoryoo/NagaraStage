@@ -941,4 +941,10 @@ Last, Click OK button to start new stage.</value>
   <data name="SeqHyperFine" xml:space="preserve">
     <value>SeqHyperFine</value>
   </data>
+  <data name="Start_auto_follwing" xml:space="preserve">
+    <value>Start_auto_follwing</value>
+  </data>
+  <data name="Start_follwing" xml:space="preserve">
+    <value>Start_follwing</value>
+  </data>
 </root>
