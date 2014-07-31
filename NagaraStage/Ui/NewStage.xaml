@@ -76,7 +76,7 @@
             <TextBlock Height="73" HorizontalAlignment="Left" Margin="28,34,0,0" Name="textBlock1" VerticalAlignment="Top" Text="{Binding Source={StaticResource strings}, Path=NewStage}" FontWeight="Bold" Width="Auto" TextAlignment="Center" FontSize="36" FontStretch="Normal" />
             <TextBlock Height="449" Margin="12,5,0,0" Name="textBlock2" Text="{Binding Source={StaticResource strings}, Path=NewStageHelp}" TextWrapping="Wrap" Width="242" Foreground="White" FontSize="13" Grid.RowSpan="3" TextTrimming="None" FontStretch="Normal" />
         </StackPanel>
-        <Button Content="{Binding Source={StaticResource strings}, Path=Skip}" Grid.Column="3" Grid.Row="3" Height="23" HorizontalAlignment="Stretch" Margin="10,0,16,29" Name="skipButton" VerticalAlignment="Bottom" Width="75" Click="skipButton_Click" />
+        <Button Content="{Binding Source={StaticResource strings}, Path=Skip}" Grid.Column="3" Grid.Row="3" Height="23" HorizontalAlignment="Stretch" Margin="10,0,16,29" Name="skipButton" VerticalAlignment="Bottom" Width="75" IsEnabled="false" Click="skipButton_Click" />
         <GroupBox Grid.Column="1" Header="{Binding EmulsionInformation, Mode=OneWay, Source={StaticResource ResourcesInstance}}" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top" Grid.ColumnSpan="4" Height="67" Width="496">
             <Grid HorizontalAlignment="Left" Height="38" VerticalAlignment="Top" Width="448">
                 <TextBox x:Name="emConfPathTextBox" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="334"/>
