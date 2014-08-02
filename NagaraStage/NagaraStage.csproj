@@ -207,6 +207,7 @@
       <DependentUpon>Strings.ko-KR.resx</DependentUpon>
     </Compile>
     <Compile Include="StringResource.cs" />
+    <Compile Include="TigerPatternMatch.cs" />
     <Compile Include="Ui\CameraViewer.xaml.cs">
       <DependentUpon>CameraViewer.xaml</DependentUpon>
     </Compile>
