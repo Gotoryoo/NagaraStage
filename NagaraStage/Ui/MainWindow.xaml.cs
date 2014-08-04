@@ -1105,8 +1105,9 @@ namespace NagaraStage.Ui {
             //Cv2.FindContoursをつかうとAccessViolationExceptionになる(Release/Debug両方)ので、C-API風に書く
             using (CvMemStorage storage = new CvMemStorage()) {
                     using (CvContourScanner scanner = new CvContourScanner(sum.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
-                        string fileName = string.Format(@"c:\img\{0}.txt",
-                                System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"));
+                        //string fileName = string.Format(@"c:\img\{0}.txt",
+                        //        System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"));
+                        string fileName = string.Format(@"c:\img\u.txt");
 
                         foreach (CvSeq<CvPoint> c in scanner) {
                             CvMoments mom = new CvMoments(c, false);
@@ -1125,7 +1126,10 @@ namespace NagaraStage.Ui {
                 (int)(p.X * 1000),
                 (int)(p.Y * 1000)));
 
-
+            //Vector2 vshift = new Vector2();
+            //if(TigerPatternMatch.PatternMatch(vshift)){
+            //    mc.MovePointXY(vshift);            
+            //}
             /*
             OpenCvSharp.CPlusPlus.Point[][] contours;
             HiearchyIndex[] hierarchyindexes;
