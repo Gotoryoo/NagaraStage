@@ -73,8 +73,8 @@ namespace NagaraStage.Activities {
             int rowcounter = 0;
             int colcounter = 0;
 
-            while (rowcounter < 2) {
-                while (colcounter < 2) {
+            while (rowcounter < 1) {
+                while (colcounter < 1) {
                     mc.MovePoint(
                         InitPoint.X + (parameterManager.ImageLengthX - 0.01) * colcounter,
                         InitPoint.Y + (parameterManager.ImageLengthY - 0.01) * rowcounter,
@@ -83,16 +83,57 @@ namespace NagaraStage.Activities {
 
                     p = mc.GetPoint();
                     string datfileName = string.Format(@"c:\img\{0}_{1}_{2}.dat",
-                        System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
+                        System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"),
                         (int)(p.X * 1000),
                         (int)(p.Y * 1000));
                     BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
                     //mc.Inch(PlusMinus.Minus, parameterManager.MotorSpeed4.Z, VectorId.Z);
-                    mc.Inch(PlusMinus.Minus, 0.20, VectorId.Z);
+                    string stlog = "";
+                    stlog += String.Format("{0} {1} {2} {3} logstart\n",
+                        System.DateTime.Now.ToString("HHmmss_ffff"),
+                        (int)(p.X * 1000),
+                        (int)(p.Y * 1000),
+                        (int)(p.Z * 1000));
+
+                    //mc.Inch(PlusMinus.Minus, 0.20, VectorId.Z);//Z=1um
+                    mc.Inch(PlusMinus.Minus, 0.60, VectorId.Z);
+
+                    p = mc.GetPoint();
+                    stlog += String.Format("{0} {1} {2} {3} inchstart\n",
+                        System.DateTime.Now.ToString("HHmmss_ffff"),
+                        (int)(p.X * 1000),
+                        (int)(p.Y * 1000),
+                        (int)(p.Z * 1000));
 
                     while (viewcounter < 60) {
+                        p = mc.GetPoint();
+                        stlog += String.Format("{0} {1} {2} {3} {4} beforecap\n",
+                            System.DateTime.Now.ToString("HHmmss_ffff"),
+                            (int)(p.X * 1000),
+                            (int)(p.Y * 1000),
+                            (int)(p.Z * 1000),
+                            viewcounter);
+
                         byte[] b = Ipt.CaptureMain();
+
+                        p = mc.GetPoint();
+                        stlog += String.Format("{0} {1} {2} {3} {4} captured\n",
+                            System.DateTime.Now.ToString("HHmmss_ffff"),
+                            (int)(p.X * 1000),
+                            (int)(p.Y * 1000),
+                            (int)(p.Z * 1000),
+                            viewcounter);
+
                         writer.Write(b);
+
+                        p = mc.GetPoint();
+                        stlog += String.Format("{0} {1} {2} {3} {4} write\n",
+                            System.DateTime.Now.ToString("HHmmss_ffff"),
+                            (int)(p.X * 1000),
+                            (int)(p.Y * 1000),
+                            (int)(p.Z * 1000),
+                            viewcounter);
+
                         //Mat mat = new Mat(440, 512, MatType.CV_8U, b);
                         //Mat forsavemat = mat.Clone();
                         //forsavemat.ImWrite(datfileName);
@@ -101,6 +142,7 @@ namespace NagaraStage.Activities {
                     mc.StopInching(MechaAxisAddress.ZAddress);
                     viewcounter = 0;
                     colcounter++;
+                    Console.Write(stlog);
                 }
                 colcounter = 0;
                 rowcounter++;
