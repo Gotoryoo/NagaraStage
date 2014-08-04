@@ -96,7 +96,7 @@ namespace NagaraStage.Activities {
                         (int)(p.Z * 1000));
 
                     //mc.Inch(PlusMinus.Minus, 0.20, VectorId.Z);//Z=1um
-                    mc.Inch(PlusMinus.Minus, 0.60, VectorId.Z);
+                    mc.Inch(PlusMinus.Minus, 0.50, VectorId.Z);
 
                     p = mc.GetPoint();
                     stlog += String.Format("{0} {1} {2} {3} inchstart\n",
