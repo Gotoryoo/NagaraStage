@@ -74,7 +74,7 @@ namespace NagaraStage.Activities {
             int colcounter = 0;
 
             while (rowcounter < 1) {
-                while (colcounter < 1) {
+                while (colcounter < 6) {
                     mc.MovePoint(
                         InitPoint.X + (parameterManager.ImageLengthX - 0.01) * colcounter,
                         InitPoint.Y + (parameterManager.ImageLengthY - 0.01) * rowcounter,
@@ -89,21 +89,23 @@ namespace NagaraStage.Activities {
                     BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
                     //mc.Inch(PlusMinus.Minus, parameterManager.MotorSpeed4.Z, VectorId.Z);
                     string stlog = "";
+                    stlog += String.Format("speed {0}\n",0.20 + colcounter*0.10);
+
                     stlog += String.Format("{0} {1} {2} {3} logstart\n",
                         System.DateTime.Now.ToString("HHmmss_ffff"),
                         (int)(p.X * 1000),
                         (int)(p.Y * 1000),
-                        (int)(p.Z * 1000));
+                        (int)(p.Z * 10000));
 
                     //mc.Inch(PlusMinus.Minus, 0.20, VectorId.Z);//Z=1um
-                    mc.Inch(PlusMinus.Minus, 0.50, VectorId.Z);
+                    mc.Inch(PlusMinus.Minus, 0.20 + colcounter*0.10, VectorId.Z);
 
                     p = mc.GetPoint();
                     stlog += String.Format("{0} {1} {2} {3} inchstart\n",
                         System.DateTime.Now.ToString("HHmmss_ffff"),
                         (int)(p.X * 1000),
                         (int)(p.Y * 1000),
-                        (int)(p.Z * 1000));
+                        (int)(p.Z * 10000));
 
                     while (viewcounter < 60) {
                         p = mc.GetPoint();
@@ -111,7 +113,7 @@ namespace NagaraStage.Activities {
                             System.DateTime.Now.ToString("HHmmss_ffff"),
                             (int)(p.X * 1000),
                             (int)(p.Y * 1000),
-                            (int)(p.Z * 1000),
+                            (int)(p.Z * 10000),
                             viewcounter);
 
                         byte[] b = Ipt.CaptureMain();
@@ -121,7 +123,7 @@ namespace NagaraStage.Activities {
                             System.DateTime.Now.ToString("HHmmss_ffff"),
                             (int)(p.X * 1000),
                             (int)(p.Y * 1000),
-                            (int)(p.Z * 1000),
+                            (int)(p.Z * 10000),
                             viewcounter);
 
                         writer.Write(b);
@@ -131,7 +133,7 @@ namespace NagaraStage.Activities {
                             System.DateTime.Now.ToString("HHmmss_ffff"),
                             (int)(p.X * 1000),
                             (int)(p.Y * 1000),
-                            (int)(p.Z * 1000),
+                            (int)(p.Z * 10000),
                             viewcounter);
 
                         //Mat mat = new Mat(440, 512, MatType.CV_8U, b);
