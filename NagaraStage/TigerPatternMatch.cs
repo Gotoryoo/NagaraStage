@@ -100,35 +100,36 @@ namespace NagaraStage {
             }
             Console.WriteLine(string.Format("{0} {1}   {2}", max_i, max_j, maxbin));
 
-            if (maxbin > 5) {
+            if (maxbin > 50) {
 
-            //mass center/////////////////////////////////
-            int peakvol = 0;
-            double centerx = 0;
-            double centery = 0;
-            if (max_i > 1 && max_i < 49 && max_j > 1 && max_j < 49) {
-                for (int i = max_i - 1; i <= max_i + 1; i++) {
-                    for (int j = max_j - 1; j <= max_j + 1; j++) {
-                        peakvol += dxdymap[i, j];
-                        centerx += i * dxdymap[i, j];
-                        centery += j * dxdymap[i, j];
+                //mass center/////////////////////////////////
+                int peakvol = 0;
+                double centerx = 0;
+                double centery = 0;
+                if (max_i > 1 && max_i < 49 && max_j > 1 && max_j < 49) {
+                    for (int i = max_i - 1; i <= max_i + 1; i++) {
+                        for (int j = max_j - 1; j <= max_j + 1; j++) {
+                            peakvol += dxdymap[i, j];
+                            centerx += i * dxdymap[i, j];
+                            centery += j * dxdymap[i, j];
+                        }
                     }
+                    centerx /= peakvol;
+                    centery /= peakvol;
+                    Console.WriteLine(string.Format("{0} {1}", centerx, centery));
+
+                    sumbackground -= peakvol;
+                    Console.WriteLine(string.Format("sumbackground:{0}", sumbackground));
                 }
-                centerx /= peakvol;
-                centery /= peakvol;
-                Console.WriteLine(string.Format("{0} {1}", centerx, centery));
 
-                sumbackground -= peakvol;
-                Console.WriteLine(string.Format("sumbackground:{0}", sumbackground));
-            }
+                double peakx = 0;
+                double peaky = 0;
+                TigerPatternMatch.CellToPix(centerx, centery, ref peakx, ref peaky);
+                Console.WriteLine(string.Format("peak:{0} {1}", peakx, peaky));
 
-            double peakx = 0;
-            double peaky = 0;
-            TigerPatternMatch.CellToPix(centerx, centery, ref peakx, ref peaky);
-            Console.WriteLine(string.Format("peak:{0} {1}", peakx, peaky));
-
-            vshift = new Vector2(peakx, peaky);
-            return true;
+                vshift.X = peakx;
+                vshift.Y = peaky;
+                return true;
             }else{
                 return false;
             }

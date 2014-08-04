@@ -1126,6 +1126,16 @@ namespace NagaraStage.Ui {
                 (int)(p.X * 1000),
                 (int)(p.Y * 1000)));
 
+
+            Vector2 encoderPoint = mc.GetPoint();
+            Vector2 viewerPoint = new Vector2(-1, -1);
+
+            if (TigerPatternMatch.PatternMatch(ref viewerPoint)) {
+                encoderPoint = coordManager.TransToEmulsionCoord(viewerPoint);
+                mc.MovePointXY(encoderPoint);
+                mc.Join();
+            }
+
             //Vector2 vshift = new Vector2();
             //if(TigerPatternMatch.PatternMatch(vshift)){
             //    mc.MovePointXY(vshift);            
