@@ -66,19 +66,30 @@ namespace NagaraStage.Activities {
         private void task() {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             Camera camera = Camera.GetInstance();
-            camera.Stop();
             Vector3 InitPoint = mc.GetPoint();
             Vector3 p = new Vector3();
             int viewcounter = 0;
             int rowcounter = 0;
             int colcounter = 0;
 
-            while (rowcounter < 20) {
-                while (colcounter < 5) {
+            while (rowcounter < 5) {
+                while (colcounter < 6) {
+
+                    camera.Stop();
+                    double startZ = 0.0;
+                    PlusMinus plusminus;
+                    if (colcounter%2==0) {
+                        startZ = InitPoint.Z;
+                        plusminus = PlusMinus.Minus;
+                    } else {
+                        startZ = InitPoint.Z - 0.50;//thickness 0.5mm
+                        plusminus = PlusMinus.Plus;
+                    }
+
                     mc.MovePoint(
                         InitPoint.X + (parameterManager.ImageLengthX - 0.01) * colcounter,
                         InitPoint.Y + (parameterManager.ImageLengthY - 0.01) * rowcounter,
-                        InitPoint.Z);
+                        startZ);
                     mc.Join();
 
                     p = mc.GetPoint();
@@ -87,34 +98,12 @@ namespace NagaraStage.Activities {
                         (int)(p.X * 1000),
                         (int)(p.Y * 1000));
                     BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
-                    //mc.Inch(PlusMinus.Minus, parameterManager.MotorSpeed4.Z, VectorId.Z);
+
+                    mc.Inch(plusminus, 0.20, VectorId.Z);
+
                     string stlog = "";
-                    stlog += String.Format("speed {0}\n",0.10 + colcounter*0.10);
 
-                    stlog += String.Format("{0} {1} {2} {3} logstart\n",
-                        System.DateTime.Now.ToString("HHmmss_ffff"),
-                        (int)(p.X * 1000),
-                        (int)(p.Y * 1000),
-                        (int)(p.Z * 10000));
-
-                    //mc.Inch(PlusMinus.Minus, 0.20, VectorId.Z);//Z=1um
-                    mc.Inch(PlusMinus.Minus, 0.20 + colcounter*0.10, VectorId.Z);
-
-                    p = mc.GetPoint();
-                    stlog += String.Format("{0} {1} {2} {3} inchstart\n",
-                        System.DateTime.Now.ToString("HHmmss_ffff"),
-                        (int)(p.X * 1000),
-                        (int)(p.Y * 1000),
-                        (int)(p.Z * 10000));
-
-                    while (viewcounter < 60) {
-                        p = mc.GetPoint();
-                        stlog += String.Format("{0} {1} {2} {3} {4} beforecap\n",
-                            System.DateTime.Now.ToString("HHmmss_ffff"),
-                            (int)(p.X * 1000),
-                            (int)(p.Y * 1000),
-                            (int)(p.Z * 10000),
-                            viewcounter);
+                    while (viewcounter < 130) {
 
                         byte[] b = Ipt.CaptureMain();
 
@@ -128,14 +117,6 @@ namespace NagaraStage.Activities {
 
                         writer.Write(b);
 
-                        p = mc.GetPoint();
-                        stlog += String.Format("{0} {1} {2} {3} {4} write\n",
-                            System.DateTime.Now.ToString("HHmmss_ffff"),
-                            (int)(p.X * 1000),
-                            (int)(p.Y * 1000),
-                            (int)(p.Z * 10000),
-                            viewcounter);
-
                         //Mat mat = new Mat(440, 512, MatType.CV_8U, b);
                         //Mat forsavemat = mat.Clone();
                         //forsavemat.ImWrite(datfileName);
@@ -145,6 +126,9 @@ namespace NagaraStage.Activities {
                     viewcounter = 0;
                     colcounter++;
                     Console.Write(stlog);
+                    writer.Flush();
+                    writer.Close();
+                    camera.Start();
                 }
                 colcounter = 0;
                 rowcounter++;
