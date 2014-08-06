@@ -102,10 +102,12 @@ namespace NagaraStage.Activities {
                     mc.Inch(plusminus, 0.20, VectorId.Z);
 
                     string stlog = "";
+                    byte[] bb = new byte[440*512*130];
 
                     while (viewcounter < 130) {
 
                         byte[] b = Ipt.CaptureMain();
+                        b.CopyTo(bb, 440 * 512 * viewcounter);
 
                         p = mc.GetPoint();
                         stlog += String.Format("{0} {1} {2} {3} {4} captured {3}\n",
@@ -128,6 +130,7 @@ namespace NagaraStage.Activities {
                     viewcounter = 0;
                     colcounter++;
                     Console.Write(stlog);
+                    writer.Write(bb);
                     writer.Flush();
                     writer.Close();
                     camera.Start();
