@@ -72,8 +72,8 @@ namespace NagaraStage.Activities {
             int rowcounter = 0;
             int colcounter = 0;
 
-            while (rowcounter < 5) {
-                while (colcounter < 6) {
+            while (rowcounter < 6) {
+                while (colcounter < 5) {
 
                     camera.Stop();
                     double startZ = 0.0;
@@ -120,9 +120,36 @@ namespace NagaraStage.Activities {
                         //Mat mat = new Mat(440, 512, MatType.CV_8U, b);
                         //Mat forsavemat = mat.Clone();
                         //forsavemat.ImWrite(datfileName);
+
+                        p = mc.GetPoint();
+                        if (p.Z<-0.45) {
+                            viewcounter+=200;
+                        }
                         viewcounter++;
+
                     }
+
+                    p = mc.GetPoint();
+                    stlog += String.Format("{0} {1} {2} {3} {4} stop\n",
+                        System.DateTime.Now.ToString("HHmmss_ffff"),
+                        (int)(p.X * 1000),
+                        (int)(p.Y * 1000),
+                        (int)(p.Z * 10000),
+                        viewcounter);
+
                     mc.StopInching(MechaAxisAddress.ZAddress);
+                    
+                    for(int i=0; i<20; i++){
+                        Thread.Sleep(10);
+                        p = mc.GetPoint();
+                        stlog += String.Format("{0} {1} {2} {3} {4} dec\n",
+                            System.DateTime.Now.ToString("HHmmss_ffff"),
+                            (int)(p.X * 1000),
+                            (int)(p.Y * 1000),
+                            (int)(p.Z * 10000),
+                            viewcounter);
+                    }
+                    
                     viewcounter = 0;
                     colcounter++;
                     Console.Write(stlog);
