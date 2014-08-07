@@ -91,7 +91,7 @@ namespace NagaraStage.Activities {
                         startZ = sur.UpTop + 0.01;
                         plusminus = PlusMinus.Minus;
                     } else {
-                        startZ = sur.LowBottom-0.014;
+                        startZ = sur.LowBottom-0.020;
                         plusminus = PlusMinus.Plus;
                     }
 
