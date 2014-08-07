@@ -65,33 +65,43 @@ namespace NagaraStage.Activities {
 
         private void task() {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
+            Surface sur = Surface.GetInstance(parameterManager);
             Camera camera = Camera.GetInstance();
+            Led led = Led.GetInstance();
+
             Vector3 InitPoint = mc.GetPoint();
             Vector3 p = new Vector3();
             int viewcounter = 0;
             int rowcounter = 0;
             int colcounter = 0;
 
-            while (rowcounter < 5) {
+            while (rowcounter < 2) {
                 while (colcounter < 6) {
 
-                    camera.Stop();
+                    string stlog = "";
+                    int nshot = (int)((sur.UpTop - sur.LowBottom) / 0.004);
+                    byte[] bb = new byte[440 * 512 * nshot];
+
                     double startZ = 0.0;
                     PlusMinus plusminus;
                     if (colcounter%2==0) {
-                        startZ = InitPoint.Z;
+                        camera.Start();
+                        led.AdjustLight(parameterManager);
+                        camera.Stop();
+                        startZ = sur.UpTop + 0.01;
                         plusminus = PlusMinus.Minus;
                     } else {
-                        startZ = InitPoint.Z - 0.50;//thickness 0.5mm
+                        startZ = sur.LowBottom-0.01;
                         plusminus = PlusMinus.Plus;
                     }
+
 
                     mc.MovePoint(
                         InitPoint.X + (parameterManager.ImageLengthX - 0.01) * colcounter,
                         InitPoint.Y + (parameterManager.ImageLengthY - 0.01) * rowcounter,
                         startZ);
                     mc.Join();
-
+                    
                     p = mc.GetPoint();
                     string datfileName = string.Format(@"c:\img\{0}_{1}_{2}.dat",
                         System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"),
@@ -101,14 +111,8 @@ namespace NagaraStage.Activities {
 
                     mc.Inch(plusminus, 0.20, VectorId.Z);
 
-                    string stlog = "";
-                    byte[] bb = new byte[440*512*130];
-
-                    while (viewcounter < 130) {
-
+                    while (viewcounter < nshot + 6) {
                         byte[] b = Ipt.CaptureMain();
-                        b.CopyTo(bb, 440 * 512 * viewcounter);
-
                         p = mc.GetPoint();
                         stlog += String.Format("{0} {1} {2} {3} {4} captured {3}\n",
                             System.DateTime.Now.ToString("HHmmss_ffff"),
@@ -117,11 +121,9 @@ namespace NagaraStage.Activities {
                             (int)(p.Z * 10000),
                             viewcounter);
 
-                        //writer.Write(b);
-
-                        //Mat mat = new Mat(440, 512, MatType.CV_8U, b);
-                        //Mat forsavemat = mat.Clone();
-                        //forsavemat.ImWrite(datfileName);
+                        if (viewcounter >= 6) {
+                            b.CopyTo(bb, 440 * 512 * (viewcounter - 6));
+                        }
                         viewcounter++;
                     }
 
@@ -133,12 +135,11 @@ namespace NagaraStage.Activities {
                     writer.Write(bb);
                     writer.Flush();
                     writer.Close();
-                    camera.Start();
                 }
                 colcounter = 0;
                 rowcounter++;
             }
-            camera.Start();
+            
         }
 
         private bool isValidate() {
