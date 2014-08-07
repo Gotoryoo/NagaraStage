@@ -75,7 +75,7 @@ namespace NagaraStage.Activities {
             int rowcounter = 0;
             int colcounter = 0;
 
-            while (rowcounter < 2) {
+            while (rowcounter < 6) {
                 while (colcounter < 6) {
 
                     string stlog = "";
@@ -91,7 +91,7 @@ namespace NagaraStage.Activities {
                         startZ = sur.UpTop + 0.01;
                         plusminus = PlusMinus.Minus;
                     } else {
-                        startZ = sur.LowBottom-0.01;
+                        startZ = sur.LowBottom-0.014;
                         plusminus = PlusMinus.Plus;
                     }
 
@@ -139,7 +139,7 @@ namespace NagaraStage.Activities {
                 colcounter = 0;
                 rowcounter++;
             }
-            
+            camera.Start();
         }
 
         private bool isValidate() {
