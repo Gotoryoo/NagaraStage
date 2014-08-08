@@ -103,11 +103,16 @@ namespace NagaraStage.Activities {
                     mc.Join();
                     
                     p = mc.GetPoint();
-                    string datfileName = string.Format(@"c:\img\{0}_{1}_{2}.dat",
+                    string datfileName = string.Format(@"e:\img\{0}_{1}_{2}.dat",
+                        System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"),
+                        (int)(p.X * 1000),
+                        (int)(p.Y * 1000));
+                    string txtfileName = string.Format(@"e:\img\{0}_{1}_{2}.txt",
                         System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"),
                         (int)(p.X * 1000),
                         (int)(p.Y * 1000));
                     BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
+                    StreamWriter twriter = File.CreateText(txtfileName);
 
                     mc.Inch(plusminus, 0.20, VectorId.Z);
 
@@ -131,7 +136,7 @@ namespace NagaraStage.Activities {
                                         
                     viewcounter = 0;
                     colcounter++;
-                    Console.Write(stlog);
+                    twriter.Write(stlog);
                     writer.Write(bb);
                     writer.Flush();
                     writer.Close();
