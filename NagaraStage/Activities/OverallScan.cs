@@ -75,8 +75,14 @@ namespace NagaraStage.Activities {
             int rowcounter = 0;
             int colcounter = 0;
 
-            while (rowcounter < 6) {
-                while (colcounter < 6) {
+            string txtfileName = string.Format(@"e:\img\{0}_{1}_{2}.txt",
+                System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"),
+                (int)(p.X * 1000),
+                (int)(p.Y * 1000));
+            StreamWriter twriter = File.CreateText(txtfileName);
+
+            while (rowcounter < 16) { //3mm*3mm
+                while (colcounter < 14) {
 
                     string stlog = "";
                     int nshot = (int)((sur.UpTop - sur.LowBottom) / 0.004);
@@ -97,8 +103,8 @@ namespace NagaraStage.Activities {
 
 
                     mc.MovePoint(
-                        InitPoint.X + (parameterManager.ImageLengthX - 0.01) * colcounter,
-                        InitPoint.Y + (parameterManager.ImageLengthY - 0.01) * rowcounter,
+                        InitPoint.X + (0.230 - 0.01) * colcounter, //x40
+                        InitPoint.Y + (0.195 - 0.01) * rowcounter, //x40
                         startZ);
                     mc.Join();
                     
@@ -107,23 +113,18 @@ namespace NagaraStage.Activities {
                         System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"),
                         (int)(p.X * 1000),
                         (int)(p.Y * 1000));
-                    string txtfileName = string.Format(@"e:\img\{0}_{1}_{2}.txt",
-                        System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"),
-                        (int)(p.X * 1000),
-                        (int)(p.Y * 1000));
                     BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
-                    StreamWriter twriter = File.CreateText(txtfileName);
 
                     mc.Inch(plusminus, 0.20, VectorId.Z);
 
                     while (viewcounter < nshot + 6) {
                         byte[] b = Ipt.CaptureMain();
                         p = mc.GetPoint();
-                        stlog += String.Format("{0} {1} {2} {3} {4} captured {3}\n",
+                        stlog += String.Format("{0} {1} {2} {3} {4} captured \n",
                             System.DateTime.Now.ToString("HHmmss_ffff"),
-                            (int)(p.X * 1000),
-                            (int)(p.Y * 1000),
-                            (int)(p.Z * 10000),
+                            p.X * 1000,
+                            p.Y * 1000,
+                            p.Z * 1000,
                             viewcounter);
 
                         if (viewcounter >= 6) {
@@ -144,6 +145,7 @@ namespace NagaraStage.Activities {
                 colcounter = 0;
                 rowcounter++;
             }
+            twriter.Close();
             camera.Start();
         }
 
