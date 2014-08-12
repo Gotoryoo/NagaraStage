@@ -81,8 +81,8 @@ namespace NagaraStage.Activities {
                 (int)(p.Y * 1000));
             StreamWriter twriter = File.CreateText(txtfileName);
 
-            while (rowcounter < 16) { //3mm*3mm
-                while (colcounter < 14) {
+            while (rowcounter < 10) { //3mm*3mm
+                while (colcounter < 10) {
 
                     string stlog = "";
                     int nshot = (int)((sur.UpTop - sur.LowBottom) / 0.004);
@@ -92,7 +92,7 @@ namespace NagaraStage.Activities {
                     PlusMinus plusminus;
                     if (colcounter%2==0) {
                         camera.Start();
-                        led.AdjustLight(parameterManager);
+                        //led.AdjustLight(parameterManager);
                         camera.Stop();
                         startZ = sur.UpTop + 0.01;
                         plusminus = PlusMinus.Minus;
@@ -101,16 +101,20 @@ namespace NagaraStage.Activities {
                         plusminus = PlusMinus.Plus;
                     }
 
+                    double prev_z = startZ;
 
                     mc.MovePoint(
-                        InitPoint.X + (0.230 - 0.01) * colcounter, //x40
-                        InitPoint.Y + (0.195 - 0.01) * rowcounter, //x40
+                        InitPoint.X + (0.470 - 0.01) * colcounter, //x40
+                        InitPoint.Y + (0.410 - 0.01) * rowcounter, //x40
+                        //InitPoint.X + (0.230 - 0.01) * colcounter, //x40
+                        //InitPoint.Y + (0.195 - 0.01) * rowcounter, //x40
                         startZ);
                     mc.Join();
                     
                     p = mc.GetPoint();
+                    DateTime starttime = System.DateTime.Now;
                     string datfileName = string.Format(@"e:\img\{0}_{1}_{2}.dat",
-                        System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"),
+                        starttime.ToString("yyyyMMdd_HHmmss_fff"),
                         (int)(p.X * 1000),
                         (int)(p.Y * 1000));
                     BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
@@ -120,12 +124,17 @@ namespace NagaraStage.Activities {
                     while (viewcounter < nshot + 6) {
                         byte[] b = Ipt.CaptureMain();
                         p = mc.GetPoint();
-                        stlog += String.Format("{0} {1} {2} {3} {4} captured \n",
-                            System.DateTime.Now.ToString("HHmmss_ffff"),
-                            p.X * 1000,
-                            p.Y * 1000,
-                            p.Z * 1000,
+                        TimeSpan ts = System.DateTime.Now - starttime; 
+                        stlog += String.Format("{0} {1} {2} {3} {4} {5} {6} {7}\n",
+                            colcounter%2,
+                            System.DateTime.Now.ToString("HHmmss\\.fff"),
+                            ts.ToString("s\\.fff"),
+                            (p.X * 1000).ToString("0.0"),
+                            (p.Y * 1000).ToString("0.0"),
+                            (p.Z * 1000).ToString("0.0"),
+                            (prev_z*1000 - p.Z*1000).ToString("0.0"),
                             viewcounter);
+                        prev_z = p.Z;
 
                         if (viewcounter >= 6) {
                             b.CopyTo(bb, 440 * 512 * (viewcounter - 6));
