@@ -81,7 +81,7 @@ namespace NagaraStage.Activities {
                 (int)(p.Y * 1000));
             StreamWriter twriter = File.CreateText(txtfileName);
 
-            while (rowcounter < 10) { //3mm*3mm
+            while (rowcounter < 4) { //3mm*3mm
                 while (colcounter < 10) {
 
                     string stlog = "";
