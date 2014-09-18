@@ -75,7 +75,7 @@ namespace NagaraStage.Activities {
             int rowcounter = 0;
             int colcounter = 0;
 
-            string txtfileName = string.Format(@"e:\img\{0}_{1}_{2}.txt",
+            string txtfileName = string.Format(@"c:\img\{0}_x{1}_y{2}.txt",
                 System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"),
                 (int)(p.X * 1000),
                 (int)(p.Y * 1000));
@@ -104,8 +104,8 @@ namespace NagaraStage.Activities {
                     double prev_z = startZ;
 
                     mc.MovePoint(
-                        InitPoint.X + (0.470 - 0.01) * colcounter, //x40
-                        InitPoint.Y + (0.410 - 0.01) * rowcounter, //x40
+                        InitPoint.X + (parameterManager.SpiralShiftX - 0.01) * colcounter, //x40
+                        InitPoint.Y + (parameterManager.SpiralShiftY - 0.01) * rowcounter, //x40
                         //InitPoint.X + (0.230 - 0.01) * colcounter, //x40
                         //InitPoint.Y + (0.195 - 0.01) * rowcounter, //x40
                         startZ);
@@ -113,7 +113,7 @@ namespace NagaraStage.Activities {
                     
                     p = mc.GetPoint();
                     DateTime starttime = System.DateTime.Now;
-                    string datfileName = string.Format(@"e:\img\{0}_{1}_{2}.dat",
+                    string datfileName = string.Format(@"c:\img\{0}_x{1}_y{2}.dat",
                         starttime.ToString("yyyyMMdd_HHmmss_fff"),
                         (int)(p.X * 1000),
                         (int)(p.Y * 1000));

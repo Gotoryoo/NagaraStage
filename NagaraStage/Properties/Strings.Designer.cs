@@ -1240,6 +1240,15 @@ namespace NagaraStage.Properties {
         }
         
         /// <summary>
+        ///   Lens type is not correct. Set the x{0}. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string LensTypeException02 {
+            get {
+                return ResourceManager.GetString("LensTypeException02", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Lens type setting に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string LensTypeSetting {

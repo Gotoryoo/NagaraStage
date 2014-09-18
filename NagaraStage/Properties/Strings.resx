@@ -950,4 +950,7 @@ Last, Click OK button to start new stage.</value>
   <data name="Start_follwing" xml:space="preserve">
     <value>Start_follwing</value>
   </data>
+  <data name="LensTypeException02" xml:space="preserve">
+    <value>Lens type is not correct. Set the x{0}.</value>
+  </data>
 </root>
