@@ -2197,6 +2197,13 @@ namespace NagaraStage.Ui {
             }
            
 
+        }
+
+        private void OverallAbortButton_Click(object sender, RoutedEventArgs e) {
+            ActivityManager am = ActivityManager.GetInstance();
+            am.Abort();
+            MessageBox.Show(Properties.Strings.ActivityAbort);
+
         }//start following の終わり
 
 

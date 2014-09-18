@@ -616,7 +616,7 @@ namespace NagaraStage.Activities {
 			// モータZ軸をマイナス方向(下方向)に稼働させる
 			try {
 				// 下降の開始
-				mc.SetMotorSpeed(IO.MotorSpeed.Speed4);
+				mc.SetMotorSpeed(IO.MotorSpeed.Speed3);
 				mc.Inch(MechaAxisAddress.ZAddress, PlusMinus.Minus);
 			} catch (MotorAxisException) {
 				// すでに最下点に位置していた場合は，catchのスコープが実行される．

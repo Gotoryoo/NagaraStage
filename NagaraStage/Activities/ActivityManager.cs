@@ -30,6 +30,8 @@ namespace NagaraStage.Activities {
         /// </summary>
         private Thread queuingThread = null;
 
+        private Thread activityThread = null;
+
         /// <summary>
         /// アクティビティが実行中かどうかを取得します。
         /// <para>true: 実行中, false: 停止中</para>
@@ -88,7 +90,9 @@ namespace NagaraStage.Activities {
         }
         public void Abort() {
             if (IsActive) {
+                activityThread.Abort();
                 queuingThread.Abort();
+                activityThread.Join();
                 queuingThread.Join();
             }
         }
@@ -96,9 +100,9 @@ namespace NagaraStage.Activities {
         private ThreadStart queueing() {
             return new ThreadStart(delegate {
                 while (queue.Count > 0) {
-                    Thread activity = queue.Dequeue();
-                    activity.Start();
-                    activity.Join();
+                    activityThread = queue.Dequeue();
+                    activityThread.Start();
+                    activityThread.Join();
                 }
             });
         }

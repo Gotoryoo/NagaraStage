@@ -59,7 +59,19 @@ namespace NagaraStage.Activities {
 
         public List<Thread> CreateTask() {
             List<Thread> taskList = new List<Thread>();
-            taskList.Add(Create(new ThreadStart(task)));
+            taskList.Add(Create(new ThreadStart(delegate {
+                try {
+                    task();
+                } catch (ThreadAbortException ex) {
+
+                } finally {
+                    MotorControler mc = MotorControler.GetInstance();
+                    mc.AbortMoving();
+                    mc.StopInching(MechaAxisAddress.XAddress);
+                    mc.StopInching(MechaAxisAddress.YAddress);
+                    mc.StopInching(MechaAxisAddress.ZAddress);
+                }
+            })));
             return taskList;
         }
 
