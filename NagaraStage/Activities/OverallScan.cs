@@ -93,11 +93,11 @@ namespace NagaraStage.Activities {
                 (int)(p.Y * 1000));
             StreamWriter twriter = File.CreateText(txtfileName);
 
-            while (rowcounter < 4) { //3mm*3mm
+            while (rowcounter < 10) {
                 while (colcounter < 10) {
 
                     string stlog = "";
-                    int nshot = (int)((sur.UpTop - sur.LowBottom) / 0.004);
+                    int nshot = (int)((sur.UpTop - sur.LowBottom) / 0.0041) - 2;
                     byte[] bb = new byte[440 * 512 * nshot];
 
                     double startZ = 0.0;
@@ -106,10 +106,10 @@ namespace NagaraStage.Activities {
                         camera.Start();
                         //led.AdjustLight(parameterManager);
                         camera.Stop();
-                        startZ = sur.UpTop + 0.01;
+                        startZ = sur.UpTop + 0.012;
                         plusminus = PlusMinus.Minus;
                     } else {
-                        startZ = sur.LowBottom-0.020;
+                        startZ = sur.LowBottom-0.012;
                         plusminus = PlusMinus.Plus;
                     }
 
