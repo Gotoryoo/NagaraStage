@@ -216,13 +216,14 @@
                 Header="{Binding Source={StaticResource strings}, Path=OverallScan}">
                 <ribbon:RibbonGroup Header="{Binding Source={StaticResource strings}, Path=OverallScanGroup}">
                     <ribbon:RibbonButton
-                        x:Name="OverallScanButton" 
+                        x:Name="overallScanButton" 
                         Label="{Binding Source={StaticResource strings}, Path=StartOverallScan}"
                         LargeImageSource="/Images/start.png" Click="OverallScanButton_Click" />
                     <ribbon:RibbonButton
-                        x:Name="OverallAbortButton" 
+                        x:Name="overallAbortButton" 
                         Label="{Binding Source={StaticResource strings}, Path=Abort}"
-                        LargeImageSource="/Images/exit.png" Click="OverallAbortButton_Click" />
+                        LargeImageSource="/Images/exit.png" Click="OverallAbortButton_Click" />                  
+                
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>             
             <ribbon:RibbonTab

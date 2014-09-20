@@ -1743,11 +1743,16 @@ namespace NagaraStage.Ui {
                 MessageBox.Show(String.Format(Properties.Strings.LensTypeException02, 40));
                 return;
             }
-
-            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
-            OverallScan os = OverallScan.GetInstance(parameterManager);
-            manager.Enqueue(os);
-            manager.Start();
+            OverAllScanConfigureDialog dialog = new OverAllScanConfigureDialog();
+            if ((bool)dialog.ShowDialog()) {
+                ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+                OverallScan os = OverallScan.GetInstance(parameterManager);
+                os.NumOfViewX = dialog.NumOfViewX;
+                os.NumOfViewY = dialog.NumOfViewY;
+                os.DirectoryPath = dialog.DirectoryPath;
+                manager.Enqueue(os);
+                manager.Start();
+            }
         }
 
 
@@ -2204,9 +2209,7 @@ namespace NagaraStage.Ui {
             am.Abort();
             MessageBox.Show(Properties.Strings.ActivityAbort);
 
-        }//start following の終わり
-
-
+        }
     }
 
 }

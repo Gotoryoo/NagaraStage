@@ -235,6 +235,9 @@
     </Compile>
     <Compile Include="Ui\OpenFileDialog.cs" />
     <Compile Include="Ui\OpenFileDialogMode.cs" />
+    <Compile Include="Ui\OverAllScanConfigureDialog.xaml.cs">
+      <DependentUpon>OverAllScanConfigureDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Ui\RibbonTabEventArgs.cs" />
     <Compile Include="Ui\SaveFileDialog.cs" />
     <Compile Include="Ui\SaveFileDialogMode.cs" />
@@ -303,6 +306,10 @@
     <Page Include="Ui\NewStage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Ui\OverAllScanConfigureDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Ui\SelectGridMarkWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

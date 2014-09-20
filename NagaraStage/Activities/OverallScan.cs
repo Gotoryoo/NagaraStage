@@ -19,18 +19,35 @@ namespace NagaraStage.Activities {
             get { throw new NotImplementedException(); }
         }
 
-        public double X {
-            get { return x; }
+        public event EventHandler<EventArgs> Started;
+        public event ActivityEventHandler Exited;
+        private ParameterManager parameterManager;
+        private int nxView, nyView;
+        private string direcotryPath;
+
+        public int NumOfViewX {
+            get { return nxView; }
             set {
-                x = value;
+                nxView = value;
                 isValidate();
             }
         }
 
-        public event EventHandler<EventArgs> Started;
-        public event ActivityEventHandler Exited;
-        private ParameterManager parameterManager;
-        private double x;
+        public int NumOfViewY {
+            get { return nyView; }
+            set {
+                nyView = value;
+                isValidate();
+            }
+        }
+
+        public string DirectoryPath {
+            get { return direcotryPath; }
+            set {
+                direcotryPath = value;
+                isValidate();
+            }
+        }
 
         public OverallScan(ParameterManager _paramaterManager)
             : base(_paramaterManager) {
@@ -87,14 +104,14 @@ namespace NagaraStage.Activities {
             int rowcounter = 0;
             int colcounter = 0;
 
-            string txtfileName = string.Format(@"c:\img\{0}_x{1}_y{2}.txt",
-                System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"),
+            string txtfileName = string.Format(@"{0}\{1}_x{2}_y{3}.txt",
+                direcotryPath, System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"),
                 (int)(p.X * 1000),
                 (int)(p.Y * 1000));
             StreamWriter twriter = File.CreateText(txtfileName);
 
-            while (rowcounter < 10) {
-                while (colcounter < 10) {
+            while (rowcounter < nyView) {
+                while (colcounter < nxView) {
 
                     string stlog = "";
                     int nshot = (int)((sur.UpTop - sur.LowBottom) / 0.0041) - 2;
@@ -125,7 +142,8 @@ namespace NagaraStage.Activities {
                     
                     p = mc.GetPoint();
                     DateTime starttime = System.DateTime.Now;
-                    string datfileName = string.Format(@"c:\img\{0}_x{1}_y{2}.dat",
+                    string datfileName = string.Format(@"{0}\{1}_x{2}_y{3}.dat",
+                        direcotryPath,
                         starttime.ToString("yyyyMMdd_HHmmss_fff"),
                         (int)(p.X * 1000),
                         (int)(p.Y * 1000));
@@ -171,9 +189,6 @@ namespace NagaraStage.Activities {
         }
 
         private bool isValidate() {
-            if (x < -100 || x > 100) {
-                throw new ArgumentException("X must be in range from -100 to 100.");
-            }
             return true;
         }
     }
