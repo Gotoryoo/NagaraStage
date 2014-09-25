@@ -928,4 +928,16 @@
   <data name="Start_follwing" xml:space="preserve">
     <value>クイック追跡</value>
   </data>
+  <data name="OverAllScanConfigure" xml:space="preserve">
+    <value>オーバーオールスキャンの設定</value>
+  </data>
+  <data name="SaveDirectory" xml:space="preserve">
+    <value>保存ディレクトリ</value>
+  </data>
+  <data name="TheNumberOfXView" xml:space="preserve">
+    <value>X視野数</value>
+  </data>
+  <data name="TheNumberOfYView" xml:space="preserve">
+    <value>Y視野数</value>
+  </data>
 </root>

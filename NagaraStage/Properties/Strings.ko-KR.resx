@@ -153,6 +153,9 @@
   <data name="NumOfVoting" xml:space="preserve">
     <value>다수결 수</value>
   </data>
+  <data name="OverAllScanConfigure" xml:space="preserve">
+    <value>Over All Scan 에 대한 구성</value>
+  </data>
   <data name="Stop" xml:space="preserve">
     <value>정거장</value>
   </data>

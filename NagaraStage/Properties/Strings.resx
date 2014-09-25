@@ -953,4 +953,16 @@ Last, Click OK button to start new stage.</value>
   <data name="LensTypeException02" xml:space="preserve">
     <value>Lens type is not correct. Set the x{0}.</value>
   </data>
+  <data name="OverAllScanConfigure" xml:space="preserve">
+    <value>Configure for Over all scan</value>
+  </data>
+  <data name="SaveDirectory" xml:space="preserve">
+    <value>Save Directory</value>
+  </data>
+  <data name="TheNumberOfXView" xml:space="preserve">
+    <value>The Number of X View</value>
+  </data>
+  <data name="TheNumberOfYView" xml:space="preserve">
+    <value>The NUmber of Y View</value>
+  </data>
 </root>

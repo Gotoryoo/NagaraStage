@@ -1668,6 +1668,15 @@ namespace NagaraStage.Properties {
         }
         
         /// <summary>
+        ///   Configure for Over all scan に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string OverAllScanConfigure {
+            get {
+                return ResourceManager.GetString("OverAllScanConfigure", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Over Index に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string OverIndex {
@@ -1826,6 +1835,15 @@ namespace NagaraStage.Properties {
         public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Save Directory に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string SaveDirectory {
+            get {
+                return ResourceManager.GetString("SaveDirectory", resourceCulture);
             }
         }
         
@@ -2339,6 +2357,24 @@ namespace NagaraStage.Properties {
         public static string TakeSingle {
             get {
                 return ResourceManager.GetString("TakeSingle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The Number of X View に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string TheNumberOfXView {
+            get {
+                return ResourceManager.GetString("TheNumberOfXView", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The NUmber of Y View に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string TheNumberOfYView {
+            get {
+                return ResourceManager.GetString("TheNumberOfYView", resourceCulture);
             }
         }
         
