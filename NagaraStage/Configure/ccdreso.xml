@@ -43,8 +43,8 @@
     <resolutionY>.93182E-3</resolutionY>
     <offsetDX>0.000</offsetDX>
     <offsetDY>0.000</offsetDY>
-    <spiralDX>0.470</spiralDX>
-    <spiralDY>0.410</spiralDY>
+    <spiralDX>0.230</spiralDX>
+    <spiralDY>0.195</spiralDY>
     <zStep>0.0071</zStep>
     <gridMarkSize>200</gridMarkSize>
     <ledParam>50</ledParam>
