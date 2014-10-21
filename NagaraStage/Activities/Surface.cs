@@ -542,7 +542,9 @@ namespace NagaraStage.Activities {
 		public bool IsInGel() {
 			Camera camera = Camera.GetInstance();
 			byte[] b = camera.ArrayImage;
-			Mat mat = new Mat(440, 512, MatType.CV_8U, b);
+			Mat mat0 = new Mat(440, 512, MatType.CV_8U, b);
+            Mat mat = mat0.Clone();
+
 			Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
 
 			Mat gau = mat.Clone();
