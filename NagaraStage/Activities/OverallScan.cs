@@ -114,7 +114,7 @@ namespace NagaraStage.Activities {
                 while (colcounter < nxView) {
 
                     string stlog = "";
-                    int nshot = (int)((sur.UpTop - sur.LowBottom) / 0.0041) - 2;
+                    int nshot = (int)((sur.UpTop - sur.LowBottom) / 0.003);
                     byte[] bb = new byte[440 * 512 * nshot];
 
                     double startZ = 0.0;
@@ -134,7 +134,7 @@ namespace NagaraStage.Activities {
 
                     mc.MovePoint(
                         InitPoint.X + (parameterManager.SpiralShiftX - 0.01) * colcounter, //x40
-                        InitPoint.Y + (parameterManager.SpiralShiftY - 0.01) * rowcounter, //x40
+                        InitPoint.Y - (parameterManager.SpiralShiftY - 0.01) * rowcounter, //x40
                         //InitPoint.X + (0.230 - 0.01) * colcounter, //x40
                         //InitPoint.Y + (0.195 - 0.01) * rowcounter, //x40
                         startZ);
@@ -149,9 +149,9 @@ namespace NagaraStage.Activities {
                         (int)(p.Y * 1000));
                     BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
 
-                    mc.Inch(plusminus, 0.20, VectorId.Z);
+                    mc.Inch(plusminus, 0.15, VectorId.Z);
 
-                    while (viewcounter < nshot + 6) {
+                    while (viewcounter < nshot + 3) {
                         byte[] b = Ipt.CaptureMain();
                         p = mc.GetPoint();
                         TimeSpan ts = System.DateTime.Now - starttime; 
@@ -166,8 +166,8 @@ namespace NagaraStage.Activities {
                             viewcounter);
                         prev_z = p.Z;
 
-                        if (viewcounter >= 6) {
-                            b.CopyTo(bb, 440 * 512 * (viewcounter - 6));
+                        if (viewcounter >= 3) {
+                            b.CopyTo(bb, 440 * 512 * (viewcounter - 3));
                         }
                         viewcounter++;
                     }
