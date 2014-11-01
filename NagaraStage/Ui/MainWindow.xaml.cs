@@ -1755,6 +1755,20 @@ namespace NagaraStage.Ui {
             }
         }
 
+        private void TigerPointScanButton_Click(object sender, RoutedEventArgs e) {
+            if (parameterManager.Magnification != 50) {
+                MessageBox.Show(String.Format(Properties.Strings.LensTypeException02, 50));
+                return;
+            }
+            OverAllScanConfigureDialog dialog = new OverAllScanConfigureDialog();
+            if ((bool)dialog.ShowDialog()) {
+                ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+                TigerPointScan os = TigerPointScan.GetInstance(parameterManager);
+                os.DirectoryPath = dialog.DirectoryPath;
+                manager.Enqueue(os);
+                manager.Start();
+            }
+        }
 
         private void start_following_Click(object sender, RoutedEventArgs e) {//Ξ追跡アルゴリズム
             TracksManager tm = parameterManager.TracksManager;

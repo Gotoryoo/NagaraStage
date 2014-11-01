@@ -222,8 +222,12 @@
                     <ribbon:RibbonButton
                         x:Name="overallAbortButton" 
                         Label="{Binding Source={StaticResource strings}, Path=Abort}"
-                        LargeImageSource="/Images/exit.png" Click="OverallAbortButton_Click" />                  
-                
+                        LargeImageSource="/Images/exit.png" Click="OverallAbortButton_Click" />
+                    <ribbon:RibbonButton
+                        x:Name="tigerPointScanButton" 
+                        Label="{Binding Source={StaticResource strings}, Path=StartTigerPointScan}"
+                        LargeImageSource="/Images/start.png" Click="TigerPointScanButton_Click" />
+
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>             
             <ribbon:RibbonTab
