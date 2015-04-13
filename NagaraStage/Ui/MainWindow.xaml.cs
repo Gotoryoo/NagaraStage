@@ -1240,6 +1240,97 @@ namespace NagaraStage.Ui {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             Camera camera = Camera.GetInstance();
 
+            //return;
+
+            double now_xx = mc.GetPoint().X;
+            double now_yy = mc.GetPoint().Y;
+            double now_zz = mc.GetPoint().Z;
+
+            double now_zzz = mc.GetPoint().Z;
+
+            int i = 1;
+
+           while(now_zzz > -0.4234) 
+            {
+               System.IO.StreamWriter sw = new
+               System.IO.StreamWriter("E:\\5201_126_down.txt",true);
+               sw.WriteLine("{0} {1} {2}",mc.GetPoint().X,mc.GetPoint().Y,mc.GetPoint().Z);
+               sw.Close();
+               
+               
+               
+               byte[] b = camera.ArrayImage;
+               Mat image = new Mat(440, 512, MatType.CV_8U, b);
+               Mat imagec = image.Clone();
+               imagec.ImWrite(string.Format(@"E:\move_xyz\5201_126\down\{0}.bmp", i-1));
+
+               double next_x = now_xx - i * myTrack.MsDX * 0.0020 * 2.264;//2μm間隔で撮影
+               double next_y = now_yy - i * myTrack.MsDY * 0.0020 * 2.264;//Shrinkage Factor は2.2で計算(仮)
+               double next_z = now_zz - i * 0.0020;
+
+                mc.MovePoint(next_x, next_y,next_z);
+
+                //mc.MoveDistance(-0.0020, VectorId.Z);
+                mc.Join();
+                i++;
+                now_zzz = mc.GetPoint().Z;
+            }
+            return;
+
+
+
+
+
+
+
+
+            int nshot = 70;
+            byte[] bb = new byte[440 * 512 * nshot];
+
+            Vector3 now_p = mc.GetPoint();         //スライス画像を取るための残し
+
+            DateTime starttime = System.DateTime.Now;
+            string datfileName = string.Format(@"C:\Documents and Settings\stage1-user\デスクトップ\window_model\7601_135\d.dat");
+            BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
+
+            string txtfileName = string.Format(@"C:\Documents and Settings\stage1-user\デスクトップ\window_model\7601_135\d.txt");
+            StreamWriter twriter = File.CreateText(txtfileName);
+            string stlog = "";
+
+
+
+            int kk = 0;
+            while (kk < nshot) {
+                byte[] b = camera.ArrayImage;//画像を取得
+                //Mat image = new Mat(440, 512, MatType.CV_8U, b);
+                //Mat image_clone = image.Clone();
+                b.CopyTo(bb, 440 * 512 * kk);
+
+                //image_clone.ImWrite(string.Format(@"E:\20141015\5201_136\{0}.bmp", kk));
+                stlog += String.Format("{0} {1} {2} {3} {4}\n",
+                    System.DateTime.Now.ToString("HHmmss\\.fff"),
+                    (now_p.X * 1000).ToString("0.0"),
+                    (now_p.Y * 1000).ToString("0.0"),
+                    (now_p.Z * 1000).ToString("0.0"),
+                    kk);
+
+                kk++;
+                //mc.MovePointZ(now_p.Z - 0.0020);
+                mc.MoveDistance(-0.0020, VectorId.Z);
+                mc.Join();
+            }
+
+               
+            twriter.Write(stlog);
+            writer.Write(bb);
+            writer.Flush();
+            writer.Close();
+
+            
+
+            return;
+
+
             Surface surface = Surface.GetInstance(parameterManager);//表面認識から境界値を取得
             double uptop = surface.UpTop;
             double upbottom = surface.UpBottom;
