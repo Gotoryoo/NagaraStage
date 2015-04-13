@@ -1242,54 +1242,7 @@ namespace NagaraStage.Ui {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+///////////////////////////////////////////////////////////////////////
 
     //        for (int i = 0; i < 65 ;i++ ) 
     //        {
@@ -1304,6 +1257,9 @@ namespace NagaraStage.Ui {
 
             //return;
 
+
+
+            /*
             double now_xx = mc.GetPoint().X;
             double now_yy = mc.GetPoint().Y;
             double now_zz = mc.GetPoint().Z;
@@ -1340,10 +1296,7 @@ namespace NagaraStage.Ui {
             return;
 
 
-
-
-
-
+            */
 
 
 
@@ -1428,16 +1381,6 @@ namespace NagaraStage.Ui {
             mc.MovePoint(mc.GetPoint().X - common_dx * (upbottom - lowtop)
                 , mc.GetPoint().Y - common_dy * (upbottom - lowtop)
                 ,lowtop);//Base下側への移動
-
-
-
-
-
-
-
-
-
-
 
         }
 
