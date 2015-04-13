@@ -12,8 +12,8 @@ using OpenCvSharp;
 using OpenCvSharp.CPlusPlus;
 
 namespace NagaraStage.Activities {
-    class TigerPointScan : Activity, IActivity {
-        private static TigerPointScan instance;
+    class ScaleMeasure : Activity, IActivity {
+        private static ScaleMeasure instance;
 
         public bool IsActive {
             get { throw new NotImplementedException(); }
@@ -32,7 +32,7 @@ namespace NagaraStage.Activities {
             }
         }
 
-        public TigerPointScan(ParameterManager _paramaterManager)
+        public ScaleMeasure(ParameterManager _paramaterManager)
             : base(_paramaterManager) {
             this.parameterManager = _paramaterManager;
         }
@@ -49,10 +49,10 @@ namespace NagaraStage.Activities {
         /// インスタンスを取得します．
         /// </summary>
         /// <returns></returns>
-        public static TigerPointScan GetInstance(
+        public static ScaleMeasure GetInstance(
             ParameterManager parameterManger = null) {
             if (instance == null) {
-                instance = new TigerPointScan(parameterManger);
+                instance = new ScaleMeasure(parameterManger);
             }
             return instance;
         }
@@ -86,6 +86,13 @@ namespace NagaraStage.Activities {
 
             Vector3 InitPoint = mc.GetPoint();
             Vector3 p = new Vector3();
+
+
+            mc.MoveDistance(5.000, VectorId.X);
+            mc.Join();
+
+
+            /*
             int viewcounter = 0;
 
 
@@ -103,7 +110,7 @@ namespace NagaraStage.Activities {
 
             camera.Stop();
 
-            for(int pp=0; pp<PointList.Count(); pp++){
+            for (int pp = 0; pp < PointList.Count(); pp++) {
                 string stlog = "";
                 int nshot = 20;
                 byte[] bb = new byte[440 * 512 * nshot];
@@ -152,6 +159,7 @@ namespace NagaraStage.Activities {
 
             twriter.Close();
             camera.Start();
+             */
         }
 
         private bool isValidate() {

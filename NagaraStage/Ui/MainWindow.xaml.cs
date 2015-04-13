@@ -1240,6 +1240,66 @@ namespace NagaraStage.Ui {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             Camera camera = Camera.GetInstance();
 
+
+    //        for (int i = 0; i < 65 ;i++ ) 
+    //        {
+    //            byte[] b = camera.ArrayImage;
+    //            Mat image = new Mat(440, 512, MatType.CV_8U, b);
+    //            Mat imagec = image.Clone();
+    //            imagec.ImWrite(string.Format(@"E:\track_circle\7601_135\d\{0}.bmp", i));
+    //            mc.MoveDistance(-0.0020, VectorId.Z);
+    //            mc.Join();
+    //        }
+    //        return;
+
+
+            int nshot = 70;
+            byte[] bb = new byte[440 * 512 * nshot];
+
+            Vector3 now_p = mc.GetPoint();         //スライス画像を取るための残し
+
+            DateTime starttime = System.DateTime.Now;
+            string datfileName = string.Format(@"C:\Documents and Settings\stage1-user\デスクトップ\window_model\7601_135\d.dat");
+            BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
+
+            string txtfileName = string.Format(@"C:\Documents and Settings\stage1-user\デスクトップ\window_model\7601_135\d.txt");
+            StreamWriter twriter = File.CreateText(txtfileName);
+            string stlog = "";
+
+
+
+            int kk = 0;
+            while (kk < nshot) {
+                byte[] b = camera.ArrayImage;//画像を取得
+                //Mat image = new Mat(440, 512, MatType.CV_8U, b);
+                //Mat image_clone = image.Clone();
+                b.CopyTo(bb, 440 * 512 * kk);
+
+                //image_clone.ImWrite(string.Format(@"E:\20141015\5201_136\{0}.bmp", kk));
+                stlog += String.Format("{0} {1} {2} {3} {4}\n",
+                    System.DateTime.Now.ToString("HHmmss\\.fff"),
+                    (now_p.X * 1000).ToString("0.0"),
+                    (now_p.Y * 1000).ToString("0.0"),
+                    (now_p.Z * 1000).ToString("0.0"),
+                    kk);
+
+                kk++;
+                //mc.MovePointZ(now_p.Z - 0.0020);
+                mc.MoveDistance(-0.0020, VectorId.Z);
+                mc.Join();
+            }
+
+               
+            twriter.Write(stlog);
+            writer.Write(bb);
+            writer.Flush();
+            writer.Close();
+
+            
+
+            return;
+
+
             Surface surface = Surface.GetInstance(parameterManager);//表面認識から境界値を取得
             double uptop = surface.UpTop;
             double upbottom = surface.UpBottom;
@@ -1769,6 +1829,17 @@ namespace NagaraStage.Ui {
                 manager.Start();
             }
         }
+
+
+        private void ScaleMeasureActivityButton_Click(object sender, RoutedEventArgs e) {
+
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            ScaleMeasure sm = ScaleMeasure.GetInstance(parameterManager);
+
+            manager.Enqueue(sm);
+            manager.Start();
+        }
+
 
         private void start_following_Click(object sender, RoutedEventArgs e) {//Ξ追跡アルゴリズム
             TracksManager tm = parameterManager.TracksManager;
