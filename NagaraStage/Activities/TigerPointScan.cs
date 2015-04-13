@@ -72,6 +72,8 @@ namespace NagaraStage.Activities {
                     mc.StopInching(MechaAxisAddress.ZAddress);
                 }
             })));
+            //SurfaceLanding sl = new SurfaceLanding(parameterManager);
+            //taskList.AddRange(sl.CreateTask());
             return taskList;
         }
 
@@ -80,6 +82,7 @@ namespace NagaraStage.Activities {
             Surface sur = Surface.GetInstance(parameterManager);
             Camera camera = Camera.GetInstance();
             Led led = Led.GetInstance();
+            CoordManager cm = new CoordManager(parameterManager);
 
             Vector3 InitPoint = mc.GetPoint();
             Vector3 p = new Vector3();
@@ -91,8 +94,11 @@ namespace NagaraStage.Activities {
             StreamWriter twriter = File.CreateText(txtfileName);
 
             List<Vector3> PointList = new List<Vector3>();
-            for (int xx = 0; xx < 10; xx++ ) {
-                PointList.Add(new Vector3(InitPoint.X + xx * 0.1, InitPoint.Y, InitPoint.Z));
+            for (int xx = 0; xx < 5; xx++) {
+                for (int yy = 0; yy < 5; yy++) {
+                    GridMark nearestMark = cm.GetTheNearestGridMark(new Vector3(InitPoint.X + xx * 10, InitPoint.Y + yy * 10, InitPoint.Z));
+                    PointList.Add(new Vector3(nearestMark.x, nearestMark.y, InitPoint.Z));
+                }
             }
 
             camera.Stop();
@@ -132,6 +138,7 @@ namespace NagaraStage.Activities {
                         (p.Z * 1000).ToString("0.0"),
                         (prev_z * 1000 - p.Z * 1000).ToString("0.0"),
                         viewcounter);
+                    b.CopyTo(bb, 440 * 512 * viewcounter);
                     viewcounter++;
                 }
 
