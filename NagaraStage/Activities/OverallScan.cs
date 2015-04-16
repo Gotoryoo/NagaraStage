@@ -101,7 +101,7 @@ namespace NagaraStage.Activities {
             Vector3 InitPoint = mc.GetPoint();
             Vector3 p = new Vector3();
 
-            double emthickness = sur.UpTop - sur.LowBottom;
+            double emthickness = sur.UpTop - sur.UpBottom;
             int nshot = (int)(emthickness / 0.003);
             
 
@@ -129,14 +129,14 @@ namespace NagaraStage.Activities {
                     //    );
                     
                     Vector3 InitPointofThisBlock = new Vector3(
-                        InitPoint.X + (double)(blockXCounter) * 2.150,
-                        InitPoint.Y - (double)(blockYCounter) * 2.170,
+                        InitPoint.X + (double)(blockXCounter) * ((0.210 - 0.01) * 10 - 0.030),//if x40 -> 2.150,
+                        InitPoint.Y - (double)(blockYCounter) * ((0.180 - 0.01) * 10 - 0.030),//if x40 -> 2.170,
                         InitPoint.Z
                         );
 
                     Vector3 SurfPointofThisBlock = new Vector3(
-                        InitPointofThisBlock.X + 1.100,
-                        InitPointofThisBlock.Y - 1.100,
+                        InitPointofThisBlock.X + 1.000,
+                        InitPointofThisBlock.Y - 1.000,
                         InitPoint.Z
                         );
 
@@ -201,8 +201,8 @@ namespace NagaraStage.Activities {
                             double prev_z = startZ;
 
                             mc.MovePoint(
-                                InitPointofThisBlock.X + (parameterManager.SpiralShiftX - 0.01) * colcounter, //x40, 0.230-0.01
-                                InitPointofThisBlock.Y - (parameterManager.SpiralShiftY - 0.01) * rowcounter, //x40, 0.195-0.01
+                                InitPointofThisBlock.X + (0.210 - 0.01) * colcounter, //x40, 0.230-0.01 //parameterManager.SpiralShiftX
+                                InitPointofThisBlock.Y - (0.180 - 0.01) * rowcounter, //x40, 0.195-0.01 //parameterManager.SpiralShiftY
                                 startZ);
                             mc.Join();
                     

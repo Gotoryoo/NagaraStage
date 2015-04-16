@@ -1836,8 +1836,8 @@ namespace NagaraStage.Ui {
 
 
         private void OverallScanButton_Click(object sender, RoutedEventArgs e) {
-            if(parameterManager.Magnification != 40) {
-                MessageBox.Show(String.Format(Properties.Strings.LensTypeException02, 40));
+            if(parameterManager.Magnification != 20) {
+                MessageBox.Show(String.Format(Properties.Strings.LensTypeException02, 20));
                 return;
             }
             OverAllScanConfigureDialog dialog = new OverAllScanConfigureDialog();
