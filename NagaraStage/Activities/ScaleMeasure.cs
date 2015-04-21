@@ -94,15 +94,77 @@ namespace NagaraStage.Activities {
             string txtfileName = string.Format(@"c:\img\aaaaaa.txt");
             StreamWriter twriter = File.CreateText(txtfileName);
 
+            int viewcounter = 0;
+            Vector3 currentpoint = mc.GetPoint();
 
             camera.Start();
-            for (int i = 0; i < 4; i++) {
 
-                for (int q = 0; q < 4; q++) { 
+            for (int r = 0; r < 10; r++){
+            for (int i = 0; i < 10; i++) {
 
-                Vector3 currentpoint = mc.GetPoint();
 
-                mc.MovePointX(currentpoint.X + (0.210 - 0.01));
+                mc.MovePointX(currentpoint.X + 0.100 * i);
+
+
+                bool flag = true;
+                while (flag) {
+                    mc.MoveDistance(-0.003, VectorId.Z);
+                    mc.Join();
+                    byte[] b = camera.ArrayImage;
+                    Mat src = new Mat(440, 512, MatType.CV_8U, b);
+                    Mat mat = src.Clone();
+
+                    Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
+                    Mat gau = mat.Clone();
+                    Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
+                    Cv2.Subtract(gau, mat, mat);
+                    Cv2.Threshold(mat, mat, 10, 1, ThresholdType.Binary);
+                    int brightness = Cv2.CountNonZero(mat);
+
+                    viewcounter++;
+
+                    if (brightness > 10000 || viewcounter > 30) flag = false;
+                }
+
+                    Vector3 nowpoint = mc.GetPoint();
+                    mc.MovePointZ(nowpoint.Z + 0.006);
+
+                    for (int q = 0; q < 5; q++) {
+
+                        mc.MoveDistance(-0.003, VectorId.Z);
+                        Vector3 nownowpoint = mc.GetPoint();
+                        mc.Join();
+
+
+                        byte[] b = camera.ArrayImage;
+                        Mat image = new Mat(440, 512, MatType.CV_8U, b);
+                        Mat clone_image = image.Clone();
+                        image_set.Add(clone_image);
+
+                        //char[] filename = new char[64];
+                        //String.Format(filename,"gtrd%d.png" , i );
+
+                        clone_image.ImWrite(String.Format(@"c:\img\gtrd_{0}_{1}_{2}_{3}.bmp",
+                            i,
+                            (int)(nownowpoint.X * 1000),
+                            (int)(nownowpoint.Y * 1000),
+                            (int)(nownowpoint.Z * 1000)));
+
+
+
+                        // mc.MovePointY(currentpoint.Y - (0.180 - 0.01));
+
+                        //  mc.Join();
+                        string stlog = "";
+                        stlog += String.Format("{0} {1} {2} {3}\n",
+                                i,
+                                nownowpoint.X,
+                                nownowpoint.Y,
+                                nownowpoint.Z);
+                        twriter.Write(stlog);
+
+                    }
+            }
                //mc.MovePoint(currentpoint.X - 0.1000, currentpoint.Y - 0.1000, currentpoint.Z - 0.0050);
                // mc.MovePointXY(currentpoint.X - (0.210 - 0.01), currentpoint.Y - (0.180 - 0.01));
                // mc.MovePointX(currentpoint.X - 0.1000);
@@ -112,37 +174,11 @@ namespace NagaraStage.Activities {
                 mc.Join();
                  
 
-                byte[] b = camera.ArrayImage;
-                Mat image = new Mat(440, 512, MatType.CV_8U, b);
-                Mat clone_image = image.Clone();
-                image_set.Add(clone_image);
 
-                //char[] filename = new char[64];
-                //String.Format(filename,"gtrd%d.png" , i );
-
-                clone_image.ImWrite(String.Format(@"c:\img\gtrd_{0}_{1}_{2}_{3}.bmp",
-                    i,
-                    (int)(currentpoint.X * 1000),
-                    (int)(currentpoint.Y * 1000),
-                    (int)(currentpoint.Z * 1000)));
-
-               
-
-                   // mc.MovePointY(currentpoint.Y - (0.180 - 0.01));
-
-                  //  mc.Join();
-                    string stlog = "";
-                    stlog += String.Format("{0} {1} {2} {3}\n",
-                            i,
-                            currentpoint.X,
-                            currentpoint.Y,
-                            currentpoint.Z);
-                    twriter.Write(stlog);
-                }
-
-                Vector3 nowpoint = mc.GetPoint();
-                mc.MovePointXY(nowpoint.X - 0.8000, nowpoint.Y - (0.180 - 0.01));
+               // Vector3 nowpoint = mc.GetPoint();
+                mc.MovePointXY(currentpoint.X , currentpoint.Y + 0.100*r);
                 mc.Join();
+
 
             }
 
