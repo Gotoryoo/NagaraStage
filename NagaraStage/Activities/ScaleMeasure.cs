@@ -105,7 +105,7 @@ namespace NagaraStage.Activities {
                 mc.MovePoint(initialpoint.X + 10 * i, initialpoint.Y + 10 * r, initialpoint.Z);
                 mc.Join();
 
-
+                int ledbrightness = led.AdjustLight(parameterManager);
 
                 int viewcounter = 0;
                 bool flag = true;
@@ -130,9 +130,9 @@ namespace NagaraStage.Activities {
 
                     Vector3 surfacepoint = mc.GetPoint();
 
-                    for (int q = -2; q <= 2; q++) {
+                    for (int q = 0; q < 20; q++) {
 
-                        mc.MovePointZ(surfacepoint.Z - 0.003 * q);
+                        mc.MovePointZ(surfacepoint.Z - 0.03 + (0.003 * q));
                         mc.Join();
 
                         Vector3 nowpoint = mc.GetPoint();
@@ -145,11 +145,11 @@ namespace NagaraStage.Activities {
                         //char[] filename = new char[64];
                         //String.Format(filename,"gtrd%d.png" , i );
 
-                        clone_image.ImWrite(String.Format(@"c:\img\gtrd_{0}_{1}_{2}_{3}.bmp",
-                            i,
-                            (int)(nowpoint.X * 1000),
-                            (int)(nowpoint.Y * 1000),
-                            (int)(nowpoint.Z * 1000)));
+                        clone_image.ImWrite(String.Format(@"c:\img\gtrd_{0}_{1}_{2}.bmp",
+                            (int)(nowpoint.X),
+                            (int)(nowpoint.Y),
+                            q)
+                            );
 
 
 
@@ -157,8 +157,8 @@ namespace NagaraStage.Activities {
 
                         //  mc.Join();
                         string stlog = "";
-                        stlog += String.Format("{0} {1} {2} {3}\n",
-                                i,
+                        stlog += String.Format("{0}   {1}  {2}  {3}\n",
+                                ledbrightness,
                                 nowpoint.X,
                                 nowpoint.Y,
                                 nowpoint.Z);
