@@ -28,7 +28,7 @@ namespace NagaraStage {
     /// 2次元ベクトル(x, y)のdouble型構造体です．
     /// </summary>
     [StructLayout(LayoutKind.Sequential)]
-    public class Vector2 {
+    public struct Vector2 {
         /// <summary>
         /// X方向の値
         /// </summary>
@@ -39,11 +39,6 @@ namespace NagaraStage {
         /// </summary>
         public double Y;
 
-        public Vector2() {
-            this.X = 0;
-            this.Y = 0;
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Vector2" /> struct.
         /// </summary>
@@ -52,6 +47,38 @@ namespace NagaraStage {
         public Vector2(double x, double y) {
             this.X = x;
             this.Y = y;
+        }
+
+        public static Vector2 operator+(Vector2 a, Vector2 b) {
+            return new Vector2(a.X + b.X, a.Y + b.Y);
+        }
+
+        public static Vector2 operator -(Vector2 a, Vector2 b) {
+            return new Vector2(a.X - b.X, a.Y - b.Y);
+        }
+
+        public static bool operator >(Vector2 a, Vector2 b) {
+            return (a.X > b.X && a.Y > b.Y);
+        }
+
+        public static bool operator <(Vector2 a, Vector2 b) {
+            return (a.X < b.X && a.Y < b.Y);
+        }
+
+        public static bool operator >=(Vector2 a, Vector2 b) {
+            return (a.X >= b.X && a.Y >= b.Y);
+        }
+
+        public static bool operator <=(Vector2 a, Vector2 b) {
+            return (a.X <= b.X && a.Y <= b.Y);
+        }
+
+        public static bool operator ==(Vector2 a, Vector2 b) {
+            return (a.X == b.X && a.Y == b.Y);
+        }
+
+        public static bool operator !=(Vector2 a, Vector2 b) {
+            return (a.X != b.X || a.Y != b.Y);
         }
 
         /// <summary>
@@ -115,16 +142,73 @@ namespace NagaraStage {
     }
 
     /// <summary>
+    /// 2次元ベクトル(x, y)と角度(angle)を保持するクラスです．
+    /// </summary>
+    public struct Vector2Angle {
+        public double X;
+        public double Y;
+        public double Angle;
+
+        public Vector2Angle(double x, double y, double angle) {
+            this.X = x;
+            this.Y = y;
+            this.Angle = angle;
+        }
+    }
+
+    /// <summary>
     /// 3次元ベクトル(x, y, z)のdouble型構造体です．
     /// </summary>
-    public class Vector3: Vector2 {        
+    public struct Vector3 {
+        /// <summary>
+        /// X方向の値
+        /// </summary>
+        public double X;
+
+        /// <summary>
+        /// Y方向の値
+        /// </summary>
+        public double Y;
+
         /// <summary>
         /// Z方向の値
         /// </summary>
-        public double Z;
+        public double Z;        
 
-        public Vector3():base(0, 0) {
-            this.Z = 0;
+        public static Vector3 operator +(Vector3 a, Vector3 b) {
+            return new Vector3(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+        }
+
+        public static Vector3 operator -(Vector3 a, Vector3 b) {
+            return new Vector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+        }
+
+        public static bool operator >(Vector3 a, Vector3 b) {
+            return (a.X > b.X && a.Y > b.Y && a.Z > b.Z);
+        }
+
+        public static bool operator <(Vector3 a, Vector3 b) {
+            return (a.X < b.X && a.Y < b.Y && a.Z < b.Z);
+        }
+
+        public static bool operator >=(Vector3 a, Vector3 b) {
+            return (a.X >= b.X && a.Y >= b.Y);
+        }
+
+        public static bool operator <=(Vector3 a, Vector3 b) {
+            return (a.X <= b.X && a.Y <= b.Y && a.Z <= b.Z);
+        }
+
+        public static bool operator ==(Vector3 a, Vector3 b) {
+            return (a.X == b.X && a.Y == b.Y && a.Z == b.Z);
+        }
+
+        public static bool operator !=(Vector3 a, Vector3 b) {
+            return (a.X != b.X || a.Y != b.Y || a.Z != b.Z);
+        }
+
+        public Vector3 ToAbs() {
+            return new Vector3(Math.Abs(X), Math.Abs(Y), Math.Abs(Z));
         }
 
         /// <summary>
@@ -133,7 +217,9 @@ namespace NagaraStage {
         /// <param name="x">The x.</param>
         /// <param name="y">The y.</param>
         /// <param name="z">The z.</param>
-        public Vector3(double x, double y, double z):base(x, y) {
+        public Vector3(double x, double y, double z) {
+            this.X = x;
+            this.Y = y;
             this.Z = z;
         }
 

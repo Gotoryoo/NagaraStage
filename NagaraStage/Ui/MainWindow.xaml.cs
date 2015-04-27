@@ -946,7 +946,9 @@ namespace NagaraStage.Ui {
                 IGridMarkRecognizer GridMarkRecognizer = coordManager;
                 mc.SetSpiralCenterPoint();
                 Led led = Led.GetInstance();
-                Vector2 encoderPoint = mc.GetPoint();
+                Vector2 encoderPoint = new Vector2(-1, -1);
+                encoderPoint.X = mc.GetPoint().X;
+                encoderPoint.Y = mc.GetPoint().Y;//おこられたのでしかたなくこうする　吉田20150427
                 Vector2 viewerPoint = new Vector2(-1, -1);
 
                 bool continueFlag = true;
@@ -1022,7 +1024,9 @@ namespace NagaraStage.Ui {
                 IGridMarkRecognizer GridMarkRecognizer = coordManager;
                 mc.SetSpiralCenterPoint();
                 Led led = Led.GetInstance();
-                Vector2 encoderPoint = mc.GetPoint();
+                Vector2 encoderPoint = new Vector2(-1, -1);
+                encoderPoint.X = mc.GetPoint().X;
+                encoderPoint.Y = mc.GetPoint().Y;//おこられたのでしかたなくこうする　吉田20150427
                 Vector2 viewerPoint = new Vector2(-1, -1);
 
                 bool continueFlag = true;
@@ -1127,7 +1131,9 @@ namespace NagaraStage.Ui {
                 (int)(p.Y * 1000)));
 
 
-            Vector2 encoderPoint = mc.GetPoint();
+            Vector2 encoderPoint = new Vector2(-1, -1);
+            encoderPoint.X = mc.GetPoint().X;
+            encoderPoint.Y = mc.GetPoint().Y;//おこられたのでしかたなくこうする　吉田20150427
             Vector2 viewerPoint = new Vector2(-1, -1);
 
             if (TigerPatternMatch.PatternMatch(ref viewerPoint)) {

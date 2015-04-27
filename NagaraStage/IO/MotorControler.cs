@@ -942,6 +942,14 @@ namespace NagaraStage {
                 flag = ((state == MotorAbnomalState.NoProblem) ? flag : false);
                 return flag;
             }
+            
+            private bool isMotorStateOk(params MotorAbnomalState[] states) {
+                bool retval = true;
+                foreach (var state in states) {
+                    retval &= state == MotorAbnomalState.NoProblem;
+                }
+                return retval;
+            }
 
             /// <summary>
             /// 指定された量だけ移動させます．移動中に異常をきたした場合は移動を停止し，異常状態を返します．
@@ -1192,6 +1200,71 @@ namespace NagaraStage {
                 tolerance.Y = (encoderResolution.Y > motorResolution.Y ? 1.2 * encoderResolution.Y : 1.2 * motorResolution.Y);
                 tolerance.Z = (encoderResolution.Z > motorResolution.Z ? 1.2 * encoderResolution.Z : 1.2 * motorResolution.Z);
             }
+
+            /// <summary>
+            /// 指定座標に移動します．ただし，おおよその位置です．
+            /// <para>移指定座標に移動するようにモータドライバに命令を送信しますが，
+            /// 通常のMovePointとは異なり，移動後，座標確認をしながら細かい位置補整を行いません．
+            /// </para>
+            /// </summary>
+            /// <param name="to"></param>
+            /// <param name="speed">移動速度</param>
+            public void MovePointApproximate(Vector3 to, Vector3 speed) {
+                if (movingThread != null) {
+                    if (movingThread.IsAlive) {
+                        AbortMoving();
+                    }
+                }
+                movingThread = new Thread(new ThreadStart(new Action(delegate {
+                    try {
+                        Vector3 amountOfMovement = to - GetPoint();
+                        MotorAbnomalState stateX = MotorAbnomalState.NoProblem,
+                            stateY = MotorAbnomalState.NoProblem,
+                            stateZ = MotorAbnomalState.NoProblem;
+                        Vector3 absAmount = amountOfMovement.ToAbs();
+                        bool activeFlagX, activeFlagY, activeFlagZ;
+                        if (activeFlagX = (absAmount.X > Tolerance.X)) {
+                            stateX = InchUnit(MechaAxisAddress.XAddress, amountOfMovement.X);
+                        }
+                        if (activeFlagY = (absAmount.Y > Tolerance.Y)) {
+                            stateY = InchUnit(MechaAxisAddress.YAddress, amountOfMovement.Y);
+                        }
+                        if (activeFlagZ = (absAmount.Z > Tolerance.Z)) {
+                            stateZ = InchUnit(MechaAxisAddress.ZAddress, amountOfMovement.Z);
+                        }
+
+                        while (activeFlagX || activeFlagY || activeFlagZ) {
+                            Thread.Sleep(1);
+                            byte deviceStatus = new byte();
+                            if (activeFlagX) {
+                                Apci59.GetDriveStatus(ApciM59.SlotNo, (short)VectorId.X, ref deviceStatus);
+                                activeFlagX = !((deviceStatus & 0x01) == 0x00);
+                            }
+                            if (activeFlagY) {
+                                Apci59.GetDriveStatus(ApciM59.SlotNo, (short)VectorId.Y, ref deviceStatus);
+                                activeFlagY = !((deviceStatus & 0x01) == 0x00);
+                            }
+                            if (activeFlagZ) {
+                                Apci59.GetDriveStatus(ApciM59.SlotNo, (short)VectorId.Z, ref deviceStatus);
+                                activeFlagZ = !((deviceStatus & 0x01) == 0x00);
+                            }
+                            if (!isMotorStateOk(stateX, stateY, stateZ)) {
+                                throw new MotorActiveException();
+                            }
+                        }
+                    } catch (MotorActiveException ex) {
+                    } catch (ThreadAbortException ex) {
+                    } finally {
+                        StopInching(MechaAxisAddress.XAddress);
+                        StopInching(MechaAxisAddress.YAddress);
+                        StopInching(MechaAxisAddress.ZAddress);
+                    }
+                })));
+                movingThread.IsBackground = true;
+                movingThread.Start();
+            }
+
+
         }
     }
 }
