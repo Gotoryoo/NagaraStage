@@ -1201,6 +1201,22 @@ namespace NagaraStage {
                 tolerance.Z = (encoderResolution.Z > motorResolution.Z ? 1.2 * encoderResolution.Z : 1.2 * motorResolution.Z);
             }
 
+
+            public void DisplayStat() {
+                for (short ax = 0; ax < 3; ax++) {
+                    int range = 0;
+                    Apci59.DataFullRead(ApciM59.SlotNo, ax, Apci59.RANGE_DATA_READ, ref range);
+                    int ssspeed = 0;
+                    Apci59.DataFullRead(ApciM59.SlotNo, ax, Apci59.START_STOP_SPEED_DATA_READ, ref ssspeed);
+                    int ospeed = 0;
+                    Apci59.DataFullRead(ApciM59.SlotNo, ax, Apci59.OBJECT_SPEED_DATA_READ, ref ospeed);
+                    int rate1 = 0;
+                    Apci59.DataFullRead(ApciM59.SlotNo, ax, Apci59.RATE1_DATA_READ, ref rate1);
+                    System.Console.WriteLine(string.Format("ax, range, ssspeed, ospeed = {0} {1} {2} {3} {4}", ax, range, ssspeed, ospeed, rate1));
+                }
+            }
+
+
             /// <summary>
             /// 指定座標に移動します．ただし，おおよその位置です．
             /// <para>移指定座標に移動するようにモータドライバに命令を送信しますが，
