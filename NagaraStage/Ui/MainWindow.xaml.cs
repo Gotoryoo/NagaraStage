@@ -1892,6 +1892,14 @@ namespace NagaraStage.Ui {
             manager.Start();
         }
 
+        private void MCTestButton_Click(object sender, RoutedEventArgs e) {
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            mc.AAAAAA();
+        }
+
+
+        
+
         private void start_following_Click(object sender, RoutedEventArgs e) {//Ξ追跡アルゴリズム
             TracksManager tm = parameterManager.TracksManager;
             Track myTrack = tm.GetTrack(tm.TrackingIndex);

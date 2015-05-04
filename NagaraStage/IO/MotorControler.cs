@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.IO;
+
 using NagaraStage;
 using NagaraStage.Parameter;
 using NagaraStage.IO.Driver;
+
+using OpenCvSharp;
+using OpenCvSharp.CPlusPlus;
 
 namespace NagaraStage {
     namespace IO {
@@ -1279,6 +1284,264 @@ namespace NagaraStage {
                 movingThread.IsBackground = true;
                 movingThread.Start();
             }
+
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+            /// <summary>
+            /// モータの異常状態を検出します．
+            /// </summary>
+            /// <param name="axis">検出する軸</param>
+            /// <param name="isConfCheck">設定値の異常もチェックするかどうか</param>
+            /// <returns>異常状態</returns>
+            public MotorAbnomalState GetMotorState(VectorId axis, Boolean isConfCheck = false) {
+                MotorAbnomalState motorState = MotorAbnomalState.NoProblem;
+                byte returnValue = new byte();
+                Apci59.GetMechanicalSignal(ApciM59.SlotNo, (short)(axis), ref returnValue);
+
+                // 設定値の異常
+                if (isConfCheck) {
+                    if ((returnValue & (byte)MotorAbnomalState.ConfiguredValueNotCorrect) != 0x0) {
+                        motorState |= MotorAbnomalState.ConfiguredValueNotCorrect;
+                    }
+                }
+
+                // オーバーヒート
+                if ((returnValue & (byte)MotorAbnomalState.OverHeat) != 0x0) {
+                    motorState |= MotorAbnomalState.OverHeat;
+                }
+
+                // マイナス方向に軸の限界
+                if ((returnValue & (byte)MotorAbnomalState.AxisLimitMinus) != 0x0) {
+                    motorState |= MotorAbnomalState.AxisLimitMinus;
+                }
+
+                // プラス方向に軸の限界
+                if ((returnValue & (byte)MotorAbnomalState.AxisLimitPlus) != 0x0) {
+                    motorState |= MotorAbnomalState.AxisLimitPlus;
+                }
+
+                return motorState;
+            }
+
+
+
+            /// <summary>
+            /// 指定された軸を指定された距離動かします。Move、MoveToではこの関数が実行されます。
+            /// <para>
+            /// 移動後，座標確認をしながら細かい位置補整を行いません．
+            /// </para>
+            /// </summary>
+            /// <param name="axis">軸番号</param>
+            /// <param name="distance">移動距離[mm]</param>
+            /// <param name="speed">移動速度</param>
+            private MotorAbnomalState PresetPulseDrive(VectorId axis, double distance, double speed) {
+                MotorAbnomalState motorStatus = MotorAbnomalState.NoProblem;
+                motorStatus = GetMotorState(axis);
+                if (motorStatus != MotorAbnomalState.NoProblem) {
+                    return motorStatus;
+                }
+
+                //speedがマイナスの値だったら距離に応じた適当な値を設定。ゼロなら規定の最低速度、法外に大きいときは規定の最大速度にしたい
+                int rangeData = getRangeData(axis, speed);
+                ApciM59.SetRange(axis, (short)rangeData);
+
+                int startStopSpeedData = getStartStopSpeedData(axis, rangeData);
+                ApciM59.SetStartStopSpeed(axis, (short)startStopSpeedData);
+
+                int objectSpeedData = getObjectSpeedData(axis, speed, rangeData);
+                ApciM59.SetObjectSpeed(axis, (short)objectSpeedData);
+
+                int rate1Data = getRate1Data(axis, speed);
+                ApciM59.SetRate1(axis, (short)rate1Data);
+
+
+                // 移動量をパルス数に変換する
+                double resolution = parameterManager.MotorResolution.Index(axis);
+                int x = (int)(Math.Abs(distance) / resolution);
+
+                if (x > 1677215) return motorStatus;
+
+
+                byte bdirection = (byte)(distance > 0 ? Apci59.PLUS_PRESET_PULSE_DRIVE : Apci59.MINUS_PRESET_PULSE_DRIVE);
+                if (false == Apci59.DataFullWrite(ApciM59.SlotNo, (short)axis, bdirection, x)) {
+                    return motorStatus;
+                }
+
+                return motorStatus;
+            }
+
+
+            /// <summary>
+            /// Test
+            /// </summary>
+            public void AAAAAA() {
+
+                   string txtfileName = string.Format(@"c:\img\aaaaaa.txt");
+                   StreamWriter twriter = File.CreateText(txtfileName);
+
+                for (int i = 0; i < 10; i++) {
+
+                    PresetPulseDrive(VectorId.X, 10, 15.0);
+                    PresetPulseDrive(VectorId.Y, 10, 15.0);
+                    PresetPulseDrive(VectorId.Z, 0.5, 0.1);
+
+                    Thread.Sleep(8000);
+
+                    Vector3 currentpoint = GetPoint();
+
+                    string stlog = "";
+                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4}\n",
+                               i,
+                               currentpoint.X,
+                               currentpoint.Y,
+                               currentpoint.Z);
+                       twriter.Write(stlog);
+
+
+                   }
+
+
+                for (int i = 0; i < 10; i++) {
+
+                    PresetPulseDrive(VectorId.X, -10, 15.0);
+                    PresetPulseDrive(VectorId.Y, -10, 15.0);
+                    PresetPulseDrive(VectorId.Z, -0.5, 0.1);
+
+                    Thread.Sleep(8000);
+
+                    Vector3 currentpoint = GetPoint();
+
+                    string stlog = "";
+                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4}\n",
+                               i,
+                               currentpoint.X,
+                               currentpoint.Y,
+                               currentpoint.Z);
+                    twriter.Write(stlog);
+
+
+                }
+
+
+
+                for (int i = 0; i < 10; i++) {
+
+                    PresetPulseDrive(VectorId.X, 10, 15.0);
+                    PresetPulseDrive(VectorId.Y, 10, 15.0);
+                    PresetPulseDrive(VectorId.Z, 0.5, 0.1);
+
+                    Thread.Sleep(8000);
+
+                    Vector3 currentpoint = GetPoint();
+
+                    string stlog = "";
+                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4}\n",
+                               i,
+                               currentpoint.X,
+                               currentpoint.Y,
+                               currentpoint.Z);
+                    twriter.Write(stlog);
+
+                    PresetPulseDrive(VectorId.X, -10, 15.0);
+                    PresetPulseDrive(VectorId.Y, -10, 15.0);
+                    PresetPulseDrive(VectorId.Z, -0.5, 0.1);
+
+                    Thread.Sleep(8000);
+
+                    currentpoint = GetPoint();
+
+                    stlog = "";
+                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4}\n",
+                               i,
+                               currentpoint.X,
+                               currentpoint.Y,
+                               currentpoint.Z);
+                    twriter.Write(stlog);
+
+                }
+
+
+
+                twriter.Close();
+                       
+
+                
+            }
+            /// <summary>
+            /// 指定された3軸の距離分動かします。
+            /// <para>
+            /// 
+            /// </para>
+            /// </summary>
+            /// <param name="distance">移動距離[mm]</param>
+            /// <param name="speed">移動速度</param>
+            /// <param name="_tolerance">目的地と到着地点誤差の許容値</param>
+            public void Move(Vector3 distance, Vector3 speed, Vector3 _tolerance) {
+
+                //トレランスがゼロなら、ハードウェアの分解能によって規定されたトレランスの最小値を設定するようにしたい
+
+                if (movingThread != null) {
+                    if (movingThread.IsAlive) {
+                        AbortMoving();
+                    }
+                }
+
+                Vector3 to = GetPoint() + distance;
+                movingThread = new Thread(new ThreadStart(new Action(delegate {
+                    try {
+                        Vector3 residual = to - GetPoint();
+                        MotorAbnomalState stateX = MotorAbnomalState.NoProblem,
+                            stateY = MotorAbnomalState.NoProblem,
+                            stateZ = MotorAbnomalState.NoProblem;
+                        Vector3 absAmount = residual.ToAbs();
+                        bool activeFlagX, activeFlagY, activeFlagZ;
+                        if (activeFlagX = (absAmount.X > Tolerance.X)) {
+                            stateX = InchUnit(MechaAxisAddress.XAddress, residual.X);
+                        }
+                        if (activeFlagY = (absAmount.Y > Tolerance.Y)) {
+                            stateY = InchUnit(MechaAxisAddress.YAddress, residual.Y);
+                        }
+                        if (activeFlagZ = (absAmount.Z > Tolerance.Z)) {
+                            stateZ = InchUnit(MechaAxisAddress.ZAddress, residual.Z);
+                        }
+
+                        while (activeFlagX || activeFlagY || activeFlagZ) {
+                            Thread.Sleep(1);
+                            byte deviceStatus = new byte();
+                            if (activeFlagX) {
+                                Apci59.GetDriveStatus(ApciM59.SlotNo, (short)VectorId.X, ref deviceStatus);
+                                activeFlagX = !((deviceStatus & 0x01) == 0x00);
+                            }
+                            if (activeFlagY) {
+                                Apci59.GetDriveStatus(ApciM59.SlotNo, (short)VectorId.Y, ref deviceStatus);
+                                activeFlagY = !((deviceStatus & 0x01) == 0x00);
+                            }
+                            if (activeFlagZ) {
+                                Apci59.GetDriveStatus(ApciM59.SlotNo, (short)VectorId.Z, ref deviceStatus);
+                                activeFlagZ = !((deviceStatus & 0x01) == 0x00);
+                            }
+                            if (!isMotorStateOk(stateX, stateY, stateZ)) {
+                                throw new MotorActiveException();
+                            }
+                        }
+                    } catch (MotorActiveException ex) {
+                    } catch (ThreadAbortException ex) {
+                    } finally {
+                        StopInching(MechaAxisAddress.XAddress);
+                        StopInching(MechaAxisAddress.YAddress);
+                        StopInching(MechaAxisAddress.ZAddress);
+                    }
+                })));
+                movingThread.IsBackground = true;
+                movingThread.Start();
+            }
+
+
+
+
+ 
 
 
         }

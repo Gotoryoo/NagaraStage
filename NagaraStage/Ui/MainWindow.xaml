@@ -235,6 +235,10 @@
                         x:Name="scaleFasterActivityButton" 
                         Label="{Binding Source={StaticResource strings}, Path=StartScaleMeasureActivity}"
                         LargeImageSource="/Images/start.png" Click="ScaleFasterActivityButton_Click" />
+                    <ribbon:RibbonButton
+                        x:Name="MCTestButton" 
+                        Label="{Binding Source={StaticResource strings}, Path=MCTest}"
+                        LargeImageSource="/Images/start.png" Click="MCTestButton_Click" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>             
             <ribbon:RibbonTab
