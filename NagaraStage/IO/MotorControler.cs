@@ -1378,97 +1378,87 @@ namespace NagaraStage {
             /// </summary>
             public void AAAAAA() {
 
-                   string txtfileName = string.Format(@"c:\img\aaaaaa.txt");
-                   StreamWriter twriter = File.CreateText(txtfileName);
+                string txtfileName = string.Format(@"c:\img\aaaaaa.txt");
+                StreamWriter twriter = File.CreateText(txtfileName);
+
+                Vector3 speed = new Vector3(30, 30, 0.4);//つかわないけど
+                Vector3 tolerance = new Vector3(0.001, 0.001, 0.001);//つかわないけど
 
                 for (int i = 0; i < 10; i++) {
 
-                    PresetPulseDrive(VectorId.X, 10, 15.0);
-                    PresetPulseDrive(VectorId.Y, 10, 15.0);
-                    PresetPulseDrive(VectorId.Z, 0.5, 0.1);
-
-                    Thread.Sleep(8000);
+                    Vector3 distance = new Vector3(10, 10, 0.5);
+                    Move(distance, speed, tolerance);
+                    Join();
 
                     Vector3 currentpoint = GetPoint();
 
                     string stlog = "";
-                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4}\n",
+                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4} {4}\n",
                                i,
                                currentpoint.X,
                                currentpoint.Y,
-                               currentpoint.Z);
-                       twriter.Write(stlog);
-
-
-                   }
-
-
-                for (int i = 0; i < 10; i++) {
-
-                    PresetPulseDrive(VectorId.X, -10, 15.0);
-                    PresetPulseDrive(VectorId.Y, -10, 15.0);
-                    PresetPulseDrive(VectorId.Z, -0.5, 0.1);
-
-                    Thread.Sleep(8000);
-
-                    Vector3 currentpoint = GetPoint();
-
-                    string stlog = "";
-                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4}\n",
-                               i,
-                               currentpoint.X,
-                               currentpoint.Y,
-                               currentpoint.Z);
+                               currentpoint.Z,
+                               System.DateTime.Now.ToString("HHmmss_fff"));
                     twriter.Write(stlog);
+                }
 
 
+                for (int i = 0; i < 10; i++) {
+
+                    Vector3 distance = new Vector3(-10, -10, -0.5);
+                    Move(distance, speed, tolerance);
+                    Join();
+
+                    Vector3 currentpoint = GetPoint();
+
+                    string stlog = "";
+                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4} {4}\n",
+                               i,
+                               currentpoint.X,
+                               currentpoint.Y,
+                               currentpoint.Z,
+                               System.DateTime.Now.ToString("HHmmss_fff"));
+                    twriter.Write(stlog);
                 }
 
 
 
                 for (int i = 0; i < 10; i++) {
 
-                    PresetPulseDrive(VectorId.X, 10, 15.0);
-                    PresetPulseDrive(VectorId.Y, 10, 15.0);
-                    PresetPulseDrive(VectorId.Z, 0.5, 0.1);
-
-                    Thread.Sleep(8000);
+                    Vector3 distance = new Vector3(10, 10, 0.5);
+                    Move(distance, speed, tolerance);
+                    Join();
 
                     Vector3 currentpoint = GetPoint();
 
                     string stlog = "";
-                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4}\n",
+                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4} {4}\n",
                                i,
                                currentpoint.X,
                                currentpoint.Y,
-                               currentpoint.Z);
+                               currentpoint.Z,
+                               System.DateTime.Now.ToString("HHmmss_fff"));
                     twriter.Write(stlog);
 
-                    PresetPulseDrive(VectorId.X, -10, 15.0);
-                    PresetPulseDrive(VectorId.Y, -10, 15.0);
-                    PresetPulseDrive(VectorId.Z, -0.5, 0.1);
-
-                    Thread.Sleep(8000);
+                    distance = new Vector3(-10, -10, -0.5);
+                    Move(distance, speed, tolerance);
+                    Join();
 
                     currentpoint = GetPoint();
 
                     stlog = "";
-                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4}\n",
+                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4} {4}\n",
                                i,
                                currentpoint.X,
                                currentpoint.Y,
-                               currentpoint.Z);
+                               currentpoint.Z,
+                               System.DateTime.Now.ToString("HHmmss_fff"));
                     twriter.Write(stlog);
-
                 }
-
-
-
                 twriter.Close();
-                       
-
-                
             }
+
+
             /// <summary>
             /// 指定された3軸の距離分動かします。
             /// <para>
@@ -1476,8 +1466,8 @@ namespace NagaraStage {
             /// </para>
             /// </summary>
             /// <param name="distance">移動距離[mm]</param>
-            /// <param name="speed">移動速度</param>
-            /// <param name="_tolerance">目的地と到着地点誤差の許容値</param>
+            /// <param name="speed">移動速度、いまはつかってない</param>
+            /// <param name="_tolerance">目的地と到着地点誤差の許容値、いまはつかっていない</param>
             public void Move(Vector3 distance, Vector3 speed, Vector3 _tolerance) {
 
                 //トレランスがゼロなら、ハードウェアの分解能によって規定されたトレランスの最小値を設定するようにしたい
@@ -1488,25 +1478,32 @@ namespace NagaraStage {
                     }
                 }
 
-                Vector3 to = GetPoint() + distance;
                 movingThread = new Thread(new ThreadStart(new Action(delegate {
                     try {
-                        Vector3 residual = to - GetPoint();
-                        MotorAbnomalState stateX = MotorAbnomalState.NoProblem,
+
+                        MotorAbnomalState 
+                            stateX = MotorAbnomalState.NoProblem,
                             stateY = MotorAbnomalState.NoProblem,
                             stateZ = MotorAbnomalState.NoProblem;
-                        Vector3 absAmount = residual.ToAbs();
+
+                        //移動量がToleranceよりも大きな値かを確認。移動量が微少だったら動かさない。
+                        //移動する軸に対しactiveFlagを用意して、移動するのであればTrueにする
+                        //暫定の措置として、移動速度をspeed=4に相当する速度に設定してある。加減速の制御はモーター制御が空気よんでやってくれるだろう。
                         bool activeFlagX, activeFlagY, activeFlagZ;
-                        if (activeFlagX = (absAmount.X > Tolerance.X)) {
-                            stateX = InchUnit(MechaAxisAddress.XAddress, residual.X);
+                        Vector3 absdistance = distance.ToAbs();
+
+                        if (activeFlagX = (absdistance.X > Tolerance.X)) {
+                            stateX = PresetPulseDrive(VectorId.X, distance.X, 30.0);
                         }
-                        if (activeFlagY = (absAmount.Y > Tolerance.Y)) {
-                            stateY = InchUnit(MechaAxisAddress.YAddress, residual.Y);
+                        if (activeFlagY = (absdistance.Y > Tolerance.Y)) {
+                            stateY = PresetPulseDrive(VectorId.Y, distance.Y, 30.0);
                         }
-                        if (activeFlagZ = (absAmount.Z > Tolerance.Z)) {
-                            stateZ = InchUnit(MechaAxisAddress.ZAddress, residual.Z);
+                        if (activeFlagZ = (absdistance.Z > Tolerance.Z)) {
+                            stateZ = PresetPulseDrive(VectorId.Z, distance.Z, 0.4);
                         }
 
+                        //移動が完了したら各軸のactiveFlagをFalseにする
+                        //GetDriveStatus関数によって移動が完了したかを監視する
                         while (activeFlagX || activeFlagY || activeFlagZ) {
                             Thread.Sleep(1);
                             byte deviceStatus = new byte();
@@ -1529,9 +1526,9 @@ namespace NagaraStage {
                     } catch (MotorActiveException ex) {
                     } catch (ThreadAbortException ex) {
                     } finally {
-                        StopInching(MechaAxisAddress.XAddress);
-                        StopInching(MechaAxisAddress.YAddress);
-                        StopInching(MechaAxisAddress.ZAddress);
+                        SlowDownStop(VectorId.X);
+                        SlowDownStop(VectorId.Y);
+                        SlowDownStop(VectorId.Z);
                     }
                 })));
                 movingThread.IsBackground = true;
@@ -1539,7 +1536,23 @@ namespace NagaraStage {
             }
 
 
+            /// <summary>
+            /// インチング(寸動)を停止します．
+            /// </summary>
+            /// <param name="axisAddress">停止する軸</param>
+            public void SlowDownStop(VectorId axis) {
 
+                if (false == Apci59.CommandWrite(ApciM59.SlotNo, 0, Apci59.SLOW_DOWN_STOP)) return;
+
+                for (int i = 0; i <= 32000; ++i) {
+                    byte pbStatus = new byte();
+                    Apci59.GetEndStatus(ApciM59.SlotNo, (short)axis, ref pbStatus);
+                    if ((pbStatus & 0x10) != 0x0) {
+                        break;
+                    }
+                }
+
+            }
 
  
 
