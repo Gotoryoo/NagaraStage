@@ -231,7 +231,10 @@
                         x:Name="scaleMeasureActivityButton" 
                         Label="{Binding Source={StaticResource strings}, Path=StartScaleMeasureActivity}"
                         LargeImageSource="/Images/start.png" Click="ScaleMeasureActivityButton_Click" />
-                    
+                    <ribbon:RibbonButton
+                        x:Name="scaleFasterActivityButton" 
+                        Label="{Binding Source={StaticResource strings}, Path=StartScaleMeasureActivity}"
+                        LargeImageSource="/Images/start.png" Click="ScaleFasterActivityButton_Click" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>             
             <ribbon:RibbonTab

@@ -114,6 +114,7 @@
     <Compile Include="Activities\CorrectionByGridMark.cs" />
     <Compile Include="Activities\MotorMove.cs" />
     <Compile Include="Activities\OverallScan.cs" />
+    <Compile Include="Activities\ScaleFaster.cs" />
     <Compile Include="Activities\ScaleMeasure.cs" />
     <Compile Include="Activities\SequentialImage.cs" />
     <Compile Include="Activities\SurfaceEventArgs.cs" />

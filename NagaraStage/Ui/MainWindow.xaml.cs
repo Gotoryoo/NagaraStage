@@ -1883,6 +1883,14 @@ namespace NagaraStage.Ui {
             manager.Start();
         }
 
+        private void ScaleFasterActivityButton_Click(object sender, RoutedEventArgs e) {
+
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            ScaleFaster sm = ScaleFaster.GetInstance(parameterManager);
+
+            manager.Enqueue(sm);
+            manager.Start();
+        }
 
         private void start_following_Click(object sender, RoutedEventArgs e) {//Ξ追跡アルゴリズム
             TracksManager tm = parameterManager.TracksManager;
