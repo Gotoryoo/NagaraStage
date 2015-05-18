@@ -1378,22 +1378,28 @@ namespace NagaraStage {
             /// </summary>
             public void AAAAAA() {
 
-                string txtfileName = string.Format(@"c:\img\aaaaaa.txt");
-                StreamWriter twriter = File.CreateText(txtfileName);
+              //  string txtfileName = string.Format(@"c:\img\aaaaaa.txt");
+              //  StreamWriter twriter = File.CreateText(txtfileName);
 
                 Vector3 speed = new Vector3(30, 30, 0.4);//つかわないけど
                 Vector3 tolerance = new Vector3(0.001, 0.001, 0.001);//つかわないけど
 
-                for (int i = 0; i < 10; i++) {
+            //    for (int i = 0; i < 10; i++) {
 
-                    Vector3 distance = new Vector3(10, 10, 0.5);
+                    Vector3 distance = new Vector3(0, 0, 0.1);
+                    Move(distance, speed, tolerance);
+                    Join();
+                    Move(distance, speed, tolerance);
+                    Join();
+                    Move(distance, speed, tolerance);
+                    Join();
                     Move(distance, speed, tolerance);
                     Join();
 
-                    Vector3 currentpoint = GetPoint();
+               //     Vector3 currentpoint = GetPoint();
 
-                    string stlog = "";
-                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4} {4}\n",
+             /*      string stlog = "";
+                      stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4} {4}\n",
                                i,
                                currentpoint.X,
                                currentpoint.Y,
@@ -1455,7 +1461,7 @@ namespace NagaraStage {
                                System.DateTime.Now.ToString("HHmmss_fff"));
                     twriter.Write(stlog);
                 }
-                twriter.Close();
+                twriter.Close();        */
             }
 
 
