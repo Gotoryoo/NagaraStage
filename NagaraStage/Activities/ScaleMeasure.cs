@@ -118,14 +118,14 @@ namespace NagaraStage.Activities {
 
                     Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
                     Mat gau = mat.Clone();
-                    Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
+                    Cv2.GaussianBlur(gau, gau, Cv.Size(7, 7), -1);
                     Cv2.Subtract(gau, mat, mat);
-                    Cv2.Threshold(mat, mat, 10, 1, ThresholdType.Binary);
+                    Cv2.Threshold(mat, mat, 4, 1, ThresholdType.Binary);
                     int brightness = Cv2.CountNonZero(mat);
 
                     viewcounter++;
 
-                    if (brightness > 10000 || viewcounter > 100) flag = false;
+                    if (brightness > 5000 || viewcounter > 100) flag = false;
                 }
 
                     Vector3 surfacepoint = mc.GetPoint();
