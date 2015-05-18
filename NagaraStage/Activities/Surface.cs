@@ -556,47 +556,38 @@ namespace NagaraStage.Activities {
 			return (brightness > BrightnessThreshold);    
 		}
 
-		/*
-		/// <summary>
-		/// 与えられた画像データがゲルの中であるかどうかを取得します．
-		/// <para>ただし8bitグレースケールの画像のみです．</para>
-		/// </summary>
-		/// <param name="imageData">画像データ</param>
-		/// <param name="width">画像の横幅(pixcel)</param>
-		/// <param name="height">画像の縦幅(pixcel)</param>
-		/// <returns></returns>
-		public bool IsInGel(byte[] imageData, int width, int height) {
-			Camera camera = Camera.GetInstance();
-			byte[] b = camera.ArrayImage;
-			Mat mat = new Mat(height, width, MatType.CV_8U, b);
-			Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
 
-			Mat gau = mat.Clone();
-			Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
-			Cv2.Subtract(gau, mat, mat);
-			Cv2.Threshold(mat, mat, BinarizeThreshold, 1, ThresholdType.Binary);
-			brightness = Cv2.CountNonZero(mat);
+        /// <summary>
+        /// 現在撮影している画像をDiffence of Gaussianm→二値化し、hitピクセルの数を数えます。
+        /// </summary>
+        /// <returns>hitピクセルの数</returns>
+        public int CountHitPixels() {
+            Camera camera = Camera.GetInstance();
+            byte[] b = camera.ArrayImage;
+            Mat mat0 = new Mat(440, 512, MatType.CV_8U, b);
+            Mat mat = mat0.Clone();
 
-			return (brightness > BrightnessThreshold);    
-		}
-		
-		public bool IsInGel(BitmapSource source) {
-			return Gel.IsInGel(
-				ImageUtility.ToArrayImage(source),
-				(int)source.PixelWidth, (int)source.PixelHeight,
-				StartRow, EndRow,
-				ref brightness,
-				NumOfSidePixcel,
-				BrightnessThreshold, BinarizeThreshold,
-				powerOfDiffrence);
-		}
-		*/
+            Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
 
+            Mat gau = mat.Clone();
+            Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
+            Cv2.Subtract(gau, mat, mat);
+            Cv2.Threshold(mat, mat, BinarizeThreshold, 1, ThresholdType.Binary);
+            brightness = Cv2.CountNonZero(mat);
+
+            return brightness;
+        }
+
+
+        /// <summary>
+        /// 表面の位置を記録した配列を初期化します．
+        /// </summary>
 		private void initializeSurfaces() {
 			for (int i = 0; i < surfaces.Length; ++i) {
 				surfaces[i] = new double();
 			}
 		}
+
 
 		/// <summary>
 		/// recogThreadの行う処理です．このメソッドを直接呼び出さないでください．
@@ -612,75 +603,38 @@ namespace NagaraStage.Activities {
 			/* Z軸をSpeed1(低速)でマイナス方向に動かして，最下点もしくは下降距離分だけ移動させる．*/
 			MotorControler mc = MotorControler.GetInstance(parameterManager);
 			speedBeforeStart = mc.NowSpeed;
-			Boolean isOnBottomLimit = false;
 
 
-            bool flag = true;
-
+            bool flag;
+            double temp_z;
 
             mc.Inch(PlusMinus.Minus, motorSpeed, VectorId.Z);
             flag = true;
             while (flag) {
-
-                byte[] b = camera.ArrayImage;
-                Mat src = new Mat(440, 512, MatType.CV_8U, b);
-                Mat mat = src.Clone();
-
-                Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
-                Mat gau = mat.Clone();
-                Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
-                Cv2.Subtract(gau, mat, mat);
-                Cv2.Threshold(mat, mat, 10, 1, ThresholdType.Binary);
-                int brightness = Cv2.CountNonZero(mat);
-
+                int brightness = CountHitPixels();
                 if (brightness > 12000) flag = false;
             }
+            /*
+			UpTopRecognized(this, new eventArgs());
+            LowBottomRecognized(this, new eventArgs());
+			LowTopRecognized(this, new eventArgs());
+			UpBottomRecognized(this, new eventArgs());
+        	*/
             mc.StopInching(MechaAxisAddress.ZAddress);
             surfaces[0] = mc.GetPoint().Z;
             System.Diagnostics.Debug.WriteLine(string.Format("{0}", mc.GetPoint().Z));
-
             Thread.Sleep(100);
 
 
-            mc.Inch(PlusMinus.Minus, 0.2, VectorId.Z);
-            double current2Point = mc.GetPoint().Z;
-
-            bool dice2 = true;
-
-            while (dice2) {
-
-                double nowPoint = mc.GetPoint().Z;
-
-                double renge = current2Point - nowPoint;
-
-                if (renge > 0.20) dice2 = false;
-
-
-
-
-            }
-
-            mc.StopInching(MechaAxisAddress.ZAddress);
-
+            mc.Move(new Vector3(0.0, 0.0, -0.2), new Vector3(0.0, 0.0, -0.2), new Vector3(0.0, 0.0, -0.2));
+            mc.Join();
             Thread.Sleep(100);
-
 
 
             mc.Inch(PlusMinus.Minus, motorSpeed, VectorId.Z);
             flag = true;
             while (flag) {
-
-                byte[] b = camera.ArrayImage;
-                Mat src = new Mat(440, 512, MatType.CV_8U, b);
-                Mat mat = src.Clone();
-
-                Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
-                Mat gau = mat.Clone();
-                Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
-                Cv2.Subtract(gau, mat, mat);
-                Cv2.Threshold(mat, mat, 10, 1, ThresholdType.Binary);
-                int brightness = Cv2.CountNonZero(mat);
-
+                int brightness = CountHitPixels();
                 if (brightness < 4000) flag = false;
             }
 
@@ -688,111 +642,43 @@ namespace NagaraStage.Activities {
             surfaces[2] = mc.GetPoint().Z;
             System.Diagnostics.Debug.WriteLine(string.Format("{0}", mc.GetPoint().Z));
 
-
-           // Thread.Sleep(100);
-
             
             flag = true;
             while (flag) {
-
-                byte[] b = camera.ArrayImage;
-                Mat src = new Mat(440, 512, MatType.CV_8U, b);
-                Mat mat = src.Clone();
-
-                Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
-                Mat gau = mat.Clone();
-                Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
-                Cv2.Subtract(gau, mat, mat);
-                Cv2.Threshold(mat, mat, 10, 1, ThresholdType.Binary);
-                int brightness = Cv2.CountNonZero(mat);
-
+                int brightness = CountHitPixels();
                 if (brightness > 4000) flag = false;
             }
-
-
-           
 
 
             mc.StopInching(MechaAxisAddress.ZAddress);
             surfaces[1] = mc.GetPoint().Z;
             System.Diagnostics.Debug.WriteLine(string.Format("{0}", mc.GetPoint().Z));
-
-
             Thread.Sleep(100);
 
-
-
-            mc.Inch(PlusMinus.Minus, 0.2, VectorId.Z);
-            double currentPoint = mc.GetPoint().Z;
-
-            bool dice = true;
-
-            while (dice) {
-
-                double nowPoint = mc.GetPoint().Z;
-
-                double renge = currentPoint - nowPoint;
-
-                if (renge > 0.20) dice = false;
-
-
-
-
-            }
-            mc.StopInching(MechaAxisAddress.ZAddress);
-
+            mc.Move(new Vector3(0.0, 0.0, -0.2), new Vector3(0.0, 0.0, -0.2), new Vector3(0.0, 0.0, -0.2));
+            mc.Join();
             Thread.Sleep(100);
-
 
             mc.Inch(PlusMinus.Minus, motorSpeed, VectorId.Z);
-            //double startPoint = mc.GetPoint().Z;
-
 
             flag = true;
-
             while (flag) {
-                //Thread.Sleep(delayTime);
-
-                byte[] b = camera.ArrayImage;
-                Mat src = new Mat(440, 512, MatType.CV_8U, b);
-                Mat mat = src.Clone();
-
-                Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
-                Mat gau = mat.Clone();
-                Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
-                Cv2.Subtract(gau, mat, mat);
-                Cv2.Threshold(mat, mat, 10, 1, ThresholdType.Binary);
-                int brightness = Cv2.CountNonZero(mat);
-
+                int brightness = CountHitPixels();
                 if (brightness < 2000) flag = false;
             }
 
             mc.StopInching(MechaAxisAddress.ZAddress);
             surfaces[3] = mc.GetPoint().Z;
             System.Diagnostics.Debug.WriteLine(string.Format("{0}", mc.GetPoint().Z));
-
-
             Thread.Sleep(100);
 
-            currentPoint = mc.GetPoint().Z;
-            mc.Inch(PlusMinus.Plus, 0.25, VectorId.Z);
-
-            dice = true;
-
-            while (dice) {
-                if (surfaces[0] - 0.05 < mc.GetPoint().Z) dice = false;
-            }
-            mc.StopInching(MechaAxisAddress.ZAddress);
-
+            temp_z = (surfaces[0] - 0.05) - mc.GetPoint().Z;
+            mc.Move(new Vector3(0.0, 0.0, temp_z), new Vector3(0.0, 0.0, -0.2), new Vector3(0.0, 0.0, -0.2));
+            mc.Join();
             Thread.Sleep(100);
-
-            mc.AAAAAA();
 
 
             /*
-
-
-
 			// モータZ軸をマイナス方向(下方向)に稼働させる
 			try {
 				// 下降の開始
