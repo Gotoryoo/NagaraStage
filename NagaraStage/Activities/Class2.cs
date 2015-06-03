@@ -24,13 +24,13 @@ namespace NagaraStage.Activities {
         private ParameterManager parameterManager;
         private string direcotryPath;
 
-      /*   public string DirectoryPath {
-             get { return direcotryPath; }
-             set {
-                 direcotryPath = value;
-                 isValidate();
-             }
-         }*/
+        /*   public string DirectoryPath {
+               get { return direcotryPath; }
+               set {
+                   direcotryPath = value;
+                   isValidate();
+               }
+           }*/
 
         public Class2(ParameterManager _paramaterManager)
             : base(_paramaterManager) {
@@ -104,22 +104,27 @@ namespace NagaraStage.Activities {
             //    list_grid_pred.Add(new Vector2(38.4, -14.0));
             //   list_grid_pred.Add(new Vector2(38.5, -14.1));
 
-            camera.Start();
+            
             mc.SetSpiralCenterPoint();
 
             int ledbrightness = led.AdjustLight(parameterManager);
+            
 
-            for (int t = 0; t < 400; t++) {
-                
-                mc.MovePointZ(initialpoint.Z+0.020);
+            for (int vy = 0; vy < 16; vy++) {
+
+                Vector3 cp = mc.GetPoint();
+                mc.MoveTo(new Vector3(cp.X, cp.Y, initialpoint.Z + 0.020), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                 mc.Join();
+                Thread.Sleep(100);
 
-                int viewcounter = 0;
+                camera.Start();
                 bool flag = true;
                 while (flag) {
 
                     mc.MoveDistance(-0.003, VectorId.Z);
                     mc.Join();
+                    Thread.Sleep(100);
+
                     byte[] b = camera.ArrayImage;
                     Mat src = new Mat(440, 512, MatType.CV_8U, b);
                     Mat mat = src.Clone();
@@ -131,127 +136,147 @@ namespace NagaraStage.Activities {
                     Cv2.Threshold(mat, mat, 4, 1, ThresholdType.Binary);
                     int brightness = Cv2.CountNonZero(mat);
 
-                    viewcounter++;
-
-                    if (brightness > 5000 || viewcounter > 100) flag = false;
+                    if (brightness > 5000) flag = false;
                 }
-                
-                //ledbrightness = led.AdjustLight(parameterManager);
-
-                Vector3 surfacepoint = mc.GetPoint();
-
-                for (int q = 0; q < 23; q++) {
-
-                        mc.MovePointZ(surfacepoint.Z - 0.06 + (0.003 * q));
-                        mc.Join();
-
-
-                        Vector3 nowpoint = mc.GetPoint();
-
-                        byte[] b = camera.ArrayImage;
-                        Mat image = new Mat(440, 512, MatType.CV_8U, b);
-                        Mat clone_image = image.Clone();
-
-                        //image_set.Add(clone_image);
-                        //char[] filename = new char[64];
-                        //String.Format(filename,"gtrd%d.png" , i );
-
-                        clone_image.ImWrite(String.Format(@"c:\img\{0}_{1}_{2:00}.bmp",
-                            (int)(nowpoint.X * 1000),
-                            (int)(nowpoint.Y * 1000),
-                            q)
-                            );
-
-                        string stlog = "";
-                        stlog += String.Format("{0}   {1}  {2}  {3}\n",
-                                ledbrightness,
-                                nowpoint.X,
-                                nowpoint.Y,
-                                nowpoint.Z);
-                        twriter.Write(stlog);
-
-                    }//for q-th layer
-
-                    mc.MoveInSpiral(true);
-                    mc.Join();
-                }//for t-th view
-
-
                 camera.Stop();
-                twriter.Close();
-            }
+                Vector3 surfpoint = mc.GetPoint();
 
-            /*
-            int viewcounter = 0;
+                for (int vx = 0; vx < 16; vx++) {
 
+                    byte[] bb = new byte[440 * 512 * 17];
+                    /*
+                    string datfileName = string.Format(@"c:\img\{0}_{1}_{2}_{3}.dat",
+                        (int)(p.X * 1000),
+                        (int)(p.Y * 1000),
+                        vx,
+                        vy
+                        );
+                    BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
+                    */
 
-            string txtfileName = string.Format(@"{0}\{1}.txt",
-                direcotryPath, System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"));
-            StreamWriter twriter = File.CreateText(txtfileName);
+                    double vcenterx = initialpoint.X + vx * parameterManager.SpiralShiftX;
+                    double vcentery = initialpoint.Y + vy * parameterManager.SpiralShiftY;
+                    double vcenterz = surfpoint.Z - 0.053;
+                    mc.MoveTo(new Vector3(vcenterx, vcentery, vcenterz), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                    mc.Join();
+                    Thread.Sleep(100);
 
-            List<Vector3> PointList = new List<Vector3>();
-            for (int xx = 0; xx < 5; xx++) {
-                for (int yy = 0; yy < 5; yy++) {
-                    GridMark nearestMark = cm.GetTheNearestGridMark(new Vector3(InitPoint.X + xx * 10, InitPoint.Y + yy * 10, InitPoint.Z));
-                    PointList.Add(new Vector3(nearestMark.x, nearestMark.y, InitPoint.Z));
-                }
-            }
+                    Vector3 ip = mc.GetPoint();
+
+                    mc.Inch(PlusMinus.Plus, 0.15, VectorId.Z);
+
+                    int viewcounter = 0;
+                    while (viewcounter < 16 + 1 + 3) {
+                        byte[] b = Ipt.CaptureMain();
+                        p = mc.GetPoint();
+
+                        if (viewcounter >= 3) {
+                            //b.CopyTo(bb, 440 * 512 * (viewcounter - 3));
+                            Mat image = new Mat(440, 512, MatType.CV_8U, b);
+                            Mat clone_image = image.Clone();
+
+                        clone_image.ImWrite(string.Format(@"c:\img\{0}_{1}_{2}_{3}_{4}.bmp",
+                         (int)(p.X * 1000),
+                         (int)(p.Y * 1000),
+                         vx,
+                         vy,
+                         viewcounter - 3));
+                            string stlog = "";
+                            stlog += String.Format("{0}   {1}  {2}  {3}\n",
+                                    ledbrightness,
+                                    ip.X,
+                                    ip.Y,
+                                    p.Z);
+                            twriter.Write(stlog);
+                        }
+                        viewcounter++;
+                    }//view
+                    viewcounter = 0;
+
+                    mc.StopInching(MechaAxisAddress.ZAddress);
+                    mc.Join();
+                    Thread.Sleep(100);
+                    //writer.Write(bb);
+                    //writer.Flush();
+                    //writer.Close();
+                }//vx
+            }//vy
+
 
             camera.Stop();
+            twriter.Close();
+        }
 
-            for (int pp = 0; pp < PointList.Count(); pp++) {
-                string stlog = "";
-                int nshot = 20;
-                byte[] bb = new byte[440 * 512 * nshot];
+        /*
+        int viewcounter = 0;
 
-                mc.MovePoint(PointList[pp]);
+
+        string txtfileName = string.Format(@"{0}\{1}.txt",
+            direcotryPath, System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"));
+        StreamWriter twriter = File.CreateText(txtfileName);
+
+        List<Vector3> PointList = new List<Vector3>();
+        for (int xx = 0; xx < 5; xx++) {
+            for (int yy = 0; yy < 5; yy++) {
+                GridMark nearestMark = cm.GetTheNearestGridMark(new Vector3(InitPoint.X + xx * 10, InitPoint.Y + yy * 10, InitPoint.Z));
+                PointList.Add(new Vector3(nearestMark.x, nearestMark.y, InitPoint.Z));
+            }
+        }
+
+        camera.Stop();
+
+        for (int pp = 0; pp < PointList.Count(); pp++) {
+            string stlog = "";
+            int nshot = 20;
+            byte[] bb = new byte[440 * 512 * nshot];
+
+            mc.MovePoint(PointList[pp]);
+            mc.Join();
+
+            p = mc.GetPoint();
+            double prev_z = p.Z;
+            DateTime starttime = System.DateTime.Now;
+            string datfileName = string.Format(@"{0}\{1}_x{2}_y{3}.dat",
+                direcotryPath,
+                starttime.ToString("yyyyMMdd_HHmmss_fff"),
+                (int)(p.X * 1000),
+                (int)(p.Y * 1000));
+            BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
+
+
+
+            while (viewcounter < nshot) {
+                mc.MoveDistance(-0.001, VectorId.Z);
                 mc.Join();
-
+                byte[] b = Ipt.CaptureMain();
                 p = mc.GetPoint();
-                double prev_z = p.Z;
-                DateTime starttime = System.DateTime.Now;
-                string datfileName = string.Format(@"{0}\{1}_x{2}_y{3}.dat",
-                    direcotryPath,
-                    starttime.ToString("yyyyMMdd_HHmmss_fff"),
-                    (int)(p.X * 1000),
-                    (int)(p.Y * 1000));
-                BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
-
-
-
-                while (viewcounter < nshot) {
-                    mc.MoveDistance(-0.001, VectorId.Z);
-                    mc.Join();
-                    byte[] b = Ipt.CaptureMain();
-                    p = mc.GetPoint();
-                    TimeSpan ts = System.DateTime.Now - starttime;
-                    stlog += String.Format("{0} {1} {2} {3} {4} {5} {6} {7}\n",
-                        pp,
-                        System.DateTime.Now.ToString("HHmmss\\.fff"),
-                        ts.ToString("s\\.fff"),
-                        (p.X * 1000).ToString("0.0"),
-                        (p.Y * 1000).ToString("0.0"),
-                        (p.Z * 1000).ToString("0.0"),
-                        (prev_z * 1000 - p.Z * 1000).ToString("0.0"),
-                        viewcounter);
-                    b.CopyTo(bb, 440 * 512 * viewcounter);
-                    viewcounter++;
-                }
-
-                viewcounter = 0;
-                twriter.Write(stlog);
-                writer.Write(bb);
-                writer.Flush();
-                writer.Close();
-
+                TimeSpan ts = System.DateTime.Now - starttime;
+                stlog += String.Format("{0} {1} {2} {3} {4} {5} {6} {7}\n",
+                    pp,
+                    System.DateTime.Now.ToString("HHmmss\\.fff"),
+                    ts.ToString("s\\.fff"),
+                    (p.X * 1000).ToString("0.0"),
+                    (p.Y * 1000).ToString("0.0"),
+                    (p.Z * 1000).ToString("0.0"),
+                    (prev_z * 1000 - p.Z * 1000).ToString("0.0"),
+                    viewcounter);
+                b.CopyTo(bb, 440 * 512 * viewcounter);
+                viewcounter++;
             }
 
-            twriter.Close();
-            camera.Start();
-             */
+            viewcounter = 0;
+            twriter.Write(stlog);
+            writer.Write(bb);
+            writer.Flush();
+            writer.Close();
 
         }
 
+        twriter.Close();
+        camera.Start();
+         */
+
     }
 
-    
+}
+
