@@ -1899,7 +1899,28 @@ namespace NagaraStage.Ui {
         }
 
 
-        
+        private void GridMeasureButton_Click(object sender, RoutedEventArgs e) {
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            GridMeasure gm = GridMeasure.GetInstance(parameterManager);
+
+            manager.Enqueue(gm);
+            manager.Start();
+        }
+
+        private void Class1Button_Click(object sender, RoutedEventArgs e) {
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            Class1 c1  = Class1.GetInstance(parameterManager);
+
+            manager.Enqueue(c1);
+            manager.Start();
+        }
+        private void Class2Button_Click(object sender, RoutedEventArgs e) {
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            Class2 c2 = Class2.GetInstance(parameterManager);
+
+            manager.Enqueue(c2);
+            manager.Start();
+        }
 
         private void start_following_Click(object sender, RoutedEventArgs e) {//Ξ追跡アルゴリズム
             TracksManager tm = parameterManager.TracksManager;

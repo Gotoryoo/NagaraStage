@@ -239,6 +239,18 @@
                         x:Name="MCTestButton" 
                         Label="{Binding Source={StaticResource strings}, Path=MCTest}"
                         LargeImageSource="/Images/start.png" Click="MCTestButton_Click" />
+                    <ribbon:RibbonButton
+                        x:Name="GridMeasureButton" 
+                        Label="{Binding Source={StaticResource strings}, Path=GridMeasure}"
+                        LargeImageSource="/Images/start.png" Click="GridMeasureButton_Click" />
+                    <ribbon:RibbonButton
+                        x:Name="Class1Button" 
+                        Label="{Binding Source={StaticResource strings}, Path=Class1}"
+                        LargeImageSource="/Images/start.png" Click="Class1Button_Click" />
+                    <ribbon:RibbonButton
+                        x:Name="Class2Button" 
+                        Label="{Binding Source={StaticResource strings}, Path=Class1}"
+                        LargeImageSource="/Images/start.png" Click="Class2Button_Click" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>             
             <ribbon:RibbonTab
