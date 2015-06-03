@@ -91,121 +91,151 @@ namespace NagaraStage.Activities {
             List<Mat> image_set = new List<Mat>();
             Vector3 ggg = mc.GetPoint();
 
-            string txtfileName = string.Format(@"c:\img\spiral.txt");
-            StreamWriter twriter = File.CreateText(txtfileName);
+
 
             Vector3 initialpoint = mc.GetPoint();
 
-            //    List<Vector2> list_grid_pred = new List<Vector2>();
-            //list_grid_pred.Add(new Vector2(2.0, 30.0));
-            //list_grid_pred.Add(new Vector2(-2.0, 30.0));
-            //list_grid_pred.Add(new Vector2(30.0, 2.0));
-            //list_grid_pred.Add(new Vector2(30.0, -2.0));
-            //    list_grid_pred.Add(new Vector2(38.4, -14.0));
-            //   list_grid_pred.Add(new Vector2(38.5, -14.1));
 
+            for (int bx = 0; bx < 2; bx++) {
+                for (int by = 0; by < 2; by++) {
+                    string txtfileName = string.Format(@"c:\img\{0}_{1}.txt",bx,by);
+                    StreamWriter twriter = File.CreateText(txtfileName);
+
+                    Vector3 blockstartpoint_p = new Vector3();
+                    blockstartpoint_p.X = initialpoint.X + bx * 2.0;
+                    blockstartpoint_p.Y = initialpoint.Y + by * 2.0;
+                    blockstartpoint_p.Z = initialpoint.Z;
+
+                    camera.Start();
+                    mc.MoveTo(new Vector3(blockstartpoint_p.X + 1.0, blockstartpoint_p.Y + 1.0, initialpoint.Z + 0.020), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                    mc.Join();
+                    bool flag = true;
+                    while (flag) {
+                        mc.MoveDistance(-0.003, VectorId.Z);
+                        mc.Join();
+                        Thread.Sleep(100);
+
+                        byte[] b = camera.ArrayImage;
+                        Mat src = new Mat(440, 512, MatType.CV_8U, b);
+                        Mat mat = src.Clone();
+
+                        Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
+                        Mat gau = mat.Clone();
+                        Cv2.GaussianBlur(gau, gau, Cv.Size(7, 7), -1);
+                        Cv2.Subtract(gau, mat, mat);
+                        Cv2.Threshold(mat, mat, 4, 1, ThresholdType.Binary);
+                        int brightness = Cv2.CountNonZero(mat);
+
+                        if (brightness > 5000) flag = false;
+                    }
+
+                    int ledbrightness = led.AdjustLight(parameterManager);
+                    Vector3 blockstartpoint = mc.GetPoint();
+
+
+                    for (int vy = 0; vy < 2; vy++) {
+                        for (int vx = 0; vx < 2; vx++) {
+
+                            Vector3 linestartpoint_p = mc.GetPoint();
+                            linestartpoint_p.X = blockstartpoint_p.X + vx;
+                            linestartpoint_p.Y = blockstartpoint_p.Y + vy;
+                            linestartpoint_p.Z = linestartpoint_p.Z + 0.015;
+
+                            if ( vx == 0 ) {
+                                Vector3 cp = mc.GetPoint();
+                                mc.MoveTo(linestartpoint_p, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                                mc.Join();
+                                Thread.Sleep(100);
+
+                                camera.Start();
+                                flag = true;
+                                while (flag) {
+
+                                    mc.MoveDistance(-0.003, VectorId.Z);
+                                    mc.Join();
+                                    Thread.Sleep(100);
+
+                                    byte[] b = camera.ArrayImage;
+                                    Mat src = new Mat(440, 512, MatType.CV_8U, b);
+                                    Mat mat = src.Clone();
+
+                                    Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
+                                    Mat gau = mat.Clone();
+                                    Cv2.GaussianBlur(gau, gau, Cv.Size(7, 7), -1);
+                                    Cv2.Subtract(gau, mat, mat);
+                                    Cv2.Threshold(mat, mat, 4, 1, ThresholdType.Binary);
+                                    int brightness = Cv2.CountNonZero(mat);
+
+                                    if (brightness > 5000) flag = false;
+                                }
+                                camera.Stop();
+                            }
+                            Vector3 linestartpoint = mc.GetPoint();
+
+                            /*
+                            byte[] bb = new byte[440 * 512 * 17];
+                            string datfileName = string.Format(@"c:\img\{0}_{1}_{2}_{3}.dat",
+                                (int)(p.X * 1000),
+                                (int)(p.Y * 1000),
+                                vx,
+                                vy
+                                );
+                            BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
+                            */
+
+                            Vector3 viewstartpoint = mc.GetPoint();
+                            viewstartpoint.X = blockstartpoint.X + vx * parameterManager.SpiralShiftX;
+                            viewstartpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY;
+                            viewstartpoint.Z = linestartpoint.Z - 0.055;
+
+                            mc.MoveTo(viewstartpoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                            mc.Join();
+                            Thread.Sleep(100);
+
+                            mc.Inch(PlusMinus.Plus, 0.15, VectorId.Z);
+
+                            int viewcounter = 0;
+                            while (viewcounter < 16 + 3) {
+                                byte[] b = Ipt.CaptureMain();
+                                p = mc.GetPoint();
+
+                                if (viewcounter >= 3) {
+                                    //b.CopyTo(bb, 440 * 512 * (viewcounter - 3));
+                                    Mat image = new Mat(440, 512, MatType.CV_8U, b);
+                                    Mat clone_image = image.Clone();
+
+                                    clone_image.ImWrite(string.Format(@"c:\img\{0}_{1}_{2}_{3}_{4}.bmp",
+                                     (int)(viewstartpoint.X * 1000),
+                                     (int)(viewstartpoint.Y * 1000),
+                                     vx,
+                                     vy,
+                                     viewcounter - 3));
+                                    string stlog = "";
+                                    stlog += String.Format("{0}   {1}  {2}  {3}\n",
+                                            ledbrightness,
+                                            p.X,
+                                            p.Y,
+                                            p.Z);
+                                    twriter.Write(stlog);
+                                }
+                                viewcounter++;
+                            }//view
+                            viewcounter = 0;
+
+                            mc.StopInching(MechaAxisAddress.ZAddress);
+                            mc.Join();
+                            Thread.Sleep(100);
+                            //writer.Write(bb);
+                            //writer.Flush();
+                            //writer.Close();
+                        }//vx
+                    }//vy
+                    camera.Stop();
+                    twriter.Close();
+                }//blocky
+            }//blockx
             
-            mc.SetSpiralCenterPoint();
-
-            int ledbrightness = led.AdjustLight(parameterManager);
-            
-
-            for (int vy = 0; vy < 16; vy++) {
-
-                Vector3 cp = mc.GetPoint();
-                mc.MoveTo(new Vector3(cp.X, cp.Y, initialpoint.Z + 0.020), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
-                mc.Join();
-                Thread.Sleep(100);
-
-                camera.Start();
-                bool flag = true;
-                while (flag) {
-
-                    mc.MoveDistance(-0.003, VectorId.Z);
-                    mc.Join();
-                    Thread.Sleep(100);
-
-                    byte[] b = camera.ArrayImage;
-                    Mat src = new Mat(440, 512, MatType.CV_8U, b);
-                    Mat mat = src.Clone();
-
-                    Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
-                    Mat gau = mat.Clone();
-                    Cv2.GaussianBlur(gau, gau, Cv.Size(7, 7), -1);
-                    Cv2.Subtract(gau, mat, mat);
-                    Cv2.Threshold(mat, mat, 4, 1, ThresholdType.Binary);
-                    int brightness = Cv2.CountNonZero(mat);
-
-                    if (brightness > 5000) flag = false;
-                }
-                camera.Stop();
-                Vector3 surfpoint = mc.GetPoint();
-
-                for (int vx = 0; vx < 16; vx++) {
-
-                    byte[] bb = new byte[440 * 512 * 17];
-                    /*
-                    string datfileName = string.Format(@"c:\img\{0}_{1}_{2}_{3}.dat",
-                        (int)(p.X * 1000),
-                        (int)(p.Y * 1000),
-                        vx,
-                        vy
-                        );
-                    BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
-                    */
-
-                    double vcenterx = initialpoint.X + vx * parameterManager.SpiralShiftX;
-                    double vcentery = initialpoint.Y + vy * parameterManager.SpiralShiftY;
-                    double vcenterz = surfpoint.Z - 0.053;
-                    mc.MoveTo(new Vector3(vcenterx, vcentery, vcenterz), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
-                    mc.Join();
-                    Thread.Sleep(100);
-
-                    Vector3 ip = mc.GetPoint();
-
-                    mc.Inch(PlusMinus.Plus, 0.15, VectorId.Z);
-
-                    int viewcounter = 0;
-                    while (viewcounter < 16 + 1 + 3) {
-                        byte[] b = Ipt.CaptureMain();
-                        p = mc.GetPoint();
-
-                        if (viewcounter >= 3) {
-                            //b.CopyTo(bb, 440 * 512 * (viewcounter - 3));
-                            Mat image = new Mat(440, 512, MatType.CV_8U, b);
-                            Mat clone_image = image.Clone();
-
-                        clone_image.ImWrite(string.Format(@"c:\img\{0}_{1}_{2}_{3}_{4}.bmp",
-                         (int)(p.X * 1000),
-                         (int)(p.Y * 1000),
-                         vx,
-                         vy,
-                         viewcounter - 3));
-                            string stlog = "";
-                            stlog += String.Format("{0}   {1}  {2}  {3}\n",
-                                    ledbrightness,
-                                    ip.X,
-                                    ip.Y,
-                                    p.Z);
-                            twriter.Write(stlog);
-                        }
-                        viewcounter++;
-                    }//view
-                    viewcounter = 0;
-
-                    mc.StopInching(MechaAxisAddress.ZAddress);
-                    mc.Join();
-                    Thread.Sleep(100);
-                    //writer.Write(bb);
-                    //writer.Flush();
-                    //writer.Close();
-                }//vx
-            }//vy
-
-
-            camera.Stop();
-            twriter.Close();
-        }
+        }//task
 
         /*
         int viewcounter = 0;
