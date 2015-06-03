@@ -189,8 +189,8 @@ namespace NagaraStage {
              int emY = ParameterManager.ImageResolution.Height;
              Vector3 motorPosition = mc.GetPoint();
              Vector2 p = new Vector2();
-             p.X = motorPosition.X - (x - emX / 2) * parameterManager.CameraMainResolution;
-             p.Y = motorPosition.Y + (y - emY / 2) * parameterManager.CameraSubResolution;
+             p.X = motorPosition.X + (x - emX / 2) * parameterManager.CameraMainResolution;
+             p.Y = motorPosition.Y - (y - emY / 2) * parameterManager.CameraSubResolution;
              return p;
         }
 
