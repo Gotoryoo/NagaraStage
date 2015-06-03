@@ -67,6 +67,9 @@
     <StartupObject>NagaraStage.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MathNet.Numerics">
+      <HintPath>..\packages\MathNet.Numerics.3.7.0\lib\net40\MathNet.Numerics.dll</HintPath>
+    </Reference>
     <Reference Include="OpenCvSharp">
       <HintPath>..\packages\OpenCvSharp-AnyCPU.2.4.8.20140619\lib\net40\OpenCvSharp.dll</HintPath>
     </Reference>
@@ -85,6 +88,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -111,7 +115,10 @@
     <Compile Include="Activities\ActivityEventArgs.cs" />
     <Compile Include="Activities\ActivityEventHandler.cs" />
     <Compile Include="Activities\ActivityManager.cs" />
+    <Compile Include="Activities\Class1.cs" />
+    <Compile Include="Activities\Class2.cs" />
     <Compile Include="Activities\CorrectionByGridMark.cs" />
+    <Compile Include="Activities\GridMeasure.cs" />
     <Compile Include="Activities\MotorMove.cs" />
     <Compile Include="Activities\OverallScan.cs" />
     <Compile Include="Activities\ScaleFaster.cs" />
@@ -121,6 +128,7 @@
     <Compile Include="Activities\SurfaceLanding.cs" />
     <Compile Include="Activities\TigerPointScan.cs" />
     <Compile Include="Activities\TigerScan.cs" />
+    <Compile Include="Affine.cs" />
     <Compile Include="GelLayer.cs" />
     <Compile Include="Activities\GridMarkSearch.cs" />
     <Compile Include="Activities\IActivity.cs" />
@@ -139,6 +147,7 @@
     <Compile Include="GridMarkFewException.cs" />
     <Compile Include="GridMarkNotFoundException.cs" />
     <Compile Include="GridMarkPoint.cs" />
+    <Compile Include="IAffine.cs" />
     <Compile Include="IGridMarkRecognizer.cs" />
     <Compile Include="ImageUtility.cs" />
     <Compile Include="IndexMeasure.cs" />
