@@ -711,12 +711,11 @@ namespace NagaraStage {
                 Vector2Int i = getSpiralPosition(spiralIndex);
                 double mx = spiralCentralPosition.X + i.X * parameterManager.SpiralShiftX;
                 double my = spiralCentralPosition.Y + i.Y * parameterManager.SpiralShiftY;
-                MovePointXY(mx, my, delegate {
-                    if (SpiralMoved != null) {
-                        SpiralMoved(this, new SpiralEventArgs(i.X, i.Y));
-                    }
-                });
+                MoveTo(new Vector3(mx, my, GetPoint().Z), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                Join();
+
                 spiralCounter = i;
+                SpiralMoved(this, new SpiralEventArgs(i.X, i.Y));
                 if (wait) {
                     movingThread.Join();
                 }
