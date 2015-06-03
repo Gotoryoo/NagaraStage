@@ -393,7 +393,7 @@ namespace NagaraStage {
             }
 
             /// <summary>
-            /// インチング(寸動)します．
+            /// インチングします．
             /// </summary>
             /// <param name="axisAddress">移動させる軸</param>
             /// <param name="direction">方向</param>
@@ -451,7 +451,7 @@ namespace NagaraStage {
             }
 
             /// <summary>
-            /// インチング(寸動)を停止します．
+            /// インチングを停止します．
             /// </summary>
             /// <param name="axisAddress">停止する軸</param>
             public void StopInching(MechaAxisAddress axisAddress) {
@@ -1542,8 +1542,25 @@ namespace NagaraStage {
             }
 
 
+
             /// <summary>
-            /// インチング(寸動)を停止します．
+            /// 指定された3軸の位置へ動かします。
+            /// <para>
+            /// 
+            /// </para>
+            /// </summary>
+            /// <param name="to">目的地点の座標[mm]</param>
+            /// <param name="speed">移動速度、いまはつかってない</param>
+            /// <param name="_tolerance">目的地と到着地点誤差の許容値、いまはつかっていない</param>
+            public void MoveTo(Vector3 to, Vector3 speed, Vector3 _tolerance) { 
+                Vector3 distance = to - GetPoint();
+                Move(distance, speed, _tolerance); 
+            }
+
+
+
+            /// <summary>
+            /// インチングを停止します．
             /// </summary>
             /// <param name="axisAddress">停止する軸</param>
             public void SlowDownStop(VectorId axis) {
