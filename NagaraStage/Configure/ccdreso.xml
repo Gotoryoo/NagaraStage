@@ -51,12 +51,12 @@
   </lens>
 
   <lens magnification="50">
-    <resolutionX>.26680E-3</resolutionX>
-    <resolutionY>.26716E-3</resolutionY>
+    <resolutionX>.2636E-3</resolutionX>
+    <resolutionY>.26366E-3</resolutionY>
     <offsetDX>0</offsetDX>
     <offsetDY>0</offsetDY>
-    <spiralDX>0.11</spiralDX>
-    <spiralDY>0.09</spiralDY>
+    <spiralDX>0.125</spiralDX>
+    <spiralDY>0.105</spiralDY>
     <zStep>0.0071</zStep>
     <gridMarkSize>250</gridMarkSize>
     <ledParam>60</ledParam>
