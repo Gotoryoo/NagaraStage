@@ -171,6 +171,12 @@ namespace NagaraStage.Activities {
                             viewstartpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY;
                             viewstartpoint.Z = linestartpoint.Z - 0.065;
                             
+
+
+                            mc.MoveTo(viewstartpoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                            mc.Join();
+                            Thread.Sleep(100);
+
                             byte[] bb = new byte[440 * 512 * 16];
                             string datfileName = string.Format(@"c:\img\{0}_{1}_{2}_{3}.dat",
                                 (int)(viewstartpoint.X * 1000),
@@ -179,10 +185,6 @@ namespace NagaraStage.Activities {
                                 vy
                                 );
                             BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
-
-                            mc.MoveTo(viewstartpoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
-                            mc.Join();
-                            Thread.Sleep(100);
 
                             mc.Inch(PlusMinus.Plus, 0.15, VectorId.Z);
 
@@ -209,15 +211,19 @@ namespace NagaraStage.Activities {
 
                             mc.StopInching(MechaAxisAddress.ZAddress);
                             mc.Join();
-                            writer.Write(bb);
-                            writer.Flush();
-                            writer.Close();
                             Thread.Sleep(100);
-                            if (endz - viewstartpoint.Z < 0.070) vx++;
+
+                            if (endz - viewstartpoint.Z < 0.070) {
+                                vx++;
+                                writer.Write(bb);
+                                writer.Flush();
+                                writer.Close();
+                            }
                         }//vx
                     }//vy
                     camera.Stop();
                     twriter.Close();
+
                 }//blocky
             }//blockx
             
