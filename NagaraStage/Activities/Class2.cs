@@ -99,11 +99,11 @@ namespace NagaraStage.Activities {
                     blockstartpoint.Z = initialpoint.Z;
 
                     camera.Start();
-                    mc.MoveTo(new Vector3(blockstartpoint.X + 1.0, blockstartpoint.Y + 1.0, initialpoint.Z + 0.020), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                    mc.MoveTo(new Vector3(blockstartpoint.X + 1.0, blockstartpoint.Y + 1.0, initialpoint.Z - 0.020), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                     mc.Join();
                     bool flag = true;
                     while (flag) {
-                        mc.MoveDistance(-0.003, VectorId.Z);
+                        mc.MoveDistance(0.003, VectorId.Z);
                         mc.Join();
                         Thread.Sleep(100);
 
@@ -118,7 +118,7 @@ namespace NagaraStage.Activities {
                         Cv2.Threshold(mat, mat, 4, 1, ThresholdType.Binary);
                         int brightness = Cv2.CountNonZero(mat);
 
-                        if (brightness > 5000) flag = false;
+                        if (brightness > 2000) flag = false;
                     }
 
                     int ledbrightness = led.AdjustLight(parameterManager);
@@ -134,7 +134,7 @@ namespace NagaraStage.Activities {
                         linestartpoint.Z = blockstartpoint.Z;
                         
                         Vector3 cp = mc.GetPoint();
-                        mc.MoveTo(new Vector3(linestartpoint.X + 0.5, linestartpoint.Y, initialpoint.Z + 0.015), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        mc.MoveTo(new Vector3(linestartpoint.X + 0.5, linestartpoint.Y, initialpoint.Z - 0.015), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                         mc.Join();
                         Thread.Sleep(100);
 
@@ -142,7 +142,7 @@ namespace NagaraStage.Activities {
                         flag = true;
                         while (flag) {
 
-                            mc.MoveDistance(-0.003, VectorId.Z);
+                            mc.MoveDistance(0.003, VectorId.Z);
                             mc.Join();
                             Thread.Sleep(100);
 
@@ -157,7 +157,7 @@ namespace NagaraStage.Activities {
                             Cv2.Threshold(mat, mat, 4, 1, ThresholdType.Binary);
                             int brightness = Cv2.CountNonZero(mat);
 
-                            if (brightness > 5000) flag = false;
+                            if (brightness > 2000) flag = false;
                         }
                         camera.Stop();
                         Vector3 linecenterpoint = mc.GetPoint();
@@ -169,7 +169,7 @@ namespace NagaraStage.Activities {
                             Vector3 viewstartpoint = mc.GetPoint();
                             viewstartpoint.X = blockstartpoint.X + vx * parameterManager.SpiralShiftX;
                             viewstartpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY;
-                            viewstartpoint.Z = linestartpoint.Z - 0.065;
+                            viewstartpoint.Z = linestartpoint.Z + 0.065;
                             
 
 
@@ -186,7 +186,7 @@ namespace NagaraStage.Activities {
                                 );
                             BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
 
-                            mc.Inch(PlusMinus.Plus, 0.15, VectorId.Z);
+                            mc.Inch(PlusMinus.Minus, 0.15, VectorId.Z);
 
                             int viewcounter = 0;
                             while (viewcounter < 16 + 3) {
@@ -213,7 +213,7 @@ namespace NagaraStage.Activities {
                             mc.Join();
                             Thread.Sleep(100);
 
-                            if (endz - viewstartpoint.Z < 0.070) {
+                            if (viewstartpoint.Z - endz < 0.070) {
                                 vx++;
                                 writer.Write(bb);
                                 writer.Flush();
