@@ -12,6 +12,13 @@ using OpenCvSharp;
 using OpenCvSharp.CPlusPlus;
 
 namespace NagaraStage.Activities {
+
+    class pointscan {
+        public int id;
+        public Vector3 stagecoord;
+    }
+
+
     class TigerPointScan : Activity, IActivity {
         private static TigerPointScan instance;
 
@@ -93,30 +100,54 @@ namespace NagaraStage.Activities {
                 direcotryPath, System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"));
             StreamWriter twriter = File.CreateText(txtfileName);
 
-            List<Vector3> PointList = new List<Vector3>();
-            for (int xx = 0; xx < 5; xx++) {
-                for (int yy = 0; yy < 5; yy++) {
-                    GridMark nearestMark = cm.GetTheNearestGridMark(new Vector3(InitPoint.X + xx * 10, InitPoint.Y + yy * 10, InitPoint.Z));
-                    PointList.Add(new Vector3(nearestMark.x, nearestMark.y, InitPoint.Z));
-                }
+            List<pointscan> PSList = new List<pointscan>();
+
+            var reader = new StreamReader(File.OpenRead(@"C:\test\list.txt"));
+            bool headerflag = true;
+
+
+            while (!reader.EndOfStream) {
+                var line = reader.ReadLine();
+                if (line.Length < 4) continue;
+                if (line.Substring(0, 4) == "0   ") headerflag = false;
+                if (headerflag == true) continue;
+                string[] delimiter = { " " };
+                var values = line.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
+
+                pointscan ps = new pointscan();
+                ps.id = int.Parse(values[1]);
+                ps.stagecoord = new Vector3(
+                    double.Parse(values[12]) * 0.001,
+                    double.Parse(values[13]) * 0.001,
+                    InitPoint.Z + double.Parse(values[14]) * 0.001 - 0.033
+                    );
+                PSList.Add(ps);
             }
+
+
 
             camera.Stop();
 
-            for(int pp=0; pp<PointList.Count(); pp++){
+            for(int pp=0; pp<PSList.Count(); pp++){
+
                 string stlog = "";
-                int nshot = 20;
+                int nshot = 24;
                 byte[] bb = new byte[440 * 512 * nshot];
 
-                mc.MovePoint(PointList[pp]);
+                mc.MoveTo(PSList[pp].stagecoord, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                 mc.Join();
+
+                camera.Start();
+                led.AdjustLight(parameterManager);
+                camera.Stop();
+
 
                 p = mc.GetPoint();
                 double prev_z = p.Z;
                 DateTime starttime = System.DateTime.Now;
                 string datfileName = string.Format(@"{0}\{1}_x{2}_y{3}.dat",
                     direcotryPath,
-                    starttime.ToString("yyyyMMdd_HHmmss_fff"),
+                    PSList[pp].id,
                     (int)(p.X * 1000),
                     (int)(p.Y * 1000));
                 BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
@@ -124,7 +155,7 @@ namespace NagaraStage.Activities {
 
 
                 while (viewcounter < nshot) {
-                    mc.MoveDistance(-0.001, VectorId.Z);
+                    mc.MoveDistance(0.003, VectorId.Z);
                     mc.Join();
                     byte[] b = Ipt.CaptureMain();
                     p = mc.GetPoint();
