@@ -88,8 +88,8 @@ namespace NagaraStage.Activities {
             Vector3 initialpoint = mc.GetPoint();
 
 
-            for (int bx = 0; bx < 4; bx++) {
-                for (int by = 0; by < 4; by++) {
+            for (int bx = 0; bx < 1; bx++) {
+                for (int by = 0; by < 12; by++) {
                     string txtfileName = string.Format(@"c:\img\{0}_{1}.txt",bx,by);
                     StreamWriter twriter = File.CreateText(txtfileName);
 
