@@ -92,6 +92,7 @@ namespace NagaraStage.Activities {
             CoordManager cm = new CoordManager(parameterManager);
 
             Vector3 InitPoint = mc.GetPoint();
+            Vector3 SurfPoint = mc.GetPoint();
             Vector3 p = new Vector3();
             int viewcounter = 0;
 
@@ -119,25 +120,56 @@ namespace NagaraStage.Activities {
                 ps.stagecoord = new Vector3(
                     double.Parse(values[12]) * 0.001,
                     double.Parse(values[13]) * 0.001,
-                    InitPoint.Z + double.Parse(values[14]) * 0.001 - 0.033
+                    double.Parse(values[14]) * 0.001
                     );
                 PSList.Add(ps);
             }
 
 
+            camera.Start();
 
-            camera.Stop();
 
             for(int pp=0; pp<PSList.Count(); pp++){
-
+                
                 string stlog = "";
                 int nshot = 24;
                 byte[] bb = new byte[440 * 512 * nshot];
 
-                mc.MoveTo(PSList[pp].stagecoord, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                if (pp % 10 == 0) {
+                    Vector3 surfrecogpoint = PSList[pp].stagecoord;
+                    surfrecogpoint.Z = InitPoint.Z + 0.03;
+                    mc.MoveTo(surfrecogpoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                    mc.Join();
+
+                    bool flag = true;
+                    while (flag) {
+                        mc.MoveDistance(-0.003, VectorId.Z);
+                        mc.Join();
+                        byte[] b = camera.ArrayImage;
+                        Mat src = new Mat(440, 512, MatType.CV_8U, b);
+                        Mat mat = src.Clone();
+
+                        Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
+                        Mat gau = mat.Clone();
+                        Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
+                        Cv2.Subtract(gau, mat, mat);
+                        Cv2.Threshold(mat, mat, 10, 1, ThresholdType.Binary);
+                        int brightness = Cv2.CountNonZero(mat);
+
+                        viewcounter++;
+
+                        if (brightness > 10000 || viewcounter > 30) flag = false;
+                    }
+
+                    SurfPoint = mc.GetPoint();
+                }
+
+                Vector3 CandPoint = PSList[pp].stagecoord;
+                CandPoint.Z = SurfPoint.Z + CandPoint.Z - 0.033;
+
+                mc.MoveTo(CandPoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                 mc.Join();
 
-                camera.Start();
                 led.AdjustLight(parameterManager);
                 camera.Stop();
 
