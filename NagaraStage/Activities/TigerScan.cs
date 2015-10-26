@@ -36,12 +36,12 @@ namespace NagaraStage.Activities {
             mm.Y = -10;
             taskList.AddRange(mm.CreateTask());
 
-            AccumImage ai = AccumImage.GetInstance(parameterManager);
-            MotorControler mc = MotorControler.GetInstance(parameterManager);
-            ai.StartPoint = mc.GetPoint().Z;
-            ai.EndPoint = mc.GetPoint().Z - 0.03;
-            ai.IntervalUm = 3;
-            taskList.AddRange(ai.CreateTask());
+            //AccumImage ai = AccumImage.GetInstance(parameterManager);
+            //MotorControler mc = MotorControler.GetInstance(parameterManager);
+            //ai.StartPoint = mc.GetPoint().Z;
+            //ai.EndPoint = mc.GetPoint().Z - 0.03;
+            //ai.IntervalUm = 3;
+            //taskList.AddRange(ai.CreateTask());
 
             //taskList.Add(new Thread(new ThreadStart(delegate {
             //    Led led = Led.GetInstance();
