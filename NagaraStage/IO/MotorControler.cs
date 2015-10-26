@@ -1200,9 +1200,9 @@ namespace NagaraStage {
             /// <param name="encoderResolution">エンコーダの分解能</param>
             /// <param name="motorResolution">モータの分解能</param>
             private void setTolerance(Vector3 encoderResolution, Vector3 motorResolution) {
-                tolerance.X = (encoderResolution.X > motorResolution.X ? 1.2 * encoderResolution.X : 1.2 * motorResolution.X);
-                tolerance.Y = (encoderResolution.Y > motorResolution.Y ? 1.2 * encoderResolution.Y : 1.2 * motorResolution.Y);
-                tolerance.Z = (encoderResolution.Z > motorResolution.Z ? 1.2 * encoderResolution.Z : 1.2 * motorResolution.Z);
+                tolerance.X = (encoderResolution.X > motorResolution.X ? 0.95 * encoderResolution.X : 1.2 * motorResolution.X);
+                tolerance.Y = (encoderResolution.Y > motorResolution.Y ? 0.95 * encoderResolution.Y : 1.2 * motorResolution.Y);
+                tolerance.Z = (encoderResolution.Z > motorResolution.Z ? 0.95 * encoderResolution.Z : 1.2 * motorResolution.Z);
             }
 
 
