@@ -242,32 +242,27 @@ namespace NagaraStage {
                 mc.MovePointZ(startPoint);
                 mc.Join();
 
-                //StreamWriter writer = new StreamWriter(@".\z.txt");
+                StreamWriter writer = new StreamWriter(string.Format(@"{0}\{1}.txt", filepath, filenameprefix));
 
                 // 撮影終了地点に移動しながら画像を確保する
                 double pnInterval = (startPoint > endPoint ? -interval : interval);
                 double presentPoint = mc.GetPoint().Z;
+
                 while (isShootContinue(presentPoint)) {
+                
                     mc.MoveDistance(pnInterval, VectorId.Z);
                     mc.Join();
-                    //camera.Stop();
-
+                    presentPoint = mc.GetPoint().Z;
+   
                     byte[] b = camera.ArrayImage;
                     Mat src = new Mat(440, 512, MatType.CV_8U, b);
-
-                    DateTime starttime = System.DateTime.Now;
                     string pngfileName = string.Format(@"{0}\{1}{2:000}.png",filepath, filenameprefix, numOfShot);
-
                     src.ImWrite(pngfileName);
 
-
-                    //BitmapSource image = camera.Image;                    
-                    //saveTemp(image);
-                    //camera.Start();
                     shotPoint.Add(presentPoint);
-                    ++numOfShot;
+                    writer.WriteLine(presentPoint.ToString());
 
-                    //writer.WriteLine(presentPoint.ToString());
+                    ++numOfShot;
 
                     if (OnShort != null)
                     {
@@ -290,10 +285,9 @@ namespace NagaraStage {
                         }
                     });
 #endif
-                    mc.Join();
-                    presentPoint = mc.GetPoint().Z;
-                }
-                //writer.Close();
+                }//while
+
+                writer.Close();
                 mc.StopInching(MechaAxisAddress.ZAddress);
             }
 
