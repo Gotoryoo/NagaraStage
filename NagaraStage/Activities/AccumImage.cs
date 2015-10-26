@@ -182,7 +182,7 @@ namespace NagaraStage {
                 }
 
                 // キャッシュを削除
-                Clean();
+                //Clean();
 
                 shootingThread = Create(new ThreadStart(delegate() {
                     ActivityEventArgs eventArgs = new ActivityEventArgs();
@@ -207,7 +207,7 @@ namespace NagaraStage {
                 shootingThread.IsBackground = true;
                 shootingThread.Start();
             }
-
+            
 
 
             /// <summary>
@@ -231,7 +231,7 @@ namespace NagaraStage {
                 mc.MovePointZ(startPoint);
                 mc.Join();
 
-                StreamWriter writer = new StreamWriter(@".\z.txt");
+                //StreamWriter writer = new StreamWriter(@".\z.txt");
 
                 // 撮影終了地点に移動しながら画像を確保する
                 double pnInterval = (startPoint > endPoint ? -interval : interval);
@@ -246,7 +246,7 @@ namespace NagaraStage {
                     shotPoint.Add(presentPoint);
                     ++numOfShot;
 
-                    writer.WriteLine(presentPoint.ToString());
+                    //writer.WriteLine(presentPoint.ToString());
 
                     if (OnShort != null)
                     {
@@ -272,7 +272,7 @@ namespace NagaraStage {
                                                           mc.Join();
                     presentPoint = mc.GetPoint().Z;
                 }
-                writer.Close();
+                //writer.Close();
                 mc.StopInching(MechaAxisAddress.ZAddress);
             }
 
