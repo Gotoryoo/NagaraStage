@@ -128,11 +128,11 @@ namespace NagaraStage.Ui {
         }
 
         private void saveParaImages() {
-            AccumImage accumImage = AccumImage.GetInstance(parameterManager);
-            for (int i = 0; i < accumImage.NumOfShots; ++i) {
-                string path = destinationDir + "/" + fileName + "-" + (i + 1).ToString() + "." + Extention;
-                ImageUtility.Save(accumImage.GetShotImage(i), path);
-            }            
+            //AccumImage accumImage = AccumImage.GetInstance(parameterManager);
+            //for (int i = 0; i < accumImage.NumOfShots; ++i) {
+            //    string path = destinationDir + "/" + fileName + "-" + (i + 1).ToString() + "." + Extention;
+            //    ImageUtility.Save(accumImage.GetShotImage(i), path);
+            //}            
         }
 
         private void saveProjectedImages() {
@@ -198,6 +198,9 @@ namespace NagaraStage.Ui {
             }
 
             try {
+                accumImage.FilePath = destinationDir;
+                accumImage.FilenamePrefix = fileName;
+
                 double distance = double.Parse(distanceTextBox.Text);
                 MotorControler mc = MotorControler.GetInstance(parameterManager);
                 accumImage.IntervalUm = double.Parse(intervalTextBox.Text);
