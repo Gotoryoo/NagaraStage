@@ -10,6 +10,10 @@ using NagaraStage.Parameter;
 using NagaraStage.IO;
 using System.IO;
 
+using OpenCvSharp;
+using OpenCvSharp.CPlusPlus;
+
+
 namespace NagaraStage {
     namespace Activities {
         /// <summary>
@@ -31,6 +35,8 @@ namespace NagaraStage {
             private double endPoint = -1;
             private double interval = -1;
             private int numOfShot;
+            private string filepath = "";
+            private string filenameprefix = "";
 
             /// <summary>
             /// 撮影処理を開始したときのイベント
@@ -77,6 +83,23 @@ namespace NagaraStage {
                 get { return endPoint; }
                 set { endPoint = value; }
             }
+
+            /// <summary>
+            /// 画像を保存するディレクトリのpathを設定，または取得します．
+            /// </summary>
+            public string FilePath {
+                get { return filepath; }
+                set { filepath = value; }
+            }
+
+            /// <summary>
+            /// 画像を保存する際のファイル名を設定，または取得します．
+            /// </summary>
+            public string FilenamePrefix {
+                get { return filenameprefix; }
+                set { filenameprefix = value; }
+            }
+
 
             /// <summary>
             /// 撮影間隔(micro meter)を設定，または取得します．
@@ -152,16 +175,6 @@ namespace NagaraStage {
                 return new BitmapImage(new Uri(imagesUri[n], UriKind.RelativeOrAbsolute));
             }
 
-            /// <summary>
-            /// 撮影した一時ファイルを削除します．
-            /// </summary>
-            /// <seealso cref="System.IO.File.Delete" />
-            public void Clean() {
-                foreach (string uri in imagesUri) {
-                    System.IO.File.Delete(uri);
-                }
-
-            }
 
             /// <summary>
             /// 撮影を開始します．
@@ -181,8 +194,6 @@ namespace NagaraStage {
                     throw new ArgumentOutOfRangeException(Properties.Strings.ValMustPositiveNotZero);
                 }
 
-                // キャッシュを削除
-                //Clean();
 
                 shootingThread = Create(new ThreadStart(delegate() {
                     ActivityEventArgs eventArgs = new ActivityEventArgs();
@@ -239,10 +250,20 @@ namespace NagaraStage {
                 while (isShootContinue(presentPoint)) {
                     mc.MoveDistance(pnInterval, VectorId.Z);
                     mc.Join();
-                    camera.Stop();
-                    BitmapSource image = camera.Image;                    
-                    saveTemp(image);
-                    camera.Start();
+                    //camera.Stop();
+
+                    byte[] b = camera.ArrayImage;
+                    Mat src = new Mat(440, 512, MatType.CV_8U, b);
+
+                    DateTime starttime = System.DateTime.Now;
+                    string pngfileName = string.Format(@"{0}\{1}{2:000}.png",filepath, filenameprefix, numOfShot);
+
+                    src.ImWrite(pngfileName);
+
+
+                    //BitmapSource image = camera.Image;                    
+                    //saveTemp(image);
+                    //camera.Start();
                     shotPoint.Add(presentPoint);
                     ++numOfShot;
 
@@ -269,18 +290,13 @@ namespace NagaraStage {
                         }
                     });
 #endif
-                                                          mc.Join();
+                    mc.Join();
                     presentPoint = mc.GetPoint().Z;
                 }
                 //writer.Close();
                 mc.StopInching(MechaAxisAddress.ZAddress);
             }
 
-            private void saveTemp(BitmapSource image) {
-                string name = System.IO.Path.GetTempFileName() + ".bmp";
-                ImageUtility.Save(image, name);
-                imagesUri.Add(name);
-            }
 
             private bool isShootContinue(double point) {
                 bool flag = false;
