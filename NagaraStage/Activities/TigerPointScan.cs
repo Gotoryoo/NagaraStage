@@ -97,9 +97,9 @@ namespace NagaraStage.Activities {
             int viewcounter = 0;
 
 
-            string txtfileName = string.Format(@"{0}\{1}.txt",
-                direcotryPath, System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"));
-            StreamWriter twriter = File.CreateText(txtfileName);
+            //string txtfileName = string.Format(@"{0}\{1}.txt",
+            //    direcotryPath, System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"));
+            //StreamWriter twriter = File.CreateText(txtfileName);
 
             List<pointscan> PSList = new List<pointscan>();
 
@@ -110,7 +110,7 @@ namespace NagaraStage.Activities {
             while (!reader.EndOfStream) {
                 var line = reader.ReadLine();
                 if (line.Length < 4) continue;
-                if (line.Substring(0, 4) == "0   ") headerflag = false;
+                if (line.Substring(0, 3) == "1  ") headerflag = false;
                 if (headerflag == true) continue;
                 string[] delimiter = { " " };
                 var values = line.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
@@ -126,18 +126,16 @@ namespace NagaraStage.Activities {
             }
 
 
-            camera.Start();
-
+            int nshot = 26;
+            byte[] bb = new byte[440 * 512 * nshot];
+            camera.Stop();
 
             for(int pp=0; pp<PSList.Count(); pp++){
-                
-                string stlog = "";
-                int nshot = 24;
-                byte[] bb = new byte[440 * 512 * nshot];
-
+   
+                viewcounter = 0;
                 if (pp % 10 == 0) {
                     Vector3 surfrecogpoint = PSList[pp].stagecoord;
-                    surfrecogpoint.Z = InitPoint.Z + 0.03;
+                    surfrecogpoint.Z = InitPoint.Z + 0.06;
                     mc.MoveTo(surfrecogpoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                     mc.Join();
 
@@ -145,16 +143,19 @@ namespace NagaraStage.Activities {
                     while (flag) {
                         mc.MoveDistance(-0.003, VectorId.Z);
                         mc.Join();
-                        byte[] b = camera.ArrayImage;
-                        Mat src = new Mat(440, 512, MatType.CV_8U, b);
-                        Mat mat = src.Clone();
+                        byte[] b = Ipt.CaptureMain();
+                        int brightness;
 
-                        Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
-                        Mat gau = mat.Clone();
-                        Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
-                        Cv2.Subtract(gau, mat, mat);
-                        Cv2.Threshold(mat, mat, 10, 1, ThresholdType.Binary);
-                        int brightness = Cv2.CountNonZero(mat);
+                        using(Mat src = new Mat(440, 512, MatType.CV_8U, b))
+                        using(Mat mat = src.Clone()){
+                            Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
+                            using (Mat gau = mat.Clone()) {
+                                Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
+                                Cv2.Subtract(gau, mat, mat);
+                                Cv2.Threshold(mat, mat, 10, 1, ThresholdType.Binary);
+                                brightness = Cv2.CountNonZero(mat);
+                            }//using gau
+                        }//using src and mat
 
                         viewcounter++;
 
@@ -165,27 +166,27 @@ namespace NagaraStage.Activities {
                 }
 
                 Vector3 CandPoint = PSList[pp].stagecoord;
-                CandPoint.Z = SurfPoint.Z + CandPoint.Z - 0.033;
+                CandPoint.Z = SurfPoint.Z + CandPoint.Z - 0.044;
 
                 mc.MoveTo(CandPoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                 mc.Join();
 
+                camera.Start();
                 led.AdjustLight(parameterManager);
                 camera.Stop();
-
 
                 p = mc.GetPoint();
                 double prev_z = p.Z;
                 DateTime starttime = System.DateTime.Now;
-                string datfileName = string.Format(@"{0}\{1}_x{2}_y{3}.dat",
+                string datfileName = string.Format(@"{0}\{1:00000}_x{2}_y{3}.dat",
                     direcotryPath,
                     PSList[pp].id,
                     (int)(p.X * 1000),
                     (int)(p.Y * 1000));
                 BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
 
-
-
+                string stlog = "";
+                viewcounter = 0;
                 while (viewcounter < nshot) {
                     mc.MoveDistance(0.003, VectorId.Z);
                     mc.Join();
@@ -205,16 +206,19 @@ namespace NagaraStage.Activities {
                     viewcounter++;
                 }
 
-                viewcounter = 0;
-                twriter.Write(stlog);
+                //twriter.Write(stlog);
                 writer.Write(bb);
                 writer.Flush();
                 writer.Close();
 
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+                GC.Collect();
+
             }
 
-            twriter.Close();
             camera.Start();
+            //twriter.Close();
         }
 
         private bool isValidate() {
