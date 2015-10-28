@@ -109,18 +109,15 @@ namespace NagaraStage.Activities {
 
             while (!reader.EndOfStream) {
                 var line = reader.ReadLine();
-                if (line.Length < 4) continue;
-                if (line.Substring(0, 3) == "1  ") headerflag = false;
-                if (headerflag == true) continue;
                 string[] delimiter = { " " };
                 var values = line.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
 
                 pointscan ps = new pointscan();
                 ps.id = int.Parse(values[1]);
                 ps.stagecoord = new Vector3(
-                    double.Parse(values[12]) * 0.001,
-                    double.Parse(values[13]) * 0.001,
-                    double.Parse(values[14]) * 0.001
+                    double.Parse(values[12]),
+                    double.Parse(values[13]),
+                    double.Parse(values[14])
                     );
                 PSList.Add(ps);
             }
@@ -159,7 +156,7 @@ namespace NagaraStage.Activities {
 
                         viewcounter++;
 
-                        if (brightness > 10000 || viewcounter > 30) flag = false;
+                        if (brightness > 15000 || viewcounter > 40) flag = false;
                     }
 
                     SurfPoint = mc.GetPoint();
