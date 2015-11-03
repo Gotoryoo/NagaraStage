@@ -11,6 +11,13 @@ using NagaraStage.Parameter;
 using OpenCvSharp;
 using OpenCvSharp.CPlusPlus;
 
+/// <summary>
+///　2015年5月にJ-PARCにてpbarを当てた7cm*7cmの乾板解析用に作ったもの。
+///　乾板をスキャンし、dat形式というバイナリファイルに書き出す。
+/// x方向に16視野、y方向に20視野からなる2mm*2mmの領域を1ブロックとし、これをbx*by回繰り返す。
+/// </summary>
+
+
 namespace NagaraStage.Activities {
     class Class2 : Activity, IActivity {
         private static Class2 instance;
