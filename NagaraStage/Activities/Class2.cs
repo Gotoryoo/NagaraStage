@@ -126,8 +126,8 @@ namespace NagaraStage.Activities {
             int pixthre = 1500;
 
 
-            for (int bx = 0; bx < 5; bx++) {
-                for (int by = 0; by < 5; by++) {
+            for (int bx = -2; bx <= 2 ; bx++) {
+                for (int by = -2; by <= 2 ; by++) {
 
 
 
@@ -154,8 +154,7 @@ namespace NagaraStage.Activities {
                     //ベース上側からはじめてZ方向正の向きにスキャン
 
 
-                    for (int vy = 0; vy < 2; vy++) {
-//                    for (int vy = 0; vy < 10; vy++) {
+                    for (int vy = 0; vy < 10; vy++) {
                         
                         Vector3 linestartpoint = mc.GetPoint();
                         linestartpoint.X = blockstartpoint.X;
@@ -175,24 +174,32 @@ namespace NagaraStage.Activities {
                         linestartpoint.Z = mc.GetPoint().Z;
 
 
-//                        for (int vx = 0; vx < 8; ) {
-                        for (int vx = 0; vx < 2; ) {
+                        for (int vx = 0; vx < 8; ) {
+                            
+                            if (vx == 0) {
+                                Vector3 approachingpoint = mc.GetPoint();
+                                approachingpoint.X = blockstartpoint.X + vx * parameterManager.SpiralShiftX - 0.05;
+                                approachingpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY - 0.05;
+                                approachingpoint.Z = linestartpoint.Z - 0.006;
+                                mc.MoveTo(approachingpoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                                mc.Join();
+                            }
                                                                                   
                             Vector3 viewstartpoint = mc.GetPoint();
                             viewstartpoint.X = blockstartpoint.X + vx * parameterManager.SpiralShiftX;
                             viewstartpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY;
-                            viewstartpoint.Z = linestartpoint.Z - 0.015;
-                            
-
+                            viewstartpoint.Z = linestartpoint.Z - 0.006;
 
                             mc.MoveTo(viewstartpoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                             mc.Join();
                             Thread.Sleep(100);
 
+                            Vector3 viewpoint = mc.GetPoint();
+
                             byte[] bb = new byte[440 * 512 * 16];
                             string datfileName = string.Format(@"E:\img\u_{0}_{1}_{2}_{3}.dat",
-                                (int)(viewstartpoint.X * 1000),
-                                (int)(viewstartpoint.Y * 1000),
+                                (int)(viewpoint.X * 1000),
+                                (int)(viewpoint.Y * 1000),
                                 vx,
                                 vy
                                 );
@@ -247,8 +254,7 @@ namespace NagaraStage.Activities {
 
 
 
-                    for (int vy = 0; vy < 2; vy++) {
-//                    for (int vy = 0; vy < 10; vy++) {
+                    for (int vy = 0; vy < 10; vy++) {
 
                         Vector3 linestartpoint = mc.GetPoint();
                         linestartpoint.X = blockstartpoint.X;
@@ -256,7 +262,7 @@ namespace NagaraStage.Activities {
                         linestartpoint.Z = blockstartpoint.Z;
 
                         Vector3 cp = mc.GetPoint();
-                        mc.MoveTo(new Vector3(linestartpoint.X + 0.5, linestartpoint.Y, initialpoint.Z - 0.120), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                        mc.MoveTo(new Vector3(linestartpoint.X + 0.5, linestartpoint.Y, initialpoint.Z - 0.150), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                         mc.Join();
                         Thread.Sleep(100);
 
@@ -268,24 +274,32 @@ namespace NagaraStage.Activities {
                         linestartpoint.Z = mc.GetPoint().Z;
 
 
-                        for (int vx = 0; vx < 2; ) {
-//                        for (int vx = 0; vx < 8; ) {
+                        for (int vx = 0; vx < 8; ) {
+
+                            if (vx == 0) {
+                                Vector3 approachingpoint = mc.GetPoint();
+                                approachingpoint.X = blockstartpoint.X + vx * parameterManager.SpiralShiftX - 0.05;
+                                approachingpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY - 0.05;
+                                approachingpoint.Z = linestartpoint.Z + 0.006; 
+                                mc.MoveTo(approachingpoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                                mc.Join();
+                            }
 
                             Vector3 viewstartpoint = mc.GetPoint();
                             viewstartpoint.X = blockstartpoint.X + vx * parameterManager.SpiralShiftX;
                             viewstartpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY;
-                            viewstartpoint.Z = linestartpoint.Z + 0.015;
-
-
+                            viewstartpoint.Z = linestartpoint.Z + 0.006;
 
                             mc.MoveTo(viewstartpoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                             mc.Join();
                             Thread.Sleep(100);
 
+                            Vector3 viewpoint = mc.GetPoint();
+
                             byte[] bb = new byte[440 * 512 * 16];
                             string datfileName = string.Format(@"E:\img\d_{0}_{1}_{2}_{3}.dat",
-                                (int)(viewstartpoint.X * 1000),
-                                (int)(viewstartpoint.Y * 1000),
+                                (int)(viewpoint.X * 1000),
+                                (int)(viewpoint.Y * 1000),
                                 vx,
                                 vy
                                 );
