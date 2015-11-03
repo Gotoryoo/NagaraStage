@@ -96,21 +96,67 @@ namespace NagaraStage.Activities {
 
             Vector3 initialpoint = mc.GetPoint();
 
-            /*
+            
             camera.Start();
 
-            for (int r = 0; r < 2; r++){
-            for (int i = 0; i < 2; i++) {
+            mc.MovePointXY(initialpoint.X + 3.000, initialpoint.Y + 3.000);
+            mc.Join();
 
+            for (int r = -2; r < 3; r++) {
 
-                mc.MovePoint(initialpoint.X + 10 * i, initialpoint.Y + 10 * r, initialpoint.Z);
+                mc.MovePointX(initialpoint.X + 1.550 * r);
                 mc.Join();
 
-                int ledbrightness = led.AdjustLight(parameterManager);
+                for (int i = -2; i < 3; i++) {
 
-                
+                    mc.MovePointY(initialpoint.Y + 1.300 * i);
+                    mc.Join();
 
-                  
+                    int ledbrightness = led.AdjustLight(parameterManager);
+                    Vector3 nowpoint = mc.GetPoint();
+
+                    byte[] b = camera.ArrayImage;
+                    Mat image = new Mat(440, 512, MatType.CV_8U, b);
+                    Mat clone_image = image.Clone();
+
+                    clone_image.ImWrite(String.Format(@"c:\img\gtrd_{0}_{1}_{2}_{3}.bmp",
+                        (int)(nowpoint.X),
+                        (int)(nowpoint.Y),
+                        i,
+                        r)
+                        );
+
+                    string stlog = "";
+                    stlog += String.Format("{0}   {1}  {2}  {3}\n",
+                            ledbrightness,
+                            nowpoint.X,
+                            nowpoint.Y,
+                            nowpoint.Z);
+                    twriter.Write(stlog);
+
+                }//i-finish
+
+            }//r-finish
+
+            camera.Stop();
+            twriter.Close();
+
+
+
+
+
+    /*            for (int r = 0; r < 5; r++) {
+                    for (int i = 0; i < 5; i++) {
+
+
+                        mc.MovePoint(initialpoint.X + 1750 * i, initialpoint.Y + 10 * r, initialpoint.Z);
+                        mc.Join();
+
+                        int ledbrightness = led.AdjustLight(parameterManager);
+
+
+
+
 
                         Vector3 nowpoint = mc.GetPoint();
 
@@ -143,16 +189,17 @@ namespace NagaraStage.Activities {
                         twriter.Write(stlog);
 
                     }
-            }
+                }
             
 
             camera.Stop();
             twriter.Close();
-             * */
-            Vector3 to = new Vector3(InitPoint.X+10, InitPoint.Y+20, InitPoint.Z+0.2);
+            */
+          /*  Vector3 to = new Vector3(InitPoint.X+10, InitPoint.Y+20, InitPoint.Z+0.2);
             Vector3 speed = new Vector3(0.01, 0.02, 0.3);
             mc.MovePointApproximate(to, speed);
             mc.Join();
+           */ 
             /*
             int viewcounter = 0;
 
