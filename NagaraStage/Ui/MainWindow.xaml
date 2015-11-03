@@ -229,27 +229,27 @@
                         LargeImageSource="/Images/start.png" Click="TigerPointScanButton_Click" />
                     <ribbon:RibbonButton
                         x:Name="scaleMeasureActivityButton" 
-                        Label="{Binding Source={StaticResource strings}, Path=StartScaleMeasureActivity}"
+                        Label="ScaleMeasure"
                         LargeImageSource="/Images/start.png" Click="ScaleMeasureActivityButton_Click" />
                     <ribbon:RibbonButton
                         x:Name="scaleFasterActivityButton" 
-                        Label="{Binding Source={StaticResource strings}, Path=StartScaleMeasureActivity}"
+                        Label="ScaleFaster}"
                         LargeImageSource="/Images/start.png" Click="ScaleFasterActivityButton_Click" />
                     <ribbon:RibbonButton
                         x:Name="MCTestButton" 
-                        Label="{Binding Source={StaticResource strings}, Path=MCTest}"
+                        Label="MotorCont}"
                         LargeImageSource="/Images/start.png" Click="MCTestButton_Click" />
                     <ribbon:RibbonButton
                         x:Name="GridMeasureButton" 
-                        Label="{Binding Source={StaticResource strings}, Path=GridMeasure}"
+                        Label="GridMeasure"
                         LargeImageSource="/Images/start.png" Click="GridMeasureButton_Click" />
                     <ribbon:RibbonButton
                         x:Name="Class1Button" 
-                        Label="{Binding Source={StaticResource strings}, Path=Class1}"
+                        Label="Class1"
                         LargeImageSource="/Images/start.png" Click="Class1Button_Click" />
                     <ribbon:RibbonButton
                         x:Name="Class2Button" 
-                        Label="{Binding Source={StaticResource strings}, Path=Class1}"
+                        Label="Class2"
                         LargeImageSource="/Images/start.png" Click="Class2Button_Click" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>             
