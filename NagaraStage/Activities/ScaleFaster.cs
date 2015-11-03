@@ -84,12 +84,6 @@ namespace NagaraStage.Activities {
             Led led = Led.GetInstance();
             CoordManager cm = new CoordManager(parameterManager);
 
-            Vector3 InitPoint = mc.GetPoint();
-            Vector3 p = new Vector3();
-
-
-            List<Mat> image_set = new List<Mat>();
-            Vector3 ggg = mc.GetPoint();
 
             string txtfileName = string.Format(@"c:\img\aaaaaa.txt");
             StreamWriter twriter = File.CreateText(txtfileName);
@@ -99,20 +93,19 @@ namespace NagaraStage.Activities {
             
             camera.Start();
 
-            mc.MovePointXY(initialpoint.X + 3.000, initialpoint.Y + 3.000);
+            mc.MovePointXY(initialpoint.X - 4.000, initialpoint.Y - 4.000);
             mc.Join();
 
-            for (int r = -2; r < 3; r++) {
+            for (int r = -3; r < 4; r++) {
 
-                mc.MovePointX(initialpoint.X + 1.550 * r);
+                mc.MovePointX(initialpoint.X + 0.95 * r);
                 mc.Join();
 
-                for (int i = -2; i < 3; i++) {
+                for (int i = -3; i < 4; i++) {
 
-                    mc.MovePointY(initialpoint.Y + 1.300 * i);
+                    mc.MovePointY(initialpoint.Y + 0.70 * i);
                     mc.Join();
 
-                    int ledbrightness = led.AdjustLight(parameterManager);
                     Vector3 nowpoint = mc.GetPoint();
 
                     byte[] b = camera.ArrayImage;
@@ -127,8 +120,7 @@ namespace NagaraStage.Activities {
                         );
 
                     string stlog = "";
-                    stlog += String.Format("{0}   {1}  {2}  {3}\n",
-                            ledbrightness,
+                    stlog += String.Format("{0} {1} {2}\n",
                             nowpoint.X,
                             nowpoint.Y,
                             nowpoint.Z);
