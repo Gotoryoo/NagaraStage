@@ -93,17 +93,16 @@ namespace NagaraStage.Activities {
             
             camera.Start();
 
-            mc.MovePointXY(initialpoint.X - 4.000, initialpoint.Y - 4.000);
-            mc.Join();
+            int nview = 5;//plus minus X view, (2X+1)^2 views
 
-            for (int r = -3; r < 4; r++) {
+            for (int r = -nview; r <= nview; r++) {
 
-                mc.MovePointX(initialpoint.X + 0.95 * r);
+                mc.MovePointX(initialpoint.X + 0.5 * r);
                 mc.Join();
 
-                for (int i = -3; i < 4; i++) {
+                for (int i = -nview; i <= nview; i++) {
 
-                    mc.MovePointY(initialpoint.Y + 0.70 * i);
+                    mc.MovePointY(initialpoint.Y + 0.5 * i);
                     mc.Join();
 
                     Vector3 nowpoint = mc.GetPoint();
@@ -112,18 +111,15 @@ namespace NagaraStage.Activities {
                     Mat image = new Mat(440, 512, MatType.CV_8U, b);
                     Mat clone_image = image.Clone();
 
-                    clone_image.ImWrite(String.Format(@"c:\img\gtrd_{0}_{1}_{2}_{3}.bmp",
-                        (int)(nowpoint.X),
-                        (int)(nowpoint.Y),
-                        i,
-                        r)
-                        );
+                    Scalar meanbrightness =  clone_image.Mean();
+                    
 
                     string stlog = "";
-                    stlog += String.Format("{0} {1} {2}\n",
+                    stlog += String.Format("{0} {1} {2}   {3}\n",
                             nowpoint.X,
                             nowpoint.Y,
-                            nowpoint.Z);
+                            nowpoint.Z,
+                            meanbrightness.Val0);
                     twriter.Write(stlog);
 
                 }//i-finish
