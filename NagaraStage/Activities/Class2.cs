@@ -123,11 +123,11 @@ namespace NagaraStage.Activities {
 
             Vector3 initialpoint = mc.GetPoint();
 
-            int pixthre = 1500;
+            int pixthre = 500;
 
 
-            for (int bx = -2; bx <= 2 ; bx++) {
-                for (int by = -2; by <= 2 ; by++) {
+            for (int bx = -5; bx <= 5 ; bx++) {
+                for (int by = -5; by <= 5 ; by++) {
 
 
 
@@ -139,15 +139,17 @@ namespace NagaraStage.Activities {
                     blockstartpoint.Y = initialpoint.Y + by * 1.0;
                     blockstartpoint.Z = initialpoint.Z;
 
-                    camera.Start();
                     mc.MoveTo(new Vector3(blockstartpoint.X + 0.5, blockstartpoint.Y + 0.5, initialpoint.Z - 0.020), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
                     mc.Join();
 
-                    surfrecog(pixthre, 0.003);
-
                     int ledbrightness = led.AdjustLight(parameterManager);
-                    Vector3 blockcenterpoint = mc.GetPoint();
-                    blockstartpoint.Z = mc.GetPoint().Z;
+
+
+                    camera.Start();
+                    surfrecog(pixthre, 0.003);
+                    camera.Stop();
+                    double surfaceZup = mc.GetPoint().Z;
+
 
 
                     //上面　　ベース中からはじめ、ベース上側を表面認識
@@ -159,21 +161,8 @@ namespace NagaraStage.Activities {
                         Vector3 linestartpoint = mc.GetPoint();
                         linestartpoint.X = blockstartpoint.X;
                         linestartpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY;
-                        linestartpoint.Z = blockstartpoint.Z;
+                        linestartpoint.Z = surfaceZup;
                         
-                        Vector3 cp = mc.GetPoint();
-                        mc.MoveTo(new Vector3(linestartpoint.X + 0.5, linestartpoint.Y, initialpoint.Z - 0.015), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
-                        mc.Join();
-                        Thread.Sleep(100);
-
-                        camera.Start();
-                        surfrecog(pixthre, 0.003);
-                        camera.Stop();
-
-                        Vector3 linecenterpoint = mc.GetPoint();
-                        linestartpoint.Z = mc.GetPoint().Z;
-
-
                         for (int vx = 0; vx < 8; ) {
                             
                             if (vx == 0) {
@@ -251,7 +240,14 @@ namespace NagaraStage.Activities {
                     //下面　　ベース中からはじめ、ベース下側を表面認識
                     //ベース下側からはじめてZ方向負の向きにスキャン
 
+                    mc.MoveTo(new Vector3(blockstartpoint.X + 0.5, blockstartpoint.Y + 0.5, initialpoint.Z - 0.140), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                    mc.Join();
 
+                    camera.Start();
+                    surfrecog(pixthre, -0.003);
+                    camera.Stop();
+
+                    double surfaceZdown = mc.GetPoint().Z;
 
 
                     for (int vy = 0; vy < 10; vy++) {
@@ -259,19 +255,7 @@ namespace NagaraStage.Activities {
                         Vector3 linestartpoint = mc.GetPoint();
                         linestartpoint.X = blockstartpoint.X;
                         linestartpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY;
-                        linestartpoint.Z = blockstartpoint.Z;
-
-                        Vector3 cp = mc.GetPoint();
-                        mc.MoveTo(new Vector3(linestartpoint.X + 0.5, linestartpoint.Y, initialpoint.Z - 0.150), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
-                        mc.Join();
-                        Thread.Sleep(100);
-
-                        camera.Start();
-                        surfrecog(pixthre, -0.003);
-                        camera.Stop();
-
-                        Vector3 linecenterpoint = mc.GetPoint();
-                        linestartpoint.Z = mc.GetPoint().Z;
+                        linestartpoint.Z = surfaceZdown;
 
 
                         for (int vx = 0; vx < 8; ) {
