@@ -93,16 +93,16 @@ namespace NagaraStage.Activities {
             
             camera.Start();
 
-            int nview = 30;//plus minus X view, (2X+1)^2 views
+            int nview = 5;//plus minus X view, (2X+1)^2 views
 
             for (int r = -nview; r <= nview; r++) {
 
-                mc.MovePointX(initialpoint.X + 0.5 * r);
+                mc.MovePointX(initialpoint.X + 0.5 * r);//0.5で行っていたものを、修正して2.0にした。
                 mc.Join();
 
                 for (int i = -nview; i <= nview; i++) {
 
-                    mc.MovePointY(initialpoint.Y + 0.5 * i);
+                    mc.MovePointY(initialpoint.Y + 0.5 * i);//0.5で行っていたものを、修正して2.0にした。
                     mc.Join();
 
                     Vector3 nowpoint = mc.GetPoint();
