@@ -749,8 +749,8 @@ namespace NagaraStage.Ui {
 #if !NoHardware
             Led led = Led.GetInstance();
             led.DAout(0, parameterManager);
-            MotorControler mc = MotorControler.GetInstance(parameterManager);
-            mc.MovePoint(0, 0, 0);
+            //MotorControler mc = MotorControler.GetInstance(parameterManager);
+            //mc.MovePoint(0, 0, 0);
 #endif
             Properties.Settings.Default.Save();
         }

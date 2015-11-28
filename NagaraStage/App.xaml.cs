@@ -122,9 +122,9 @@ namespace NagaraStage {
             try {
                 MotorControler mc = MotorControler.GetInstance(ParameterManager);
                 mc.Initialize();
-                mc.InitializeMotorControlBoard(MechaAxisAddress.XAddress);
-                mc.InitializeMotorControlBoard(MechaAxisAddress.YAddress);
-                mc.InitializeMotorControlBoard(MechaAxisAddress.ZAddress);
+                //mc.InitializeMotorControlBoard(MechaAxisAddress.XAddress);
+                //mc.InitializeMotorControlBoard(MechaAxisAddress.YAddress);
+                //mc.InitializeMotorControlBoard(MechaAxisAddress.ZAddress);
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message + NagaraStage.Properties.Strings.InitMotorException01);
                 Environment.Exit(1);
@@ -168,8 +168,8 @@ namespace NagaraStage {
             // モータを原点に戻す.
             MotorControler mc = MotorControler.GetInstance(ParameterManager);
             try {
-                mc.MovePointXY(0, 0);
-                mc.Join();
+                //mc.MovePointXY(0, 0);
+                //mc.Join();
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message);
             }
