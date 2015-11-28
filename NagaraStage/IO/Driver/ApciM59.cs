@@ -39,12 +39,12 @@ namespace NagaraStage {
                         enabled = false;
                     }
                 }
-
-                public static Boolean SetMode1(VectorId axisNo, byte value) {
+                /*
+                public static Boolean Mode1Write(VectorId axisNo, byte value) {
                     return Apci59.Mode1Write(slotNo, (short)axisNo, value);
                 }
 
-                public static Boolean SetMode2(VectorId axisNo, byte value) {
+                public static Boolean Mode2Write(VectorId axisNo, byte value) {
                     return Apci59.Mode2Write(slotNo, (short)axisNo, value);
                 }
 
@@ -62,7 +62,7 @@ namespace NagaraStage {
                     return status;
                 }
 
-                public static Boolean WriteCommand(VectorId axisNo, byte command) {
+                public static Boolean CommandWrite(VectorId axisNo, byte command) {
                     return Apci59.CommandWrite(slotNo, (short)axisNo, command);
                 }
 
@@ -130,6 +130,7 @@ namespace NagaraStage {
 
                     return status;
                 }
+                */
             }
         }
     }

@@ -13,7 +13,7 @@ namespace NagaraStage.IO.Driver {
     /// </summary>
     /// <author>Hirokazu Yokoyama</author>
     static class Converter {
-
+        /*
         /// <summary>
         /// APCI-P54 から読み出します．
         /// </summary>
@@ -47,7 +47,7 @@ namespace NagaraStage.IO.Driver {
                 } // switch end
             } // if end
         }
-
+        */
         /// <summary>
         /// APCI-P59 から読み出します．
         /// </summary>
