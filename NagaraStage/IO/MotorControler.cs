@@ -27,6 +27,17 @@ namespace NagaraStage {
         /// <author email="o1007410@edu.gifu-u.ac.jp">Hirokazu Yokoyama</author>
         public class MotorControler : Driver.Apci59Constants {
 
+            private static Boolean enabled = false;
+            public static Boolean Enabled {
+                get { return enabled; }
+            }
+
+            private static short slotNo = 0;
+            public static short SlotNo {
+                get { return slotNo; }
+            }
+
+
             /// <summary>ThreadAbortExceptionが発生した時に行うメッソドのためのデリゲートです． </summary>        
             public delegate void AbortedCallback(ThreadAbortException ex);
 
@@ -37,8 +48,10 @@ namespace NagaraStage {
             private Vector3 tolerance = new Vector3();
             private Thread movingThread;
             //private Thread isMovingPointContinuemovingThread;
+
             /// <summary>らせん移動の相対的な視野位置(viewx,viewy)を保持するカウンタ</summary>            
             private Vector2Int spiralCounter;
+
             /// <summary>らせん移動の中心座標</summary>
             private Vector3 spiralCentralPosition;
 
@@ -55,6 +68,7 @@ namespace NagaraStage {
 
             /// <summary>らせん移動をしたときのイベント</summary>
             public event EventHandler<SpiralEventArgs> SpiralMoved;
+
             /// <summary>目標座標値を保持するために一時的に用いられるメンバ変数</summary>
             private Vector3 purposePoint;
 
@@ -136,7 +150,12 @@ namespace NagaraStage {
             /// <exception cref="System.Exception">モーター制御ボードの初期化に失敗した場合</exception>
             public void Initialize() {
 #if !_NoHardWare
-                if (!ApciM59.Initialize()) {
+                Boolean status;
+                try {
+                    slotNo = Apci59.SLOT_AUTO;
+                    status = Apci59.Create(ref slotNo);
+                } catch (Exception) {
+                    status = false;
                     throw new Exception("Initializing aPCI-59 Motor Control Board is failed.");
                 }
 #endif
@@ -148,77 +167,47 @@ namespace NagaraStage {
             /// <param name="axisAddress">初期化する軸</param>
             public void InitializeMotorControlBoard(MechaAxisAddress axisAddress) {
                 VectorId axis = convertToAxis(axisAddress);
-                int rangeData;
-                int speedData;
-                int objectSpeedData;
-                int rate1Data;
                 Boolean status;
                 limitPol0 = (int)(parameterManager.LimitPol != 0 ? parameterManager.LimitPol : limitPol0);
 
                 // パルス出力方式(1パルス)，これでいいはず
                 if (axisAddress == MechaAxisAddress.ZAddress) {
-                    status = Converter.IODRV1_Outpb((int)axisAddress + MODE1_WRITE, 0x20);
+                    status = Apci59.Mode1Write(SlotNo, (short)axis, 0x20);
                 } else {
                     // X, Y軸は動きが逆
-                    status = Converter.IODRV1_Outpb((int)axisAddress + MODE1_WRITE, 0x30);
+                    status = Apci59.Mode1Write(SlotNo, (short)axis, 0x30);
                 }
 
-                // エンコーダ入力仕様(4てい倍)，DEAD,DERROR,リミット極性指定，これでいいはず
-                status = Converter.IODRV1_Outpb((int)axisAddress + MODE2_WRITE, (byte)limitPol0);
-                status = Converter.IODRV1_Outpb((int)axisAddress + COMMAND_WRITE, INPOSITION_WAIT_MODE_RESET);
-                status = Converter.IODRV1_Outpb((int)axisAddress + COMMAND_WRITE, ALARM_STOP_ENABLE_MODE_RESET);
-                status = Converter.IODRV1_Outpb((int)axisAddress + COMMAND_WRITE, INTERRUPT_OUT_ENABLE_MODE_RESET);
+                // エンコーダ入力仕様(4てい倍)，DEAD,DERROR,リミット極性指定
+                status = Apci59.Mode2Write(SlotNo, (short)axis, (byte)limitPol0);
+                status = Apci59.CommandWrite(SlotNo, (short)axis, INPOSITION_WAIT_MODE_RESET);
+                status = Apci59.CommandWrite(SlotNo, (short)axis, ALARM_STOP_ENABLE_MODE_RESET);
+                status = Apci59.CommandWrite(SlotNo, (short)axis, INTERRUPT_OUT_ENABLE_MODE_RESET);
 
                 // Range dataの設定
-                rangeData = getRangeData(axis);
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA3_WRITE, (byte)((rangeData / 256) & 0xFF));
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA4_WRITE, (byte)(rangeData & 0xFF));
-                status = Converter.IODRV1_Outpb((long)axisAddress + COMMAND_WRITE, RANGE_WRITE);
+                int rangeData = getRangeData(axis);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)rangeData);
 
                 // Start stop speed dataの作成
-                speedData = getStartStopSpeedData(axis);
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA3_WRITE, (byte)((speedData / 256) & 0xFF));
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA4_WRITE, (byte)(speedData & 0xFF));
-                status = Converter.IODRV1_Outpb((long)axisAddress + COMMAND_WRITE, START_STOP_SPEED_DATA_WRITE);
+                int speedData = getStartStopSpeedData(axis);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, START_STOP_SPEED_DATA_WRITE, (short)speedData);
 
                 // Object speed data の作成
-                objectSpeedData = getObjectSpeedData(axis);
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA3_WRITE, (byte)((objectSpeedData / 256) & 0xFF));
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA4_WRITE, (byte)(objectSpeedData & 0xFF));
-                status = Converter.IODRV1_Outpb((long)axisAddress + COMMAND_WRITE, OBJECT_SPEED_DATA_WRITE);
+                int objectSpeedData = getObjectSpeedData(axis);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, OBJECT_SPEED_DATA_WRITE, (short)objectSpeedData);
 
                 // Rate1 data の作成
-                rate1Data = getRate1Data(axis);
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA3_WRITE, (byte)((rate1Data / 256) & 0xFF));
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA4_WRITE, (byte)(rate1Data & 0xFF));
-                status = Converter.IODRV1_Outpb((long)axisAddress + COMMAND_WRITE, RATE1_DATA_WRITE);
+                int rate1Data = getRate1Data(axis);
+                status = Apci59.DataFullWrite(SlotNo, (short)axis, RATE1_DATA_WRITE, (short)rate1Data);
 
-                // Rate2 data の作成
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA3_WRITE, 0x1F);
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA4_WRITE, 0xFF);
-                status = Converter.IODRV1_Outpb((long)axisAddress + COMMAND_WRITE, RATE2_DATA_WRITE);
+                // Rate2, 3, rate_change_point_1_2
+                status = Apci59.DataFullWrite(SlotNo, (short)axis, RATE2_DATA_WRITE, 0x1FFF);
+                status = Apci59.DataFullWrite(SlotNo, (short)axis, RATE3_DATA_WRITE, 0x1FFF);
+                status = Apci59.DataFullWrite(SlotNo, (short)axis, RATE_CHANGE_POINT_1_2_WRITE, 0x1FFF);
 
-                // Rate3 data の作成
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA3_WRITE, 0x1F);
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA4_WRITE, 0xFF);
-                status = Converter.IODRV1_Outpb((long)axisAddress + COMMAND_WRITE, RATE3_DATA_WRITE);
-
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA3_WRITE, 0x1F);
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA4_WRITE, 0xFF);
-                status = Converter.IODRV1_Outpb((long)axisAddress + COMMAND_WRITE, RATE_CHANGE_POINT_1_2_WRITE);
-
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA1_WRITE, 0x0);
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA2_WRITE, 0x0);
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA3_WRITE, 0x0);
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA4_WRITE, 0x0);
-                status = Converter.IODRV1_Outpb((long)axisAddress + COMMAND_WRITE, INTERNAL_COUNTER_WRITE);
-
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA1_WRITE, 0x0);
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA2_WRITE, 0x0);
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA3_WRITE, 0x0);
-                status = Converter.IODRV1_Outpb((long)axisAddress + DATA4_WRITE, 0x0);
-                status = Converter.IODRV1_Outpb((long)axisAddress + COMMAND_WRITE, EXTERNAL_COUNTER_WRITE);
-
+                //INTERNAL/EXTERNAL_COUNTER
+                status = Apci59.DataFullWrite(SlotNo, (short)axis, INTERNAL_COUNTER_WRITE, 0);
+                status = Apci59.DataFullWrite(SlotNo, (short)axis, EXTERNAL_COUNTER_WRITE, 0);
             }
 
 
@@ -235,9 +224,9 @@ namespace NagaraStage {
 
 #if !NoHardware
                 // モータドライバから座標を取得する
-                Apci59.DataFullRead(ApciM59.SlotNo, (short)VectorId.X, Apci59.EXTERNAL_COUNTER_READ, ref c.X);
-                Apci59.DataFullRead(ApciM59.SlotNo, (short)VectorId.Y, Apci59.EXTERNAL_COUNTER_READ, ref c.Y);
-                Apci59.DataFullRead(ApciM59.SlotNo, (short)VectorId.Z, Apci59.EXTERNAL_COUNTER_READ, ref c.Z);
+                Apci59.DataFullRead(SlotNo, (short)VectorId.X, Apci59.EXTERNAL_COUNTER_READ, ref c.X);
+                Apci59.DataFullRead(SlotNo, (short)VectorId.Y, Apci59.EXTERNAL_COUNTER_READ, ref c.Y);
+                Apci59.DataFullRead(SlotNo, (short)VectorId.Z, Apci59.EXTERNAL_COUNTER_READ, ref c.Z);
 #endif
                 // X,Y,Z軸それぞれで符号拡張を行う．
                 // 27bit目に符合情報が含まれているため27bit目が1のとき
@@ -283,7 +272,7 @@ namespace NagaraStage {
             public MotorAbnomalState GetAbnomalState(MechaAxisAddress axis, Boolean isConfCheck = false) {
                 MotorAbnomalState motorState = MotorAbnomalState.NoProblem;
                 byte returnValue = new byte();
-                Apci59.GetMechanicalSignal(ApciM59.SlotNo, (short)convertToAxis(axis), ref returnValue);
+                Apci59.GetMechanicalSignal(SlotNo, (short)convertToAxis(axis), ref returnValue);
                 //byte returnValue = Converter.IODRV1_INpb((short)(axis + END_STATUS_READ));
 
                 // 設定値の異常
@@ -360,33 +349,33 @@ namespace NagaraStage {
                 Boolean status = true;
 
                 int rangeData = getRangeData(axis, speed);
-                status = ApciM59.SetRange(axis, (short)rangeData);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)rangeData);
                 if (!status) {
                     throw new Exception(string.Format("range data is not correct．range data = {0}", rangeData));
                 }
 
                 int startStopSpeedData = getStartStopSpeedData(axis, rangeData);
-                status = ApciM59.SetStartStopSpeed(axis, (short)startStopSpeedData);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, START_STOP_SPEED_DATA_WRITE, (short)startStopSpeedData);
                 if (!status) {
                     throw new Exception(string.Format("start stop data is not correct．start stop data = {0}",
                         startStopSpeedData));
                 }
 
                 int objectSpeedData = getObjectSpeedData(axis, speed, rangeData);
-                status = ApciM59.SetObjectSpeed(axis, (short)objectSpeedData);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, OBJECT_SPEED_DATA_WRITE, (short)objectSpeedData);
                 if (!status) {
                     throw new Exception(string.Format("object speed data is not correct．object speed data = {0}",
                         objectSpeedData));
                 }
 
                 int rate1Data = getRate1Data(axis, speed, objectSpeedData, startStopSpeedData);
-                status = ApciM59.SetRate1(axis, (short)rate1Data);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, RATE1_DATA_WRITE, (short)rate1Data);
                 if (!status) {
                     throw new Exception(string.Format("rate1 data is not correct．rate1 data = {0}",
                         rate1Data));
                 } 
                 byte command = (byte)(direction == PlusMinus.Plus ? PLUS_CONTINUOUS_DRIVE : MINUS_CONTINUOUS_DRIVE);
-                status = ApciM59.WriteCommand(axis, command);
+                status = Apci59.CommandWrite(SlotNo, (short)axis, command);
                 if (!status) {
                     throw new Exception("コマンドの発信に失敗しました． command output failed.");
                 }
@@ -413,34 +402,34 @@ namespace NagaraStage {
                 }
 
                 int rangeData = getRangeData(axis);
-                status = ApciM59.SetRange(axis, (short)rangeData);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)rangeData);
                 if (!status) {
                     throw new Exception(string.Format("range data is not correct．range data = {0}", rangeData));
                 }
 
                 int startStopSpeedData = getStartStopSpeedData(axis);
-                status = ApciM59.SetStartStopSpeed(axis, (short)startStopSpeedData);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, START_STOP_SPEED_DATA_WRITE, (short)startStopSpeedData);
                 if (!status) {
                     throw new Exception(string.Format("start stop data is not correct．start stop data = {0}",
                         startStopSpeedData));
                 }
 
                 int objectSpeedData = getObjectSpeedData(axis);
-                status = ApciM59.SetObjectSpeed(axis, (short)objectSpeedData);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, OBJECT_SPEED_DATA_WRITE, (short)objectSpeedData);
                 if (!status) {
                     throw new Exception(string.Format("object speed data is not correct．object speed data = {0}",
                         objectSpeedData));
                 }
 
                 int rate1Data = getRate1Data(axis);
-                status = ApciM59.SetRate1(axis, (short)rate1Data);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, RATE1_DATA_WRITE, (short)rate1Data);
                 if (!status) {
                     throw new Exception(string.Format("rate1 data is not correct．rate1 data = {0}",
                         rate1Data));
                 }
 
                 byte command = (byte)(direction == PlusMinus.Plus ? PLUS_CONTINUOUS_DRIVE : MINUS_CONTINUOUS_DRIVE);
-                status = ApciM59.WriteCommand(axis, command);
+                status = Apci59.CommandWrite(SlotNo, (short)axis, command);
                 if (!status) {
                     throw new Exception("コマンドの発信に失敗しました． command output failed.");
                 }
@@ -455,16 +444,19 @@ namespace NagaraStage {
             /// </summary>
             /// <param name="axisAddress">停止する軸</param>
             public void StopInching(MechaAxisAddress axisAddress) {
-                int status;
+                VectorId axis = convertToAxis(axisAddress);
 
-                Converter.IODRV1_Outpb((long)axisAddress + COMMAND_WRITE, SLOW_DOWN_STOP);
+                Apci59.CommandWrite(SlotNo, (short)axis, SLOW_DOWN_STOP);
 
-                for (int i = 0; i <= 32000; ++i) {
-                    status = Converter.IODRV1_INpb((short)(axisAddress + END_STATUS_READ));
-                    if ((status & 0x10) != 0x0) {
-                        break;
-                    }
+                bool status;
+                byte pbstat = 0x0;
+
+                while(true){
+                    status = Apci59.GetEndStatus(SlotNo, (short)axis, ref pbstat);
+                    System.Diagnostics.Debug.WriteLine(String.Format("pbstat {0}", pbstat));
+                    if ( (pbstat & 0x01) == 0x0 ) break;
                 }
+                
 
             }
 
@@ -481,10 +473,7 @@ namespace NagaraStage {
             private MotorAbnomalState InchUnit(MechaAxisAddress axisAddress, double distance, double oSpddt) {
                 // このメソッドは途中でreturnをする場合があります．
 
-                int x, h, m, l, tmpx;
-                double resolution;
                 MotorAbnomalState motorStatus = MotorAbnomalState.NoProblem;
-                Boolean statusFlag = true;
                 VectorId axis = convertToAxis(axisAddress);
 
                 motorStatus = GetAbnomalState(axisAddress);
@@ -494,43 +483,25 @@ namespace NagaraStage {
                 }
 
                 int rangeData = getRangeData(axis, oSpddt);
-                ApciM59.SetRange(axis, (short)rangeData);
+                Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)rangeData);
 
                 int startStopSpeedData = getStartStopSpeedData(axis, rangeData);
-                ApciM59.SetStartStopSpeed(axis, (short)startStopSpeedData);
+                Apci59.DataHalfWrite(SlotNo, (short)axis, START_STOP_SPEED_DATA_WRITE, (short)startStopSpeedData);
 
                 int objectSpeedData = getObjectSpeedData(axis, oSpddt, rangeData);
-                ApciM59.SetObjectSpeed(axis, (short)objectSpeedData);
+                Apci59.DataHalfWrite(SlotNo, (short)axis, OBJECT_SPEED_DATA_WRITE, (short)objectSpeedData);
 
                 int rate1Data = getRate1Data(axis, oSpddt);
-                ApciM59.SetRate1(axis, (short)rate1Data);
+                Apci59.DataHalfWrite(SlotNo, (short)axis, RATE1_DATA_WRITE, (short)rate1Data);
 
                 // 移動量をパルス数に変換する
-                resolution = parameterManager.MotorResolution.Index(axis);
-                x = (int)(Math.Abs(distance) / resolution);
-                statusFlag = (x > 1677215 ? false : statusFlag);
-                h = (int)(x / 65536) & 0xFF;
-                m = (int)(x / 256) & 0xFF;
-                l = x & 0xFF;
-                if (axisAddress == MechaAxisAddress.XAddress) {
-                    tmpx = (int)((h * 65536 + m * 256 + l) * resolution);
-                }
-
-                if (statusFlag) {
-                    // 移動方向
-                    if (distance >= 0) {
-                        // プラス
-                        Converter.IODRV1_Outpb((long)(axisAddress + DATA2_WRITE), (byte)h);
-                        Converter.IODRV1_Outpb((long)(axisAddress + DATA3_WRITE), (byte)m);
-                        Converter.IODRV1_Outpb((long)(axisAddress + DATA4_WRITE), (byte)l);
-                        Converter.IODRV1_Outpb((long)(axisAddress + COMMAND_WRITE), PLUS_PRESET_PULSE_DRIVE);
-                    } else {
-                        // マイナス
-                        Converter.IODRV1_Outpb((long)(axisAddress + DATA2_WRITE), (byte)h);
-                        Converter.IODRV1_Outpb((long)(axisAddress + DATA3_WRITE), (byte)m);
-                        Converter.IODRV1_Outpb((long)(axisAddress + DATA4_WRITE), (byte)l);
-                        Converter.IODRV1_Outpb((long)(axisAddress + COMMAND_WRITE), MINUS_PRESET_PULSE_DRIVE);
-                    }
+                double resolution = parameterManager.MotorResolution.Index(axis);
+                int x = (int)(Math.Abs(distance) / resolution);
+                if (x > 1677215) return motorStatus;
+                
+                byte bdirection = (byte)(distance > 0 ? Apci59.PLUS_PRESET_PULSE_DRIVE : Apci59.MINUS_PRESET_PULSE_DRIVE);
+                if (false == Apci59.DataFullWrite(SlotNo, (short)axis, bdirection, x)) {
+                    return motorStatus;
                 }
 
                 return motorStatus;
@@ -986,17 +957,17 @@ namespace NagaraStage {
                 // X軸 Y軸 Z軸の移動終了チェックする
                 do {
                     if (!stopFlagX) {
-                        Apci59.GetDriveStatus(ApciM59.SlotNo, (short)VectorId.X, ref deviceStatus);
+                        Apci59.GetDriveStatus(SlotNo, (short)VectorId.X, ref deviceStatus);
                         stopFlagX = ((deviceStatus & 0x01) == 0x00 ? true : false);
                     }
 
                     if (!stopFlagY) {
-                        Apci59.GetDriveStatus(ApciM59.SlotNo, (short)VectorId.Y, ref deviceStatus);
+                        Apci59.GetDriveStatus(SlotNo, (short)VectorId.Y, ref deviceStatus);
                         stopFlagY = ((deviceStatus & 0x01) == 0x00 ? true : false);
                     }
 
                     if (!stopFlagZ) {
-                        Apci59.GetDriveStatus(ApciM59.SlotNo, (short)VectorId.Z, ref deviceStatus);
+                        Apci59.GetDriveStatus(SlotNo, (short)VectorId.Z, ref deviceStatus);
                         stopFlagZ = ((deviceStatus & 0x01) == 0x00 ? true : false);
                     }
 
@@ -1209,13 +1180,13 @@ namespace NagaraStage {
             public void DisplayStat() {
                 for (short ax = 0; ax < 3; ax++) {
                     int range = 0;
-                    Apci59.DataFullRead(ApciM59.SlotNo, ax, Apci59.RANGE_DATA_READ, ref range);
+                    Apci59.DataFullRead(SlotNo, ax, Apci59.RANGE_DATA_READ, ref range);
                     int ssspeed = 0;
-                    Apci59.DataFullRead(ApciM59.SlotNo, ax, Apci59.START_STOP_SPEED_DATA_READ, ref ssspeed);
+                    Apci59.DataFullRead(SlotNo, ax, Apci59.START_STOP_SPEED_DATA_READ, ref ssspeed);
                     int ospeed = 0;
-                    Apci59.DataFullRead(ApciM59.SlotNo, ax, Apci59.OBJECT_SPEED_DATA_READ, ref ospeed);
+                    Apci59.DataFullRead(SlotNo, ax, Apci59.OBJECT_SPEED_DATA_READ, ref ospeed);
                     int rate1 = 0;
-                    Apci59.DataFullRead(ApciM59.SlotNo, ax, Apci59.RATE1_DATA_READ, ref rate1);
+                    Apci59.DataFullRead(SlotNo, ax, Apci59.RATE1_DATA_READ, ref rate1);
                     System.Console.WriteLine(string.Format("ax, range, ssspeed, ospeed = {0} {1} {2} {3} {4}", ax, range, ssspeed, ospeed, rate1));
                 }
             }
@@ -1257,15 +1228,15 @@ namespace NagaraStage {
                             Thread.Sleep(1);
                             byte deviceStatus = new byte();
                             if (activeFlagX) {
-                                Apci59.GetDriveStatus(ApciM59.SlotNo, (short)VectorId.X, ref deviceStatus);
+                                Apci59.GetDriveStatus(SlotNo, (short)VectorId.X, ref deviceStatus);
                                 activeFlagX = !((deviceStatus & 0x01) == 0x00);
                             }
                             if (activeFlagY) {
-                                Apci59.GetDriveStatus(ApciM59.SlotNo, (short)VectorId.Y, ref deviceStatus);
+                                Apci59.GetDriveStatus(SlotNo, (short)VectorId.Y, ref deviceStatus);
                                 activeFlagY = !((deviceStatus & 0x01) == 0x00);
                             }
                             if (activeFlagZ) {
-                                Apci59.GetDriveStatus(ApciM59.SlotNo, (short)VectorId.Z, ref deviceStatus);
+                                Apci59.GetDriveStatus(SlotNo, (short)VectorId.Z, ref deviceStatus);
                                 activeFlagZ = !((deviceStatus & 0x01) == 0x00);
                             }
                             if (!isMotorStateOk(stateX, stateY, stateZ)) {
@@ -1297,7 +1268,7 @@ namespace NagaraStage {
             public MotorAbnomalState GetMotorState(VectorId axis, Boolean isConfCheck = false) {
                 MotorAbnomalState motorState = MotorAbnomalState.NoProblem;
                 byte returnValue = new byte();
-                Apci59.GetMechanicalSignal(ApciM59.SlotNo, (short)(axis), ref returnValue);
+                Apci59.GetMechanicalSignal(SlotNo, (short)(axis), ref returnValue);
 
                 // 設定値の異常
                 if (isConfCheck) {
@@ -1344,16 +1315,16 @@ namespace NagaraStage {
 
                 //speedがマイナスの値だったら距離に応じた適当な値を設定。ゼロなら規定の最低速度、法外に大きいときは規定の最大速度にしたい
                 int rangeData = getRangeData(axis, speed);
-                ApciM59.SetRange(axis, (short)rangeData);
+                Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE,(short)rangeData);
 
                 int startStopSpeedData = getStartStopSpeedData(axis, rangeData);
-                ApciM59.SetStartStopSpeed(axis, (short)startStopSpeedData);
+                Apci59.DataHalfWrite(SlotNo, (short)axis, START_STOP_SPEED_DATA_WRITE, (short)startStopSpeedData);
 
                 int objectSpeedData = getObjectSpeedData(axis, speed, rangeData);
-                ApciM59.SetObjectSpeed(axis, (short)objectSpeedData);
+                Apci59.DataHalfWrite(SlotNo, (short)axis, OBJECT_SPEED_DATA_WRITE, (short)objectSpeedData);
 
                 int rate1Data = getRate1Data(axis, speed);
-                ApciM59.SetRate1(axis, (short)rate1Data);
+                Apci59.DataHalfWrite(SlotNo, (short)axis, RATE1_DATA_WRITE, (short)rate1Data);
 
 
                 // 移動量をパルス数に変換する
@@ -1364,7 +1335,7 @@ namespace NagaraStage {
 
 
                 byte bdirection = (byte)(distance > 0 ? Apci59.PLUS_PRESET_PULSE_DRIVE : Apci59.MINUS_PRESET_PULSE_DRIVE);
-                if (false == Apci59.DataFullWrite(ApciM59.SlotNo, (short)axis, bdirection, x)) {
+                if (false == Apci59.DataFullWrite(SlotNo, (short)axis, bdirection, x)) {
                     return motorStatus;
                 }
 
@@ -1513,15 +1484,15 @@ namespace NagaraStage {
                             Thread.Sleep(1);
                             byte deviceStatus = new byte();
                             if (activeFlagX) {
-                                Apci59.GetDriveStatus(ApciM59.SlotNo, (short)VectorId.X, ref deviceStatus);
+                                Apci59.GetDriveStatus(SlotNo, (short)VectorId.X, ref deviceStatus);
                                 activeFlagX = !((deviceStatus & 0x01) == 0x00);
                             }
                             if (activeFlagY) {
-                                Apci59.GetDriveStatus(ApciM59.SlotNo, (short)VectorId.Y, ref deviceStatus);
+                                Apci59.GetDriveStatus(SlotNo, (short)VectorId.Y, ref deviceStatus);
                                 activeFlagY = !((deviceStatus & 0x01) == 0x00);
                             }
                             if (activeFlagZ) {
-                                Apci59.GetDriveStatus(ApciM59.SlotNo, (short)VectorId.Z, ref deviceStatus);
+                                Apci59.GetDriveStatus(SlotNo, (short)VectorId.Z, ref deviceStatus);
                                 activeFlagZ = !((deviceStatus & 0x01) == 0x00);
                             }
                             if (!isMotorStateOk(stateX, stateY, stateZ)) {
@@ -1564,19 +1535,25 @@ namespace NagaraStage {
             /// <param name="axisAddress">停止する軸</param>
             public void SlowDownStop(VectorId axis) {
 
-                if (false == Apci59.CommandWrite(ApciM59.SlotNo, 0, Apci59.SLOW_DOWN_STOP)) return;
+                if (false == Apci59.CommandWrite(SlotNo, 0, Apci59.SLOW_DOWN_STOP)) return;
 
-                for (int i = 0; i <= 32000; ++i) {
-                    byte pbStatus = new byte();
-                    Apci59.GetEndStatus(ApciM59.SlotNo, (short)axis, ref pbStatus);
-                    if ((pbStatus & 0x10) != 0x0) {
-                        break;
-                    }
+                bool status;
+                byte pbstat = 0x0;
+
+                while (true) {
+                    status = Apci59.GetEndStatus(SlotNo, (short)axis, ref pbstat);
+                    System.Diagnostics.Debug.WriteLine(String.Format("pbstat {0}", pbstat));
+                    if ((pbstat & 0x01) == 0x0) break;
                 }
 
             }
 
- 
+            public static void Terminate() {
+                if (enabled) {
+                    Apci59.Close(slotNo);
+                    enabled = false;
+                }
+            }
 
 
         }
