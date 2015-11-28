@@ -79,7 +79,7 @@ namespace NagaraStage.Ui {
                     mc.Inch(MechaAxisAddress.ZAddress, PlusMinus.Plus);
                 } else if (e.Key == Key.Q) {
                     mc.Inch(MechaAxisAddress.ZAddress, PlusMinus.Minus);
-                } else if (e.Key == Key.S) {
+                } else if (e.Key == Key.Space) {
                     mc.MoveInSpiral();
                 } else if (e.Key == Key.O) {                    
                     mc.BackToSpiralCenter();
