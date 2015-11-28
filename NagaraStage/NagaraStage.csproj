@@ -154,15 +154,10 @@
     <Compile Include="IntEventArgs.cs" />
     <Compile Include="IO\Camera.cs" />
     <Compile Include="IO\CameraType.cs" />
-    <Compile Include="IO\Driver\Apci54.cs" />
-    <Compile Include="IO\Driver\Apci54Resouce.cs" />
     <Compile Include="IO\Driver\Apci59.cs" />
     <Compile Include="IO\Driver\Apci59Constants.cs" />
     <Compile Include="IO\Driver\Apci59Resouce.cs" />
     <Compile Include="IO\Driver\ApciErrorCode.cs" />
-    <Compile Include="IO\Driver\ApciIp54.cs" />
-    <Compile Include="IO\Driver\ApciM59.cs" />
-    <Compile Include="IO\Driver\Converter.cs" />
     <Compile Include="IO\Driver\VP910.cs" />
     <Compile Include="IO\Driver\VP910Define.cs" />
     <Compile Include="IO\Led.cs" />
