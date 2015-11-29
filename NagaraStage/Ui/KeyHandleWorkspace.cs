@@ -68,22 +68,24 @@ namespace NagaraStage.Ui {
             try {
 #if !_NoHardWare
                 if (e.Key == Key.A) {
-                    mc.ContinuousDrive(VectorId.X, PlusMinus.Minus);
+                    mc.ContinuousDrive(VectorId.X, PlusMinus.Minus, mc.Speed.X);
                 } else if (e.Key == Key.D) {
-                    mc.ContinuousDrive(VectorId.X, PlusMinus.Plus);
-                } else if (e.Key == Key.W) {
-                    mc.ContinuousDrive(VectorId.Y, PlusMinus.Plus);
+                    mc.ContinuousDrive(VectorId.X, PlusMinus.Plus, mc.Speed.X);
                 } else if (e.Key == Key.X) {
-                    mc.ContinuousDrive(VectorId.Y, PlusMinus.Minus);
-                } else if (e.Key == Key.E) {
-                    mc.ContinuousDrive(VectorId.Z, PlusMinus.Plus);
+                    mc.ContinuousDrive(VectorId.Y, PlusMinus.Minus, mc.Speed.Y);
+                } else if (e.Key == Key.W) {
+                    mc.ContinuousDrive(VectorId.Y, PlusMinus.Plus, mc.Speed.Y);
                 } else if (e.Key == Key.Q) {
-                    mc.ContinuousDrive(VectorId.Z, PlusMinus.Minus);
-                } else if (e.Key == Key.Space) {
+                    mc.ContinuousDrive(VectorId.Z, PlusMinus.Minus, mc.Speed.Z);
+                } else if (e.Key == Key.E) {
+                    mc.ContinuousDrive(VectorId.Z, PlusMinus.Plus, mc.Speed.Z);
+                } else if (e.Key == Key.N) {
                     mc.MoveInSpiral();
                 } else if (e.Key == Key.O) {                    
+                    mc.SetSpiralCenterPoint();
+                } else if (e.Key == Key.I) {
                     mc.BackToSpiralCenter();
-                } else if (e.Key == Key.B){
+                } else if (e.Key == Key.B) {
                     mc.SpiralBack();
                 }
 #endif
