@@ -63,7 +63,7 @@
       <Value Profile="(Default)">0.02</Value>
     </Setting>
     <Setting Name="InitialVelocityZ" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.04</Value>
+      <Value Profile="(Default)">0.004</Value>
     </Setting>
     <Setting Name="AccelTimeX" Type="System.Double" Scope="User">
       <Value Profile="(Default)">20</Value>

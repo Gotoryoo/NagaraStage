@@ -161,7 +161,6 @@
     <Compile Include="IO\Driver\VP910.cs" />
     <Compile Include="IO\Driver\VP910Define.cs" />
     <Compile Include="IO\Led.cs" />
-    <Compile Include="IO\MechaAxisAddress.cs" />
     <Compile Include="IO\MotorState.cs" />
     <Compile Include="IO\MotorActiveException.cs" />
     <Compile Include="IO\MotorAxisException.cs" />

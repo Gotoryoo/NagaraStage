@@ -265,7 +265,7 @@ namespace NagaraStage.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.04")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.004")]
         public double InitialVelocityZ {
             get {
                 return ((double)(this["InitialVelocityZ"]));

@@ -155,9 +155,9 @@ namespace NagaraStage {
                     slotNo = Apci59.SLOT_AUTO;
                     status = Apci59.Create(ref slotNo);
 
-                    InitializeMotorControlParams(MechaAxisAddress.XAddress);
-                    InitializeMotorControlParams(MechaAxisAddress.YAddress);
-                    InitializeMotorControlParams(MechaAxisAddress.ZAddress);
+                    InitializeMotorControlParams(VectorId.X);
+                    InitializeMotorControlParams(VectorId.Y);
+                    InitializeMotorControlParams(VectorId.Z);
 
                 } catch (Exception) {
                     status = false;
@@ -166,19 +166,17 @@ namespace NagaraStage {
 #endif
             }
 
-
-            
+      
             
             /// <summary>
             /// モータコントロールボードのパラメータを初期化します．
             /// </summary>
             /// <param name="axisAddress">初期化する軸</param>
-            public void InitializeMotorControlParams(MechaAxisAddress axisAddress) {
-                VectorId axis = convertToAxis(axisAddress);
+            public void InitializeMotorControlParams(VectorId axis) {
                 Boolean status;
 
                 // パルス出力方式(1パルス)，これでいいはず
-                if (axisAddress == MechaAxisAddress.ZAddress) {
+                if (axis == VectorId.Z) {
                     status = Apci59.Mode1Write(SlotNo, (short)axis, 0x20);
                 } else {
                     // X, Y軸は動きが逆
@@ -368,7 +366,6 @@ namespace NagaraStage {
             /// <exception cref="NagaraStage.IO.MotorOverHeatException"></exception>
             /// <exception cref="NagaraStage.IO.MotorAxisException"></exception>
             public void ContinuousDrive(VectorId axis, PlusMinus direction, double speed) {
-                MechaAxisAddress axisAddress = convertToMechaAxisAddress(axis);
                 MotorState motorState = GetMotorState(axis);
 
                 if (motorState == MotorState.OverHeat) {
@@ -426,11 +423,10 @@ namespace NagaraStage {
             /// <param name="distance">移動距離</param>
             /// <param name="oSpddt">移動速度</param>
             /// <returns>モータの異常検知結果</returns>
-            private MotorState InchUnit(MechaAxisAddress axisAddress, double distance, double oSpddt) {
+            private MotorState InchUnit(VectorId axis, double distance, double oSpddt) {
                 // このメソッドは途中でreturnをする場合があります．
 
                 MotorState motorStatus = MotorState.NoProblem;
-                VectorId axis = convertToAxis(axisAddress);
 
                 motorStatus = GetMotorState(axis);
                 if (motorStatus != MotorState.NoProblem) {
@@ -474,8 +470,7 @@ namespace NagaraStage {
             /// </summary>
             /// <param name="axisAddress">移動させる軸</param>
             /// <param name="distance">移動距離</param>
-            private MotorState InchUnit(MechaAxisAddress axisAddress, double distance) {
-                VectorId axis = convertToAxis(axisAddress);
+            private MotorState InchUnit(VectorId axis, double distance) {
                 double objectSpeedData;
 
                 if (axis == VectorId.X | axis == VectorId.Y) {
@@ -493,7 +488,7 @@ namespace NagaraStage {
                     objectSpeedData = parameterManager.MotorSpeed2.Z;
                 }
 
-                return InchUnit(axisAddress, distance, objectSpeedData);
+                return InchUnit(axis, distance, objectSpeedData);
             }
 
             /// <summary>
@@ -631,14 +626,13 @@ namespace NagaraStage {
 #endif
             }
 
-            public void AbortMoving(MechaAxisAddress axisAddress) {
+            public void AbortMoving(VectorId axis) {
                 if (movingThread != null) {
                     if (movingThread.IsAlive) {
                         movingThread.Abort();
                         movingThread.Join();
                     }
                 }
-                VectorId axis = convertToAxis(axisAddress);
                 SlowDownStop(axis);
             }
 
@@ -721,6 +715,17 @@ namespace NagaraStage {
             }
 
             /// <summary>
+            /// 目的地との距離が誤差の許容範囲であるかどうかを返します．
+            /// </summary>
+            /// <param name="diestance">目的地までの距離</param>
+            /// <param name="axis">軸</param>
+            /// <returns>許容範囲であればtrue, そうでなければfalse</returns>
+            private Boolean isAcceptableRangeOfError(double diestance, VectorId axis) {
+                return (Math.Abs(diestance) < tolerance.Index(axis));
+            }
+
+
+            /// <summary>
             /// MovoingPointThreadのループ処理を続行すべきかどうかを取得します．
             /// </summary>
             /// <param name="deltaX">移動距離(X)</param>
@@ -760,15 +765,15 @@ namespace NagaraStage {
                 // 移動距離が"0"でないことを確認し，移動を開始する．
                 if (deltaX != 0) {
                     stopFlagX = false;
-                    InchUnit(MechaAxisAddress.XAddress, deltaX);
+                    InchUnit(VectorId.X, deltaX);
                 }
                 if (deltaY != 0) {
                     stopFlagY = false;
-                    InchUnit(MechaAxisAddress.YAddress, deltaY);
+                    InchUnit(VectorId.Y, deltaY);
                 }
                 if (deltaZ != 0) {
                     stopFlagZ = false;
-                    InchUnit(MechaAxisAddress.ZAddress, deltaZ);
+                    InchUnit(VectorId.Z, deltaZ);
                 }
 
                 // X軸 Y軸 Z軸の移動終了チェックする
@@ -804,6 +809,27 @@ namespace NagaraStage {
                 return status;
             }
 
+
+            /// <summary>
+            /// Range Dataを取得します．
+            /// </summary>
+            /// <param name="axis">取得する軸</param>
+            /// <param name="myspeed">speed[mm/sec]</param>
+            /// <returns>RangeData</returns>
+            private int getRangeData(VectorId axis, double myspeed) {
+                double f = myspeed / parameterManager.MotorResolution.Index(axis);
+                double range = (4000000 / f);// +0.5;
+                range = (range > 8191 ? 8191 : range);
+
+                return ((int)range < 1 ? 1 : (int)range);
+            }
+
+            public int getRangeData(VectorId axis) {
+                double originalDirectionSpeed = getSpeedDirection(axis);
+                return getRangeData(axis, originalDirectionSpeed);
+            }
+
+
             /// <summary>
             /// Rate1 Dataを取得します
             /// </summary>
@@ -833,19 +859,11 @@ namespace NagaraStage {
             }
 
             public int getRate1Data(VectorId axis) {
-                double originalDirectionSpeed = getOrginalSpeedDirectionData(axis);
+                double originalDirectionSpeed = getSpeedDirection(axis);
                 return getRate1Data(axis, originalDirectionSpeed);
             }
 
-            /// <summary>
-            /// 目的地との距離が誤差の許容範囲であるかどうかを返します．
-            /// </summary>
-            /// <param name="diestance">目的地までの距離</param>
-            /// <param name="axis">軸</param>
-            /// <returns>許容範囲であればtrue, そうでなければfalse</returns>
-            private Boolean isAcceptableRangeOfError(double diestance, VectorId axis) {
-                return (Math.Abs(diestance) < tolerance.Index(axis));
-            }
+
 
             /// <summary>
             /// Object Speed Dataを取得します．
@@ -870,7 +888,7 @@ namespace NagaraStage {
             /// <param name="axis">取得する軸</param>
             /// <returns>Object Speed Data</returns>
             private int getObjectSpeedData(VectorId axis) {
-                double oSpddt = getOrginalSpeedDirectionData(axis);
+                double oSpddt = getSpeedDirection(axis);
                 return getObjectSpeedData(axis, oSpddt);
             }
 
@@ -897,99 +915,6 @@ namespace NagaraStage {
                 return ((int)(((startSpeedData / resolution) / (500.0 / rangeData)) + 0.5)) & 0x1FFF;
             }
 
-            /// <summary>
-            /// Range Dataを取得します．
-            /// </summary>
-            /// <param name="axis">取得する軸</param>
-            /// <param name="myspeed">speed[mm/sec]</param>
-            /// <returns>RangeData</returns>
-            private int getRangeData(VectorId axis, double myspeed) {
-                double f = myspeed / parameterManager.MotorResolution.Index(axis);
-                double range = (4000000 / f);// +0.5;
-                range = (range > 8191 ? 8191 : range);
-
-                return ((int)range < 1 ? 1 : (int)range);
-            }
-
-            public int getRangeData(VectorId axis) {
-                double originalDirectionSpeed = getOrginalSpeedDirectionData(axis);
-                return getRangeData(axis, originalDirectionSpeed);
-            }
-
-            /// <summary>
-            /// 軸の本来設定されている速度を取得します
-            /// </summary>
-            /// <param name="axis">取得する軸</param>
-            /// <returns>本来の速度</returns>
-            private double getOrginalSpeedDirectionData(VectorId axis) {
-                double retspeed = 0;
-
-                switch (axis) {
-                    case VectorId.X:
-                        retspeed = speed.X;
-                        break;
-                    case VectorId.Y:
-                        retspeed = speed.Y;
-                        break;
-                    case VectorId.Z:
-                        retspeed = speed.Z;
-                        break;
-                }
-                return retspeed;
-            }
-
-
-            /// <summary>
-            /// MechaAxisAddress型をVectorId型の値に変換します．
-            /// </summary>
-            /// <param name="axisAddress">変換する値</param>
-            /// <returns>変換した値</returns>
-            private VectorId convertToAxis(MechaAxisAddress axisAddress) {
-                VectorId vector = new VectorId();
-
-                switch (axisAddress) {
-                    case MechaAxisAddress.XAddress:
-                        vector = VectorId.X;
-                        break;
-                    case MechaAxisAddress.YAddress:
-                        vector = VectorId.Y;
-                        break;
-                    case MechaAxisAddress.ZAddress:
-                        vector = VectorId.Z;
-                        break;
-                }
-
-                return vector;
-            }
-
-            private MechaAxisAddress convertToMechaAxisAddress(VectorId axis) {
-                MechaAxisAddress address = new MechaAxisAddress();
-
-                switch (axis) {
-                    case VectorId.X:
-                        address = MechaAxisAddress.XAddress;
-                        break;
-                    case VectorId.Y:
-                        address = MechaAxisAddress.YAddress;
-                        break;
-                    case VectorId.Z:
-                        address = MechaAxisAddress.ZAddress;
-                        break;
-                }
-
-                return address;
-            }
-
-            /// <summary>
-            /// 許容誤差を設定します．
-            /// </summary>
-            /// <param name="encoderResolution">エンコーダの分解能</param>
-            /// <param name="motorResolution">モータの分解能</param>
-            private void setTolerance(Vector3 encoderResolution, Vector3 motorResolution) {
-                tolerance.X = (encoderResolution.X > motorResolution.X ? 0.95 * encoderResolution.X : 1.2 * motorResolution.X);
-                tolerance.Y = (encoderResolution.Y > motorResolution.Y ? 0.95 * encoderResolution.Y : 1.2 * motorResolution.Y);
-                tolerance.Z = (encoderResolution.Z > motorResolution.Z ? 0.95 * encoderResolution.Z : 1.2 * motorResolution.Z);
-            }
 
             /// <summary>
             /// スピード設定に関するパラメータ類を表示
@@ -1007,6 +932,44 @@ namespace NagaraStage {
                     System.Console.WriteLine(string.Format("ax, range, ssspeed, ospeed = {0} {1} {2} {3} {4}", ax, range, ssspeed, ospeed, rate1));
                 }
             }
+
+
+            /// <summary>
+            /// 設定されているドライブ速度を取得します
+            /// </summary>
+            /// <param name="axis">取得する軸</param>
+            /// <returns>本来の速度</returns>
+            private double getSpeedDirection(VectorId axis) {
+                double retspeed = 0;
+
+                switch (axis) {
+                    case VectorId.X:
+                        retspeed = speed.X;
+                        break;
+                    case VectorId.Y:
+                        retspeed = speed.Y;
+                        break;
+                    case VectorId.Z:
+                        retspeed = speed.Z;
+                        break;
+                }
+                return retspeed;
+            }
+
+
+
+            /// <summary>
+            /// 許容誤差を設定します．
+            /// </summary>
+            /// <param name="encoderResolution">エンコーダの分解能</param>
+            /// <param name="motorResolution">モータの分解能</param>
+            private void setTolerance(Vector3 encoderResolution, Vector3 motorResolution) {
+                tolerance.X = (encoderResolution.X > motorResolution.X ? 0.95 * encoderResolution.X : 1.2 * motorResolution.X);
+                tolerance.Y = (encoderResolution.Y > motorResolution.Y ? 0.95 * encoderResolution.Y : 1.2 * motorResolution.Y);
+                tolerance.Z = (encoderResolution.Z > motorResolution.Z ? 0.95 * encoderResolution.Z : 1.2 * motorResolution.Z);
+            }
+
+
 
 
             /// <summary>
@@ -1032,13 +995,13 @@ namespace NagaraStage {
                         Vector3 absAmount = amountOfMovement.ToAbs();
                         bool activeFlagX, activeFlagY, activeFlagZ;
                         if (activeFlagX = (absAmount.X > Tolerance.X)) {
-                            stateX = InchUnit(MechaAxisAddress.XAddress, amountOfMovement.X);
+                            stateX = InchUnit(VectorId.X, amountOfMovement.X);
                         }
                         if (activeFlagY = (absAmount.Y > Tolerance.Y)) {
-                            stateY = InchUnit(MechaAxisAddress.YAddress, amountOfMovement.Y);
+                            stateY = InchUnit(VectorId.Y, amountOfMovement.Y);
                         }
                         if (activeFlagZ = (absAmount.Z > Tolerance.Z)) {
-                            stateZ = InchUnit(MechaAxisAddress.ZAddress, amountOfMovement.Z);
+                            stateZ = InchUnit(VectorId.Z, amountOfMovement.Z);
                         }
 
                         while (activeFlagX || activeFlagY || activeFlagZ) {
@@ -1348,20 +1311,15 @@ namespace NagaraStage {
             /// </summary>
             /// <param name="axis">停止する軸</param>
             public void SlowDownStop(VectorId axis) {
-
                 if (false == Apci59.CommandWrite(SlotNo, (short)axis, Apci59.SLOW_DOWN_STOP)) return;
-
                 bool status;
                 byte pbstat = 0x0;
-
                 while (true) {
                     status = Apci59.GetEndStatus(SlotNo, (short)axis, ref pbstat);
                     //System.Diagnostics.Debug.WriteLine(String.Format("pbstat {0}", pbstat));
                     if ((pbstat & 0x01) == 0x0) break;
                 }
-
             }
-
 
             
             /// <summary>
@@ -1372,7 +1330,6 @@ namespace NagaraStage {
                 SlowDownStop(VectorId.Y);
                 SlowDownStop(VectorId.Z);
             }
-
 
 
             /// <summary>
