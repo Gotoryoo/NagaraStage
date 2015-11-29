@@ -43,7 +43,7 @@ namespace NagaraStage {
 
             private static MotorControler instance;
             private ParameterManager parameterManager;
-            private Vector3Int nowSpeed;
+            private Vector3 speed;
             private int limitPol0;
             private Vector3 tolerance = new Vector3();
             private Thread movingThread;
@@ -88,8 +88,8 @@ namespace NagaraStage {
             /// 現在のモータ速度を取得します．
             /// モータの速度を設定するにはSetMotorSpeedメソッドを実行してください．
             /// </summary>
-            public Vector3Int NowSpeed {
-                get { return nowSpeed; }
+            public Vector3 Speed {
+                get { return Speed; }
             }
 
             /// <summary>
@@ -107,7 +107,7 @@ namespace NagaraStage {
             /// </summary>
             /// <param name="_parameterManager">ソフトウェア全体を通して用いるParameterManagerのインスタンス</param>
             private MotorControler(ParameterManager _parameterManager) {
-                this.nowSpeed = new Vector3Int(sp1, sp1, sp1);
+                this.speed = _parameterManager.MotorSpeed1;
                 this.parameterManager = _parameterManager;
                 setTolerance(parameterManager.EncoderResolution, parameterManager.MotorResolution);
             }
@@ -154,6 +154,11 @@ namespace NagaraStage {
                 try {
                     slotNo = Apci59.SLOT_AUTO;
                     status = Apci59.Create(ref slotNo);
+
+                    InitializeMotorControlParams(MechaAxisAddress.XAddress);
+                    InitializeMotorControlParams(MechaAxisAddress.YAddress);
+                    InitializeMotorControlParams(MechaAxisAddress.ZAddress);
+
                 } catch (Exception) {
                     status = false;
                     throw new Exception("Initializing aPCI-59 Motor Control Board is failed.");
@@ -161,14 +166,16 @@ namespace NagaraStage {
 #endif
             }
 
+
+            
+            
             /// <summary>
-            /// モータコントロールボードを初期化します．
+            /// モータコントロールボードのパラメータを初期化します．
             /// </summary>
             /// <param name="axisAddress">初期化する軸</param>
-            public void InitializeMotorControlBoard(MechaAxisAddress axisAddress) {
+            public void InitializeMotorControlParams(MechaAxisAddress axisAddress) {
                 VectorId axis = convertToAxis(axisAddress);
                 Boolean status;
-                limitPol0 = (int)(parameterManager.LimitPol != 0 ? parameterManager.LimitPol : limitPol0);
 
                 // パルス出力方式(1パルス)，これでいいはず
                 if (axisAddress == MechaAxisAddress.ZAddress) {
@@ -178,8 +185,11 @@ namespace NagaraStage {
                     status = Apci59.Mode1Write(SlotNo, (short)axis, 0x30);
                 }
 
-                // エンコーダ入力仕様(4てい倍)，DEAD,DERROR,リミット極性指定
+                // エンコーダ入力仕様(4てい倍)
+                limitPol0 = (int)(parameterManager.LimitPol != 0 ? parameterManager.LimitPol : limitPol0);
                 status = Apci59.Mode2Write(SlotNo, (short)axis, (byte)limitPol0);
+
+                //DEAD,DERROR,リミット極性指定
                 status = Apci59.CommandWrite(SlotNo, (short)axis, INPOSITION_WAIT_MODE_RESET);
                 status = Apci59.CommandWrite(SlotNo, (short)axis, ALARM_STOP_ENABLE_MODE_RESET);
                 status = Apci59.CommandWrite(SlotNo, (short)axis, INTERRUPT_OUT_ENABLE_MODE_RESET);
@@ -204,8 +214,16 @@ namespace NagaraStage {
                 status = Apci59.DataFullWrite(SlotNo, (short)axis, RATE2_DATA_WRITE, 0x1FFF);
                 status = Apci59.DataFullWrite(SlotNo, (short)axis, RATE3_DATA_WRITE, 0x1FFF);
                 status = Apci59.DataFullWrite(SlotNo, (short)axis, RATE_CHANGE_POINT_1_2_WRITE, 0x1FFF);
+            }
 
-                //INTERNAL/EXTERNAL_COUNTER
+
+            /// <summary>
+            /// モータコントロールボードのカウンタ（位置情報）を初期化します．
+            /// </summary>
+            /// <param name="axisAddress">初期化する軸</param>
+            public void InitializeMotorControlCounter(MechaAxisAddress axisAddress) {
+                VectorId axis = convertToAxis(axisAddress);
+                Boolean status;
                 status = Apci59.DataFullWrite(SlotNo, (short)axis, INTERNAL_COUNTER_WRITE, 0);
                 status = Apci59.DataFullWrite(SlotNo, (short)axis, EXTERNAL_COUNTER_WRITE, 0);
             }
@@ -304,10 +322,8 @@ namespace NagaraStage {
             /// 現在のモータの速度を設定します．
             /// </summary>
             /// <param name="speed">モータの速度</param>
-            public void SetMotorSpeed(MotorSpeed speed) {
-                nowSpeed.X = (int)speed;
-                nowSpeed.Y = (int)speed;
-                nowSpeed.Z = (int)speed;
+            public void SetMotorSpeed(Vector3 _speed) {
+                speed = _speed;
             }
 
             /// <summary>
@@ -316,8 +332,8 @@ namespace NagaraStage {
             /// <param name="speedX">X軸方向のスピード</param>
             /// <param name="speedY">Y軸方向のスピード</param>
             /// <param name="speedZ">Z軸方向のスピード</param>
-            public void SetMotorSpeed(MotorSpeed speedX, MotorSpeed speedY, MotorSpeed speedZ) {
-                nowSpeed = new Vector3Int((int)speedX, (int)speedY, (int)speedZ);
+            public void SetMotorSpeed(double speedX, double speedY, double speedZ) {
+                speed = new Vector3(speedX, speedY, speedZ);
             }
 
             /// <summary>
@@ -325,16 +341,16 @@ namespace NagaraStage {
             /// </summary>
             /// <param name="speed">スピード</param>
             /// <param name="axis">変更する軸</param>
-            public void SetMotorSpeed(MotorSpeed speed, VectorId axis) {
+            public void SetMotorSpeed(double _speed, VectorId axis) {
                 switch (axis) { 
                     case VectorId.X:
-                        nowSpeed.X = (int)speed;
+                        speed.X = _speed;
                         break;
                     case VectorId.Y:
-                        nowSpeed.Y = (int)speed;
+                        speed.Y = _speed;
                         break;
                     case VectorId.Z:
-                        nowSpeed.Z = (int)speed;
+                        speed.Z = _speed;
                         break;
                 }
             }
@@ -453,7 +469,7 @@ namespace NagaraStage {
 
                 while(true){
                     status = Apci59.GetEndStatus(SlotNo, (short)axis, ref pbstat);
-                    System.Diagnostics.Debug.WriteLine(String.Format("pbstat {0}", pbstat));
+                    //System.Diagnostics.Debug.WriteLine(String.Format("pbstat {0}", pbstat));
                     if ( (pbstat & 0x01) == 0x0 ) break;
                 }
                 
@@ -1104,25 +1120,22 @@ namespace NagaraStage {
             /// <param name="axis">取得する軸</param>
             /// <returns>本来の速度</returns>
             private double getOrginalSpeedDirectionData(VectorId axis) {
-                double speed = 0;
+                double retspeed = 0;
 
-                switch (nowSpeed.Index(axis)) {
-                    case sp1:
-                        speed = parameterManager.MotorSpeed1.Index(axis);
+                switch (axis) {
+                    case VectorId.X:
+                        retspeed = speed.X;
                         break;
-                    case sp2:
-                        speed = parameterManager.MotorSpeed2.Index(axis);
+                    case VectorId.Y:
+                        retspeed = speed.Y;
                         break;
-                    case sp3:
-                        speed = parameterManager.MotorSpeed3.Index(axis);
-                        break;
-                    case sp4:
-                        speed = parameterManager.MotorSpeed4.Index(axis);
+                    case VectorId.Z:
+                        retspeed = speed.Z;
                         break;
                 }
-
-                return speed;
+                return retspeed;
             }
+
 
             /// <summary>
             /// MechaAxisAddress型をVectorId型の値に変換します．
@@ -1542,7 +1555,7 @@ namespace NagaraStage {
 
                 while (true) {
                     status = Apci59.GetEndStatus(SlotNo, (short)axis, ref pbstat);
-                    System.Diagnostics.Debug.WriteLine(String.Format("pbstat {0}", pbstat));
+                    //System.Diagnostics.Debug.WriteLine(String.Format("pbstat {0}", pbstat));
                     if ((pbstat & 0x01) == 0x0) break;
                 }
 

@@ -306,9 +306,9 @@ namespace NagaraStage.Ui {
         private void setOriginButton_Click(object sender, RoutedEventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
 #if !NoHardware
-            mc.InitializeMotorControlBoard(MechaAxisAddress.XAddress);
-            mc.InitializeMotorControlBoard(MechaAxisAddress.YAddress);
-            mc.InitializeMotorControlBoard(MechaAxisAddress.ZAddress);
+            mc.InitializeMotorControlCounter(MechaAxisAddress.XAddress);
+            mc.InitializeMotorControlCounter(MechaAxisAddress.YAddress);
+            mc.InitializeMotorControlCounter(MechaAxisAddress.ZAddress);
 #endif
             stage.WriteLine(Properties.Strings.OriginChanged);
         }

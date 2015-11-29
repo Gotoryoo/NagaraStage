@@ -507,46 +507,46 @@ namespace NagaraStage.Ui {
 
         private void contextSpeed1_Selected(object sender, RoutedEventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
-            mc.SetMotorSpeed(MotorSpeed.Speed1, VectorId.X);
-            mc.SetMotorSpeed(MotorSpeed.Speed1, VectorId.Y);
+            mc.SetMotorSpeed(parameterManager.MotorSpeed1.X, VectorId.X);
+            mc.SetMotorSpeed(parameterManager.MotorSpeed1.Y, VectorId.Y);
         }
 
         private void contextSpeed2_Selected(object sender, RoutedEventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
-            mc.SetMotorSpeed(MotorSpeed.Speed2, VectorId.X);
-            mc.SetMotorSpeed(MotorSpeed.Speed2, VectorId.Y);
+            mc.SetMotorSpeed(parameterManager.MotorSpeed2.X, VectorId.X);
+            mc.SetMotorSpeed(parameterManager.MotorSpeed2.Y, VectorId.Y);
         }
 
         private void contextSpeed3_Selected(object sender, RoutedEventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
-            mc.SetMotorSpeed(MotorSpeed.Speed3, VectorId.X);
-            mc.SetMotorSpeed(MotorSpeed.Speed3, VectorId.Y);
+            mc.SetMotorSpeed(parameterManager.MotorSpeed3.X, VectorId.X);
+            mc.SetMotorSpeed(parameterManager.MotorSpeed3.Y, VectorId.Y);
         }
 
         private void contextSpeed4_Selected(object sender, RoutedEventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
-            mc.SetMotorSpeed(MotorSpeed.Speed4, VectorId.X);
-            mc.SetMotorSpeed(MotorSpeed.Speed4, VectorId.Y);
+            mc.SetMotorSpeed(parameterManager.MotorSpeed4.X, VectorId.X);
+            mc.SetMotorSpeed(parameterManager.MotorSpeed4.Y, VectorId.Y);
         }
 
         private void contextSpeedZ1_Selected(object sender, RoutedEventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
-            mc.SetMotorSpeed(MotorSpeed.Speed1, VectorId.Z);
+            mc.SetMotorSpeed(parameterManager.MotorSpeed1.Z, VectorId.Z);
         }
 
         private void contextSpeedZ2_Selected(object sender, RoutedEventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
-            mc.SetMotorSpeed(MotorSpeed.Speed2, VectorId.Z);
+            mc.SetMotorSpeed(parameterManager.MotorSpeed2.Z, VectorId.Z);
         }
 
         private void contextSpeedZ3_Selected(object sender, RoutedEventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
-            mc.SetMotorSpeed(MotorSpeed.Speed3, VectorId.Z);
+            mc.SetMotorSpeed(parameterManager.MotorSpeed3.Z, VectorId.Z);
         }
 
         private void contextSpeedZ4_Selected(object sender, RoutedEventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
-            mc.SetMotorSpeed(MotorSpeed.Speed4, VectorId.Z);
+            mc.SetMotorSpeed(parameterManager.MotorSpeed4.Z, VectorId.Z);
         }
 
         private void KeyHandleStageControl_KeyDown_1(object sender, KeyEventArgs e) {

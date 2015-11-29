@@ -181,7 +181,7 @@ namespace NagaraStage.Activities {
 		private int delayTime = Properties.Settings.Default.SurfaceDelay;
 		private double motorSpeed = Properties.Settings.Default.SurfaceMotorSpeed;
 		private Vector2 latestCoord = new Vector2();
-		private Vector3Int speedBeforeStart = new Vector3Int();
+        private Vector3 speedBeforeStart = new Vector3();
 		private System.Diagnostics.Stopwatch stopWatch = new System.Diagnostics.Stopwatch();
 
 		/// <summary>
@@ -484,9 +484,9 @@ namespace NagaraStage.Activities {
 			Exited += delegate(object sender, ActivityEventArgs e) {
 				MotorControler mc = MotorControler.GetInstance(parameterManager);
 				mc.SetMotorSpeed(
-					(MotorSpeed)speedBeforeStart.X,
-					(MotorSpeed)speedBeforeStart.Y,
-					(MotorSpeed)speedBeforeStart.Z);
+					speedBeforeStart.X,
+					speedBeforeStart.Y,
+					speedBeforeStart.Z);
 			};
 		}
 
@@ -602,7 +602,7 @@ namespace NagaraStage.Activities {
 
 			/* Z軸をSpeed1(低速)でマイナス方向に動かして，最下点もしくは下降距離分だけ移動させる．*/
 			MotorControler mc = MotorControler.GetInstance(parameterManager);
-			speedBeforeStart = mc.NowSpeed;
+			speedBeforeStart = mc.Speed;
 
 
             bool flag;
