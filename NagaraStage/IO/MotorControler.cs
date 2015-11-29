@@ -218,7 +218,7 @@ namespace NagaraStage {
 
 
             /// <summary>
-            /// モータコントロールボードのカウンタ（位置情報）を初期化します．
+            /// モータコントロールボードのカウンタ（位置情報）を初期化します．カウンタはPCとステージの再起動をしない限り保持されます。
             /// </summary>
             /// <param name="axisAddress">初期化する軸</param>
             public void InitializeMotorControlCounter(VectorId axis) {
@@ -614,146 +614,6 @@ namespace NagaraStage {
                 return movedPoint;
             }
 
-            /// <summary>
-            /// らせん移動を行います．
-            /// <para>らせん移動とは，現在の座標を中心に1視野ずつらせんを描くように周回することです．
-            /// このメソッドを1回実行すると1視野分だけ横または縦に移動します．周回するにはこのメソッドを繰り返し実行してください．</para>
-            /// </summary>
-            /// <param name="wait">
-            /// 移動処理が完了するまで待機するまではtrue,待機しない場合はfalseを指定します．
-            /// デフォルト値はfalseです．
-            /// <para>trueに為た場合，移動が完了するまでこのメソッドを実行したスレッドを占有します．</para>
-            /// </param>
-            /// <exception cref="MotorActiveException"></exception>
-            public void MoveInSpiral(bool wait = false) {
-                if (IsMoving) {
-                    throw new MotorActiveException();
-                }
-
-                if(spiralIndex == 0){
-                    spiralCentralPosition = GetPoint();
-                }
-
-                ++spiralIndex;
-                Vector2Int i = getSpiralPosition(spiralIndex);
-                double mx = spiralCentralPosition.X + i.X * parameterManager.SpiralShiftX;
-                double my = spiralCentralPosition.Y + i.Y * parameterManager.SpiralShiftY;
-                MoveTo(new Vector3(mx, my, GetPoint().Z), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
-                Join();
-
-                spiralCounter = i;
-                SpiralMoved(this, new SpiralEventArgs(i.X, i.Y));
-                if (wait) {
-                    movingThread.Join();
-                }
-            }
-
-            /// <summary>
-            /// らせん移動の中心地に戻ります．
-            /// </summary>
-            /// <param name="wait">
-            /// 移動処理の完了まで待機する場合はtrue，待機しない場合はfalse
-            /// <para>trueにした場合，呼び出し側スレッドが移動完了まで停止することを留意する必要があります．</para>
-            /// </param>
-            public void BackToSpiralCenter(bool wait = false) {
-                Vector2Int i = getSpiralPosition(0);
-                MovePointXY(spiralCentralPosition.X, spiralCentralPosition.Y, delegate
-                {
-                    if (SpiralMoved != null)
-                    {
-                        SpiralMoved(this, new SpiralEventArgs(i.X, i.Y));
-                    }
-                });
-                if (wait) {
-                    movingThread.Join();
-                }
-                spiralIndex = 0;
-                spiralCounter = i;
-            }
-
-            /// <summary>
-            /// 現在値をらせん移動の中心地に設定します．
-            /// </summary>
-            public void SetSpiralCenterPoint() {
-                SpiralMoved(this, new SpiralEventArgs(0, 0));
-                Vector2Int i = getSpiralPosition(0);
-                spiralIndex = 0;
-                spiralCounter = i;
-                spiralCentralPosition = GetPoint();
-            }
-
-            /// <summary>
-            /// らせん移動を一視野もどします．
-            /// <para></para>
-            /// </summary>
-            /// <param name="wait">
-            /// 移動処理が完了するまで待機するまではtrue,待機しない場合はfalseを指定します．
-            /// デフォルト値はfalseです．
-            /// <para>trueに為た場合，移動が完了するまでこのメソッドを実行したスレッドを占有します．</para>
-            /// </param>
-            /// <exception cref="MotorActiveException"></exception>
-            public void SpiralBack(bool wait = false)
-            {
-                if (IsMoving)
-                {
-                    throw new MotorActiveException();
-                }
-                //「すでにスパイラル原点です」と例外メッセージを出すようにしたい
-                if (spiralIndex > 0)
-                {
-                    spiralIndex--;
-                    Vector2Int i = getSpiralPosition(spiralIndex);
-                    double mx = spiralCentralPosition.X + i.X * parameterManager.SpiralShiftX;
-                    double my = spiralCentralPosition.Y + i.Y * parameterManager.SpiralShiftY;
-                    MovePointXY(mx, my, delegate
-                    {
-                        if (SpiralMoved != null)
-                        {
-                            SpiralMoved(this, new SpiralEventArgs(i.X, i.Y));
-                        }
-                    });
-                    spiralCounter = i;
-                    if (wait)
-                    {
-                        movingThread.Join();
-                    }
-                }
-            }
-
-
-
-            /// <summary>
-            /// らせん移動における次の移動先を算出します．
-            /// </summary>
-            /// <param name="n"></param>
-            /// <returns></returns>
-            private Vector2Int getSpiralPosition(int n) {
-                Vector2Int _spiral;
-
-                int n1 = (int)((3 + Math.Sqrt(4 * n + 1)) / 4);
-                int n2 = (int)((2 + Math.Sqrt(4 * n)) / 4);
-                int n3 = (int)((1 + Math.Sqrt(4 * n + 1)) / 4);
-                int n4 = (int)(Math.Sqrt(n / 4));
-
-                if (n <= 0) {
-                    _spiral = new Vector2Int(0, 0);
-                } else if (n1 > n2) {
-                    int nA = (n1 - 1) * (-2) + 4 * n1 * (n1 - 1);
-                    int ix = -n1 + 1;
-                    int iy = ix + n - nA;
-                    _spiral = new Vector2Int(ix, iy);
-                } else if (n2 > n3) {
-                    int nB = 1 + 4 * n2 * (n2 - 1);
-                    _spiral = new Vector2Int(-n1 + 1 + n - nB, n1);
-                } else if (n3 > n4) {
-                    int nC = 2 + (n3 - 1) * 2 + 4 * n3 * (n3 - 1);
-                    _spiral = new Vector2Int(n1, n1 - n + nC);
-                } else {
-                    int nD = 4 + (n4 - 1) * 4 + 4 * n4 * (n4 - 1);
-                    _spiral = new Vector2Int(n1 - n + nD, -n1);
-                }
-                return _spiral;
-            } 
 
             /// <summary>
             /// 現在の座標移動処理を停止します．
@@ -1519,6 +1379,144 @@ namespace NagaraStage {
                     enabled = false;
                 }
             }
+
+
+
+/////spiralmove//////////////////////////////////////////
+
+            /// <summary>
+            /// らせん移動を行います．
+            /// <para>らせん移動とは，現在の座標を中心に1視野ずつらせんを描くように周回することです．
+            /// このメソッドを1回実行すると1視野分だけ横または縦に移動します．周回するにはこのメソッドを繰り返し実行してください．</para>
+            /// </summary>
+            /// <param name="wait">
+            /// 移動処理が完了するまで待機するまではtrue,待機しない場合はfalseを指定します．
+            /// デフォルト値はfalseです．
+            /// <para>trueに為た場合，移動が完了するまでこのメソッドを実行したスレッドを占有します．</para>
+            /// </param>
+            /// <exception cref="MotorActiveException"></exception>
+            public void MoveInSpiral(bool wait = false) {
+                if (IsMoving) {
+                    throw new MotorActiveException();
+                }
+
+                if (spiralIndex == 0) {
+                    spiralCentralPosition = GetPoint();
+                }
+
+                ++spiralIndex;
+                Vector2Int i = getSpiralPosition(spiralIndex);
+                double mx = spiralCentralPosition.X + i.X * parameterManager.SpiralShiftX;
+                double my = spiralCentralPosition.Y + i.Y * parameterManager.SpiralShiftY;
+                MoveTo(new Vector3(mx, my, GetPoint().Z), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                Join();
+
+                spiralCounter = i;
+                SpiralMoved(this, new SpiralEventArgs(i.X, i.Y));
+                if (wait) {
+                    movingThread.Join();
+                }
+            }
+
+            /// <summary>
+            /// らせん移動の中心地に戻ります．
+            /// </summary>
+            /// <param name="wait">
+            /// 移動処理の完了まで待機する場合はtrue，待機しない場合はfalse
+            /// <para>trueにした場合，呼び出し側スレッドが移動完了まで停止することを留意する必要があります．</para>
+            /// </param>
+            public void BackToSpiralCenter(bool wait = false) {
+                Vector2Int i = getSpiralPosition(0);
+                MovePointXY(spiralCentralPosition.X, spiralCentralPosition.Y, delegate {
+                    if (SpiralMoved != null) {
+                        SpiralMoved(this, new SpiralEventArgs(i.X, i.Y));
+                    }
+                });
+                if (wait) {
+                    movingThread.Join();
+                }
+                spiralIndex = 0;
+                spiralCounter = i;
+            }
+
+            /// <summary>
+            /// 現在値をらせん移動の中心地に設定します．
+            /// </summary>
+            public void SetSpiralCenterPoint() {
+                SpiralMoved(this, new SpiralEventArgs(0, 0));
+                Vector2Int i = getSpiralPosition(0);
+                spiralIndex = 0;
+                spiralCounter = i;
+                spiralCentralPosition = GetPoint();
+            }
+
+            /// <summary>
+            /// らせん移動を一視野もどします．
+            /// <para></para>
+            /// </summary>
+            /// <param name="wait">
+            /// 移動処理が完了するまで待機するまではtrue,待機しない場合はfalseを指定します．
+            /// デフォルト値はfalseです．
+            /// <para>trueに為た場合，移動が完了するまでこのメソッドを実行したスレッドを占有します．</para>
+            /// </param>
+            /// <exception cref="MotorActiveException"></exception>
+            public void SpiralBack(bool wait = false) {
+                if (IsMoving) {
+                    throw new MotorActiveException();
+                }
+                //「すでにスパイラル原点です」と例外メッセージを出すようにしたい
+                if (spiralIndex > 0) {
+                    spiralIndex--;
+                    Vector2Int i = getSpiralPosition(spiralIndex);
+                    double mx = spiralCentralPosition.X + i.X * parameterManager.SpiralShiftX;
+                    double my = spiralCentralPosition.Y + i.Y * parameterManager.SpiralShiftY;
+                    MovePointXY(mx, my, delegate {
+                        if (SpiralMoved != null) {
+                            SpiralMoved(this, new SpiralEventArgs(i.X, i.Y));
+                        }
+                    });
+                    spiralCounter = i;
+                    if (wait) {
+                        movingThread.Join();
+                    }
+                }
+            }
+
+
+
+            /// <summary>
+            /// らせん移動における次の移動先を算出します．
+            /// </summary>
+            /// <param name="n"></param>
+            /// <returns></returns>
+            private Vector2Int getSpiralPosition(int n) {
+                Vector2Int _spiral;
+
+                int n1 = (int)((3 + Math.Sqrt(4 * n + 1)) / 4);
+                int n2 = (int)((2 + Math.Sqrt(4 * n)) / 4);
+                int n3 = (int)((1 + Math.Sqrt(4 * n + 1)) / 4);
+                int n4 = (int)(Math.Sqrt(n / 4));
+
+                if (n <= 0) {
+                    _spiral = new Vector2Int(0, 0);
+                } else if (n1 > n2) {
+                    int nA = (n1 - 1) * (-2) + 4 * n1 * (n1 - 1);
+                    int ix = -n1 + 1;
+                    int iy = ix + n - nA;
+                    _spiral = new Vector2Int(ix, iy);
+                } else if (n2 > n3) {
+                    int nB = 1 + 4 * n2 * (n2 - 1);
+                    _spiral = new Vector2Int(-n1 + 1 + n - nB, n1);
+                } else if (n3 > n4) {
+                    int nC = 2 + (n3 - 1) * 2 + 4 * n3 * (n3 - 1);
+                    _spiral = new Vector2Int(n1, n1 - n + nC);
+                } else {
+                    int nD = 4 + (n4 - 1) * 4 + 4 * n4 * (n4 - 1);
+                    _spiral = new Vector2Int(n1 - n + nD, -n1);
+                }
+                return _spiral;
+            } 
+
 
 
         }
