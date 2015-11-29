@@ -263,7 +263,7 @@ namespace NagaraStage.Activities {
 
 
                     Vector2 predpoint = ap.Trance(new Vector2(x * 10, y * 10));
-                    mc.MoveTo(new Vector3(predpoint.X, predpoint.Y, InitPoint.Z + 0.030), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                    mc.MoveTo(new Vector3(predpoint.X, predpoint.Y, InitPoint.Z + 0.030));
                     mc.Join();
 
                     led.AdjustLight(parameterManager);

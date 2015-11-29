@@ -1894,6 +1894,7 @@ namespace NagaraStage.Ui {
 
         private void MCTestButton_Click(object sender, RoutedEventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
+            mc.DisplayStat();
             mc.AAAAAA();
             mc.DisplayStat();
         }

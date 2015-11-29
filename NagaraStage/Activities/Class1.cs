@@ -155,7 +155,7 @@ namespace NagaraStage.Activities {
                 Vector2 predpoint42 = ap_s43_s42.Trance(predpoint43);
 
 
-                mc.MoveTo(new Vector3(predpoint42.X, predpoint42.Y, initialpoint.Z - 0.100), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                mc.MoveTo(new Vector3(predpoint42.X, predpoint42.Y, initialpoint.Z - 0.100));
                 mc.Join();
                 Thread.Sleep(4000);
                 int ledbrightness = led.AdjustLight(parameterManager);
@@ -191,8 +191,7 @@ namespace NagaraStage.Activities {
                             (new Vector3(
                                 predpoint42.X -0.125/2.0 + 0.125 * vx,
                                 predpoint42.Y -0.105/2.0 + 0.105 * vy,
-                                surfacepoint.Z),
-                            new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                                surfacepoint.Z));
                         mc.Join();
 
 

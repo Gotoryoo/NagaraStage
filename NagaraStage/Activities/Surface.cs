@@ -626,7 +626,7 @@ namespace NagaraStage.Activities {
             Thread.Sleep(100);
 
 
-            mc.Move(new Vector3(0.0, 0.0, -0.2), new Vector3(0.0, 0.0, -0.2), new Vector3(0.0, 0.0, -0.2));
+            mc.Move(new Vector3(0.0, 0.0, -0.2));
             mc.Join();
             Thread.Sleep(100);
 
@@ -655,7 +655,7 @@ namespace NagaraStage.Activities {
             System.Diagnostics.Debug.WriteLine(string.Format("{0}", mc.GetPoint().Z));
             Thread.Sleep(100);
 
-            mc.Move(new Vector3(0.0, 0.0, -0.2), new Vector3(0.0, 0.0, -0.2), new Vector3(0.0, 0.0, -0.2));
+            mc.Move(new Vector3(0.0, 0.0, -0.2));
             mc.Join();
             Thread.Sleep(100);
 
@@ -673,7 +673,7 @@ namespace NagaraStage.Activities {
             Thread.Sleep(100);
 
             temp_z = (surfaces[0] - 0.05) - mc.GetPoint().Z;
-            mc.Move(new Vector3(0.0, 0.0, temp_z), new Vector3(0.0, 0.0, -0.2), new Vector3(0.0, 0.0, -0.2));
+            mc.Move(new Vector3(0.0, 0.0, temp_z));
             mc.Join();
             Thread.Sleep(100);
 

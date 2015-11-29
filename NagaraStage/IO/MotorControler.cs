@@ -929,7 +929,7 @@ namespace NagaraStage {
                     Apci59.DataFullRead(SlotNo, ax, Apci59.OBJECT_SPEED_DATA_READ, ref ospeed);
                     int rate1 = 0;
                     Apci59.DataFullRead(SlotNo, ax, Apci59.RATE1_DATA_READ, ref rate1);
-                    System.Console.WriteLine(string.Format("ax, range, ssspeed, ospeed = {0} {1} {2} {3} {4}", ax, range, ssspeed, ospeed, rate1));
+                    System.Console.WriteLine(string.Format("ax, range, ssspeed, ospeed, rate1 = {0} {1} {2} {3} {4}", ax, range, ssspeed, ospeed, rate1));
                 }
             }
 
@@ -1091,19 +1091,33 @@ namespace NagaraStage {
                 if (motorStatus != MotorState.NoProblem) {
                     return motorStatus;
                 }
-
-                //speedがマイナスの値だったら距離に応じた適当な値を設定。ゼロなら規定の最低速度、法外に大きいときは規定の最大速度にしたい
+                Boolean status;
+                
                 int rangeData = getRangeData(axis, speed);
-                Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE,(short)rangeData);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)rangeData);
+                if (!status) {
+                    throw new Exception(string.Format("range data is not correct．range data = {0}", rangeData));
+                }
 
                 int startStopSpeedData = getStartStopSpeedData(axis, rangeData);
-                Apci59.DataHalfWrite(SlotNo, (short)axis, START_STOP_SPEED_DATA_WRITE, (short)startStopSpeedData);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, START_STOP_SPEED_DATA_WRITE, (short)startStopSpeedData);
+                if (!status) {
+                    throw new Exception(string.Format("start stop data is not correct．start stop data = {0}", startStopSpeedData));
+                }
 
                 int objectSpeedData = getObjectSpeedData(axis, speed, rangeData);
-                Apci59.DataHalfWrite(SlotNo, (short)axis, OBJECT_SPEED_DATA_WRITE, (short)objectSpeedData);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, OBJECT_SPEED_DATA_WRITE, (short)objectSpeedData);
+                if (!status) {
+                    throw new Exception(string.Format("object speed data is not correct．object speed data = {0}",
+                        objectSpeedData));
+                }
 
                 int rate1Data = getRate1Data(axis, speed);
-                Apci59.DataHalfWrite(SlotNo, (short)axis, RATE1_DATA_WRITE, (short)rate1Data);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, RATE1_DATA_WRITE, (short)rate1Data);
+                if (!status) {
+                    throw new Exception(string.Format("rate1 data is not correct．rate1 data = {0}",
+                        rate1Data));
+                }
 
 
                 // 移動量をパルス数に変換する
@@ -1114,7 +1128,8 @@ namespace NagaraStage {
 
 
                 byte bdirection = (byte)(distance > 0 ? Apci59.PLUS_PRESET_PULSE_DRIVE : Apci59.MINUS_PRESET_PULSE_DRIVE);
-                if (false == Apci59.DataFullWrite(SlotNo, (short)axis, bdirection, x)) {
+                status = Apci59.DataFullWrite(SlotNo, (short)axis, bdirection, x);
+                if (!status) {
                     return motorStatus;
                 }
 
@@ -1127,90 +1142,15 @@ namespace NagaraStage {
             /// </summary>
             public void AAAAAA() {
 
-              //  string txtfileName = string.Format(@"c:\img\aaaaaa.txt");
-              //  StreamWriter twriter = File.CreateText(txtfileName);
-
-                Vector3 speed = new Vector3(30, 30, 0.4);//つかわないけど
-                Vector3 tolerance = new Vector3(0.001, 0.001, 0.001);//つかわないけど
-
-            //    for (int i = 0; i < 10; i++) {
-
-                    Vector3 distance = new Vector3(0, 0, 0.1);
-                    Move(distance, speed, tolerance);
-                    Join();
-                    Move(distance, speed, tolerance);
-                    Join();
-                    Move(distance, speed, tolerance);
-                    Join();
-                    Move(distance, speed, tolerance);
-                    Join();
-
-               //     Vector3 currentpoint = GetPoint();
-
-             /*      string stlog = "";
-                      stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4} {4}\n",
-                               i,
-                               currentpoint.X,
-                               currentpoint.Y,
-                               currentpoint.Z,
-                               System.DateTime.Now.ToString("HHmmss_fff"));
-                    twriter.Write(stlog);
-                }
-
-
+                Vector3 currentpoint = new Vector3();
                 for (int i = 0; i < 10; i++) {
-
-                    Vector3 distance = new Vector3(-10, -10, -0.5);
-                    Move(distance, speed, tolerance);
+                    Vector3 distance = new Vector3(2, 3, 0.01);
+                    Move(distance);
                     Join();
-
-                    Vector3 currentpoint = GetPoint();
-
-                    string stlog = "";
-                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4} {4}\n",
-                               i,
-                               currentpoint.X,
-                               currentpoint.Y,
-                               currentpoint.Z,
-                               System.DateTime.Now.ToString("HHmmss_fff"));
-                    twriter.Write(stlog);
-                }
-
-
-
-                for (int i = 0; i < 10; i++) {
-
-                    Vector3 distance = new Vector3(10, 10, 0.5);
-                    Move(distance, speed, tolerance);
-                    Join();
-
-                    Vector3 currentpoint = GetPoint();
-
-                    string stlog = "";
-                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4} {4}\n",
-                               i,
-                               currentpoint.X,
-                               currentpoint.Y,
-                               currentpoint.Z,
-                               System.DateTime.Now.ToString("HHmmss_fff"));
-                    twriter.Write(stlog);
-
-                    distance = new Vector3(-10, -10, -0.5);
-                    Move(distance, speed, tolerance);
-                    Join();
-
                     currentpoint = GetPoint();
-
-                    stlog = "";
-                    stlog += String.Format("{0}  {1:f4}  {2:f4}  {3:f4} {4}\n",
-                               i,
-                               currentpoint.X,
-                               currentpoint.Y,
-                               currentpoint.Z,
-                               System.DateTime.Now.ToString("HHmmss_fff"));
-                    twriter.Write(stlog);
+                    System.Console.WriteLine(string.Format("{0},{1},{2}", currentpoint.X, currentpoint.Y, currentpoint.Z));
                 }
-                twriter.Close();        */
+
             }
 
 
@@ -1221,9 +1161,8 @@ namespace NagaraStage {
             /// </para>
             /// </summary>
             /// <param name="distance">移動距離[mm]</param>
-            /// <param name="speed">移動速度、いまはつかってない</param>
             /// <param name="_tolerance">目的地と到着地点誤差の許容値、いまはつかっていない</param>
-            public void Move(Vector3 distance, Vector3 speed, Vector3 _tolerance) {
+            public void Move(Vector3 distance) {
 
                 //トレランスがゼロなら、ハードウェアの分解能によって規定されたトレランスの最小値を設定するようにしたい
 
@@ -1243,18 +1182,18 @@ namespace NagaraStage {
 
                         //移動量がToleranceよりも大きな値かを確認。移動量が微少だったら動かさない。
                         //移動する軸に対しactiveFlagを用意して、移動するのであればTrueにする
-                        //暫定の措置として、移動速度をspeed=4に相当する速度に設定してある。加減速の制御はモーター制御が空気よんでやってくれるだろう。
+                        //移動速度はspeed=4
                         bool activeFlagX, activeFlagY, activeFlagZ;
                         Vector3 absdistance = distance.ToAbs();
 
                         if (activeFlagX = (absdistance.X > Tolerance.X)) {
-                            stateX = PresetPulseDrive(VectorId.X, distance.X, 30.0);
+                            stateX = PresetPulseDrive(VectorId.X, distance.X, parameterManager.MotorSpeed4.X);
                         }
                         if (activeFlagY = (absdistance.Y > Tolerance.Y)) {
-                            stateY = PresetPulseDrive(VectorId.Y, distance.Y, 30.0);
+                            stateY = PresetPulseDrive(VectorId.Y, distance.Y, parameterManager.MotorSpeed4.Y);
                         }
                         if (activeFlagZ = (absdistance.Z > Tolerance.Z)) {
-                            stateZ = PresetPulseDrive(VectorId.Z, distance.Z, 0.4);
+                            stateZ = PresetPulseDrive(VectorId.Z, distance.Z, parameterManager.MotorSpeed4.Z);
                         }
 
                         //移動が完了したら各軸のactiveFlagをFalseにする
@@ -1299,9 +1238,9 @@ namespace NagaraStage {
             /// <param name="to">目的地点の座標[mm]</param>
             /// <param name="speed">移動速度、いまはつかってない</param>
             /// <param name="_tolerance">目的地と到着地点誤差の許容値、いまはつかっていない</param>
-            public void MoveTo(Vector3 to, Vector3 speed, Vector3 _tolerance) { 
+            public void MoveTo(Vector3 to) { 
                 Vector3 distance = to - GetPoint();
-                Move(distance, speed, _tolerance); 
+                Move(distance); 
             }
 
 
@@ -1370,7 +1309,7 @@ namespace NagaraStage {
                 Vector2Int i = getSpiralPosition(spiralIndex);
                 double mx = spiralCentralPosition.X + i.X * parameterManager.SpiralShiftX;
                 double my = spiralCentralPosition.Y + i.Y * parameterManager.SpiralShiftY;
-                MoveTo(new Vector3(mx, my, GetPoint().Z), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                MoveTo(new Vector3(mx, my, GetPoint().Z));
                 Join();
 
                 spiralCounter = i;

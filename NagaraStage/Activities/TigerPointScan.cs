@@ -132,7 +132,7 @@ namespace NagaraStage.Activities {
                 if (pp % 10 == 0) {
                     Vector3 surfrecogpoint = PSList[pp].stagecoord;
                     surfrecogpoint.Z = InitPoint.Z + 0.06;
-                    mc.MoveTo(surfrecogpoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                    mc.MoveTo(surfrecogpoint);
                     mc.Join();
 
                     bool flag = true;
@@ -164,7 +164,7 @@ namespace NagaraStage.Activities {
                 Vector3 CandPoint = PSList[pp].stagecoord;
                 CandPoint.Z = SurfPoint.Z + CandPoint.Z - 0.044;
 
-                mc.MoveTo(CandPoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                mc.MoveTo(CandPoint);
                 mc.Join();
 
                 camera.Start();

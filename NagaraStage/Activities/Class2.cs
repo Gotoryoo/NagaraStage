@@ -137,7 +137,7 @@ namespace NagaraStage.Activities {
                     blockstartpoint.Y = initialpoint.Y + by * 1.0;
                     blockstartpoint.Z = initialpoint.Z;
 
-                    mc.MoveTo(new Vector3(blockstartpoint.X + 0.5, blockstartpoint.Y + 0.5, initialpoint.Z - 0.020), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                    mc.MoveTo(new Vector3(blockstartpoint.X + 0.5, blockstartpoint.Y + 0.5, initialpoint.Z - 0.020));
                     mc.Join();
 
                     int ledbrightness = led.AdjustLight(parameterManager);
@@ -168,7 +168,7 @@ namespace NagaraStage.Activities {
                                 approachingpoint.X = blockstartpoint.X + vx * parameterManager.SpiralShiftX - 0.05;
                                 approachingpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY - 0.05;
                                 approachingpoint.Z = linestartpoint.Z - 0.006;
-                                mc.MoveTo(approachingpoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                                mc.MoveTo(approachingpoint);
                                 mc.Join();
                             }
                                                                                   
@@ -177,7 +177,7 @@ namespace NagaraStage.Activities {
                             viewstartpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY;
                             viewstartpoint.Z = linestartpoint.Z - 0.006;
 
-                            mc.MoveTo(viewstartpoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                            mc.MoveTo(viewstartpoint);
                             mc.Join();
                             Thread.Sleep(100);
 
@@ -238,7 +238,7 @@ namespace NagaraStage.Activities {
                     //下面　　ベース中からはじめ、ベース下側を表面認識
                     //ベース下側からはじめてZ方向負の向きにスキャン
 
-                    mc.MoveTo(new Vector3(blockstartpoint.X + 0.5, blockstartpoint.Y + 0.5, initialpoint.Z - 0.140), new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                    mc.MoveTo(new Vector3(blockstartpoint.X + 0.5, blockstartpoint.Y + 0.5, initialpoint.Z - 0.140));
                     mc.Join();
 
                     camera.Start();
@@ -263,7 +263,7 @@ namespace NagaraStage.Activities {
                                 approachingpoint.X = blockstartpoint.X + vx * parameterManager.SpiralShiftX - 0.05;
                                 approachingpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY - 0.05;
                                 approachingpoint.Z = linestartpoint.Z + 0.006; 
-                                mc.MoveTo(approachingpoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                                mc.MoveTo(approachingpoint);
                                 mc.Join();
                             }
 
@@ -272,7 +272,7 @@ namespace NagaraStage.Activities {
                             viewstartpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY;
                             viewstartpoint.Z = linestartpoint.Z + 0.006;
 
-                            mc.MoveTo(viewstartpoint, new Vector3(0, 0, 0), new Vector3(0, 0, 0));
+                            mc.MoveTo(viewstartpoint);
                             mc.Join();
                             Thread.Sleep(100);
 
