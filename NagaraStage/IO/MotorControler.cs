@@ -89,7 +89,7 @@ namespace NagaraStage {
             /// モータの速度を設定するにはSetMotorSpeedメソッドを実行してください．
             /// </summary>
             public Vector3 Speed {
-                get { return Speed; }
+                get { return speed; }
             }
 
             /// <summary>
@@ -287,32 +287,32 @@ namespace NagaraStage {
             /// <param name="axis">検出する軸</param>
             /// <param name="isConfCheck">設定値の異常もチェックするかどうか</param>
             /// <returns>異常状態</returns>
-            public MotorAbnomalState GetAbnomalState(MechaAxisAddress axis, Boolean isConfCheck = false) {
-                MotorAbnomalState motorState = MotorAbnomalState.NoProblem;
+            public MotorState GetAbnomalState(MechaAxisAddress axis, Boolean isConfCheck = false) {
+                MotorState motorState = MotorState.NoProblem;
                 byte returnValue = new byte();
                 Apci59.GetMechanicalSignal(SlotNo, (short)convertToAxis(axis), ref returnValue);
                 //byte returnValue = Converter.IODRV1_INpb((short)(axis + END_STATUS_READ));
 
                 // 設定値の異常
                 if (isConfCheck) {
-                    if ((returnValue & (byte)MotorAbnomalState.ConfiguredValueNotCorrect) != 0x0) {
-                        motorState |= MotorAbnomalState.ConfiguredValueNotCorrect;
+                    if ((returnValue & (byte)MotorState.ConfiguredValueNotCorrect) != 0x0) {
+                        motorState |= MotorState.ConfiguredValueNotCorrect;
                     }
                 }
 
                 // オーバーヒート
-                if ((returnValue & (byte)MotorAbnomalState.OverHeat) != 0x0) {
-                    motorState |= MotorAbnomalState.OverHeat;
+                if ((returnValue & (byte)MotorState.OverHeat) != 0x0) {
+                    motorState |= MotorState.OverHeat;
                 }
 
                 // マイナス方向に軸の限界
-                if ((returnValue & (byte)MotorAbnomalState.AxisLimitMinus) != 0x0) {
-                    motorState |= MotorAbnomalState.AxisLimitMinus;
+                if ((returnValue & (byte)MotorState.AxisLimitMinus) != 0x0) {
+                    motorState |= MotorState.AxisLimitMinus;
                 }
 
                 // プラス方向に軸の限界
-                if ((returnValue & (byte)MotorAbnomalState.AxisLimitPlus) != 0x0) {
-                    motorState |= MotorAbnomalState.AxisLimitPlus;
+                if ((returnValue & (byte)MotorState.AxisLimitPlus) != 0x0) {
+                    motorState |= MotorState.AxisLimitPlus;
                 }
 
                 return motorState;
@@ -398,27 +398,26 @@ namespace NagaraStage {
             }
 
             /// <summary>
-            /// インチングします．
+            /// 一定速度でモーターをドライブします．
             /// </summary>
             /// <param name="axisAddress">移動させる軸</param>
             /// <param name="direction">方向</param>
             /// <exception cref="NagaraStage.IO.MotorOverHeatException"></exception>
             /// <exception cref="NagaraStage.IO.MotorAxisException"></exception>
-            public void ContinuousDrive(VectorId axis, PlusMinus direction) {
+            public void ContinuousDrive(VectorId axis, PlusMinus direction, double speed) {
                 MechaAxisAddress axisAddress = convertToMechaAxisAddress(axis);
-                MotorAbnomalState motorState = GetAbnomalState(axisAddress);
+                MotorState motorState = GetAbnomalState(axisAddress);
 
-                if (motorState == MotorAbnomalState.OverHeat) {
+                if (motorState == MotorState.OverHeat) {
                     throw new MotorOverHeatException(Properties.Strings.MotorOverHeat);
-                } else if (motorState == MotorAbnomalState.AxisLimitPlus & direction == PlusMinus.Plus) {
+                } else if (motorState == MotorState.AxisLimitPlus & direction == PlusMinus.Plus) {
                     throw new MotorAxisException(Properties.Strings.MotorAxisLimitPlus);
-                } else if (motorState == MotorAbnomalState.AxisLimitMinus & direction == PlusMinus.Minus) {
+                } else if (motorState == MotorState.AxisLimitMinus & direction == PlusMinus.Minus) {
                     throw new MotorAxisException(Properties.Strings.MotorAxisLimitMinus);
                 }
 
                 Boolean status = true;
-
-                int rangeData = getRangeData(axis);
+                int rangeData = getRangeData(axis, speed);
                 status = Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)rangeData);
                 if (!status) {
                     throw new Exception(string.Format("range data is not correct．range data = {0}", rangeData));
@@ -464,14 +463,14 @@ namespace NagaraStage {
             /// <param name="distance">移動距離</param>
             /// <param name="oSpddt">移動速度</param>
             /// <returns>モータの異常検知結果</returns>
-            private MotorAbnomalState InchUnit(MechaAxisAddress axisAddress, double distance, double oSpddt) {
+            private MotorState InchUnit(MechaAxisAddress axisAddress, double distance, double oSpddt) {
                 // このメソッドは途中でreturnをする場合があります．
 
-                MotorAbnomalState motorStatus = MotorAbnomalState.NoProblem;
+                MotorState motorStatus = MotorState.NoProblem;
                 VectorId axis = convertToAxis(axisAddress);
 
                 motorStatus = GetAbnomalState(axisAddress);
-                if (motorStatus != MotorAbnomalState.NoProblem) {
+                if (motorStatus != MotorState.NoProblem) {
                     // モータに異常を検知したら異常ステータスを返して，このメソッドを終了します．
                     return motorStatus;
                 }
@@ -512,7 +511,7 @@ namespace NagaraStage {
             /// </summary>
             /// <param name="axisAddress">移動させる軸</param>
             /// <param name="distance">移動距離</param>
-            private MotorAbnomalState InchUnit(MechaAxisAddress axisAddress, double distance) {
+            private MotorState InchUnit(MechaAxisAddress axisAddress, double distance) {
                 VectorId axis = convertToAxis(axisAddress);
                 double objectSpeedData;
 
@@ -717,6 +716,7 @@ namespace NagaraStage {
                 Vector2Int i = getSpiralPosition(0);
                 spiralIndex = 0;
                 spiralCounter = i;
+                spiralCentralPosition = GetPoint();
             }
 
             /// <summary>
@@ -827,12 +827,12 @@ namespace NagaraStage {
             public void Join(int interval = 5) {
                 while (IsMoving) {
                     Thread.Sleep(interval);
-                    MotorAbnomalState status = GetAbnomalState(MechaAxisAddress.ZAddress);
+                    MotorState status = GetAbnomalState(MechaAxisAddress.ZAddress);
                     switch (status) {
-                        case MotorAbnomalState.AxisLimitPlus:
-                        case MotorAbnomalState.AxisLimitMinus:
+                        case MotorState.AxisLimitPlus:
+                        case MotorState.AxisLimitMinus:
                             throw new MotorAxisException();
-                        case MotorAbnomalState.OverHeat:
+                        case MotorState.OverHeat:
                             throw new MotorOverHeatException();
                     }
 
@@ -853,7 +853,7 @@ namespace NagaraStage {
                 Vector3 delta0 = new Vector3();
                 Vector3 delta = new Vector3(1, 1, 1);
                 Vector3 point = new Vector3();
-                MotorAbnomalState motorState = MotorAbnomalState.NoProblem;
+                MotorState motorState = MotorState.NoProblem;
                 try {
                     bool continueFlag = true;
                     do {
@@ -905,17 +905,17 @@ namespace NagaraStage {
             /// <param name="deltaZ">移動距離(Z)</param>
             /// <param name="state">モータの異常状態</param>
             /// <returns>true: 続行してください, false: 中止してください</returns>
-            private Boolean isMovingPointContinue(double deltaX, double deltaY, double deltaZ, MotorAbnomalState state) {
+            private Boolean isMovingPointContinue(double deltaX, double deltaY, double deltaZ, MotorState state) {
                 Boolean flag = false;
                 flag = ((deltaX != 0 | deltaY != 0 | deltaZ != 0) ? true : false);
-                flag = ((state == MotorAbnomalState.NoProblem) ? flag : false);
+                flag = ((state == MotorState.NoProblem) ? flag : false);
                 return flag;
             }
             
-            private bool isMotorStateOk(params MotorAbnomalState[] states) {
+            private bool isMotorStateOk(params MotorState[] states) {
                 bool retval = true;
                 foreach (var state in states) {
-                    retval &= state == MotorAbnomalState.NoProblem;
+                    retval &= state == MotorState.NoProblem;
                 }
                 return retval;
             }
@@ -927,11 +927,11 @@ namespace NagaraStage {
             /// <param name="deltaY">移動速度(Y)</param>
             /// <param name="deltaZ">移動速度(Z)</param>
             /// <returns>モータの異常状態</returns>
-            private MotorAbnomalState moveBasic(double deltaX, double deltaY, double deltaZ) {
+            private MotorState moveBasic(double deltaX, double deltaY, double deltaZ) {
                 Boolean stopFlagX = true;
                 Boolean stopFlagY = true;
                 Boolean stopFlagZ = true;
-                MotorAbnomalState status = MotorAbnomalState.NoProblem;
+                MotorState status = MotorState.NoProblem;
                 byte deviceStatus = new byte();
 
                 // 移動距離が"0"でないことを確認し，移動を開始する．
@@ -976,7 +976,7 @@ namespace NagaraStage {
                         status = GetAbnomalState(MechaAxisAddress.ZAddress);
                     }
 
-                } while ((!stopFlagX | !stopFlagY | !stopFlagZ) & status == MotorAbnomalState.NoProblem);
+                } while ((!stopFlagX | !stopFlagY | !stopFlagZ) & status == MotorState.NoProblem);
 
                 return status;
             }
@@ -1200,9 +1200,9 @@ namespace NagaraStage {
                 movingThread = new Thread(new ThreadStart(new Action(delegate {
                     try {
                         Vector3 amountOfMovement = to - GetPoint();
-                        MotorAbnomalState stateX = MotorAbnomalState.NoProblem,
-                            stateY = MotorAbnomalState.NoProblem,
-                            stateZ = MotorAbnomalState.NoProblem;
+                        MotorState stateX = MotorState.NoProblem,
+                            stateY = MotorState.NoProblem,
+                            stateZ = MotorState.NoProblem;
                         Vector3 absAmount = amountOfMovement.ToAbs();
                         bool activeFlagX, activeFlagY, activeFlagZ;
                         if (activeFlagX = (absAmount.X > Tolerance.X)) {
@@ -1255,31 +1255,31 @@ namespace NagaraStage {
             /// <param name="axis">検出する軸</param>
             /// <param name="isConfCheck">設定値の異常もチェックするかどうか</param>
             /// <returns>異常状態</returns>
-            public MotorAbnomalState GetMotorState(VectorId axis, Boolean isConfCheck = false) {
-                MotorAbnomalState motorState = MotorAbnomalState.NoProblem;
+            public MotorState GetMotorState(VectorId axis, Boolean isConfCheck = false) {
+                MotorState motorState = MotorState.NoProblem;
                 byte returnValue = new byte();
                 Apci59.GetMechanicalSignal(SlotNo, (short)(axis), ref returnValue);
 
                 // 設定値の異常
                 if (isConfCheck) {
-                    if ((returnValue & (byte)MotorAbnomalState.ConfiguredValueNotCorrect) != 0x0) {
-                        motorState |= MotorAbnomalState.ConfiguredValueNotCorrect;
+                    if ((returnValue & (byte)MotorState.ConfiguredValueNotCorrect) != 0x0) {
+                        motorState |= MotorState.ConfiguredValueNotCorrect;
                     }
                 }
 
                 // オーバーヒート
-                if ((returnValue & (byte)MotorAbnomalState.OverHeat) != 0x0) {
-                    motorState |= MotorAbnomalState.OverHeat;
+                if ((returnValue & (byte)MotorState.OverHeat) != 0x0) {
+                    motorState |= MotorState.OverHeat;
                 }
 
                 // マイナス方向に軸の限界
-                if ((returnValue & (byte)MotorAbnomalState.AxisLimitMinus) != 0x0) {
-                    motorState |= MotorAbnomalState.AxisLimitMinus;
+                if ((returnValue & (byte)MotorState.AxisLimitMinus) != 0x0) {
+                    motorState |= MotorState.AxisLimitMinus;
                 }
 
                 // プラス方向に軸の限界
-                if ((returnValue & (byte)MotorAbnomalState.AxisLimitPlus) != 0x0) {
-                    motorState |= MotorAbnomalState.AxisLimitPlus;
+                if ((returnValue & (byte)MotorState.AxisLimitPlus) != 0x0) {
+                    motorState |= MotorState.AxisLimitPlus;
                 }
 
                 return motorState;
@@ -1296,10 +1296,10 @@ namespace NagaraStage {
             /// <param name="axis">軸番号</param>
             /// <param name="distance">移動距離[mm]</param>
             /// <param name="speed">移動速度</param>
-            private MotorAbnomalState PresetPulseDrive(VectorId axis, double distance, double speed) {
-                MotorAbnomalState motorStatus = MotorAbnomalState.NoProblem;
+            private MotorState PresetPulseDrive(VectorId axis, double distance, double speed) {
+                MotorState motorStatus = MotorState.NoProblem;
                 motorStatus = GetMotorState(axis);
-                if (motorStatus != MotorAbnomalState.NoProblem) {
+                if (motorStatus != MotorState.NoProblem) {
                     return motorStatus;
                 }
 
@@ -1447,10 +1447,10 @@ namespace NagaraStage {
                 movingThread = new Thread(new ThreadStart(new Action(delegate {
                     try {
 
-                        MotorAbnomalState 
-                            stateX = MotorAbnomalState.NoProblem,
-                            stateY = MotorAbnomalState.NoProblem,
-                            stateZ = MotorAbnomalState.NoProblem;
+                        MotorState 
+                            stateX = MotorState.NoProblem,
+                            stateY = MotorState.NoProblem,
+                            stateZ = MotorState.NoProblem;
 
                         //移動量がToleranceよりも大きな値かを確認。移動量が微少だったら動かさない。
                         //移動する軸に対しactiveFlagを用意して、移動するのであればTrueにする
