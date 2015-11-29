@@ -217,11 +217,11 @@
                 <ribbon:RibbonGroup Header="{Binding Source={StaticResource strings}, Path=OverallScanGroup}">
                     <ribbon:RibbonButton
                         x:Name="overallScanButton" 
-                        Label="{Binding Source={StaticResource strings}, Path=StartOverallScan}"
+                        Label="StartOverallScan"
                         LargeImageSource="/Images/start.png" Click="OverallScanButton_Click" />
                     <ribbon:RibbonButton
                         x:Name="overallAbortButton" 
-                        Label="{Binding Source={StaticResource strings}, Path=Abort}"
+                        Label="Abort"
                         LargeImageSource="/Images/exit.png" Click="OverallAbortButton_Click" />
                     <ribbon:RibbonButton
                         x:Name="tigerPointScanButton" 
@@ -233,11 +233,11 @@
                         LargeImageSource="/Images/start.png" Click="ScaleMeasureActivityButton_Click" />
                     <ribbon:RibbonButton
                         x:Name="scaleFasterActivityButton" 
-                        Label="ScaleFaster}"
+                        Label="ScaleFaster"
                         LargeImageSource="/Images/start.png" Click="ScaleFasterActivityButton_Click" />
                     <ribbon:RibbonButton
                         x:Name="MCTestButton" 
-                        Label="MotorCont}"
+                        Label="MCTest"
                         LargeImageSource="/Images/start.png" Click="MCTestButton_Click" />
                     <ribbon:RibbonButton
                         x:Name="GridMeasureButton" 
