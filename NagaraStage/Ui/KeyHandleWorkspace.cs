@@ -39,13 +39,13 @@ namespace NagaraStage.Ui {
             // モータの移動処理を停止する．
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             if (e.Key == Key.A || e.Key == Key.D) {
-                mc.AbortMoving(MechaAxisAddress.XAddress);
+                mc.SlowDownStop(VectorId.X);
             }
             if (e.Key == Key.W || e.Key == Key.X) {
-                mc.AbortMoving(MechaAxisAddress.YAddress);
+                mc.SlowDownStop(VectorId.Y);
             }
             if (e.Key == Key.Q || e.Key == Key.E) {
-                mc.AbortMoving(MechaAxisAddress.ZAddress);
+                mc.SlowDownStop(VectorId.Z);
             }
         }
 
@@ -68,17 +68,17 @@ namespace NagaraStage.Ui {
             try {
 #if !_NoHardWare
                 if (e.Key == Key.A) {
-                    mc.Inch(MechaAxisAddress.XAddress, PlusMinus.Minus);
+                    mc.ContinuousDrive(VectorId.X, PlusMinus.Minus);
                 } else if (e.Key == Key.D) {
-                    mc.Inch(MechaAxisAddress.XAddress, PlusMinus.Plus);
+                    mc.ContinuousDrive(VectorId.X, PlusMinus.Plus);
                 } else if (e.Key == Key.W) {
-                    mc.Inch(MechaAxisAddress.YAddress, PlusMinus.Plus);
+                    mc.ContinuousDrive(VectorId.Y, PlusMinus.Plus);
                 } else if (e.Key == Key.X) {
-                    mc.Inch(MechaAxisAddress.YAddress, PlusMinus.Minus);
+                    mc.ContinuousDrive(VectorId.Y, PlusMinus.Minus);
                 } else if (e.Key == Key.E) {
-                    mc.Inch(MechaAxisAddress.ZAddress, PlusMinus.Plus);
+                    mc.ContinuousDrive(VectorId.Z, PlusMinus.Plus);
                 } else if (e.Key == Key.Q) {
-                    mc.Inch(MechaAxisAddress.ZAddress, PlusMinus.Minus);
+                    mc.ContinuousDrive(VectorId.Z, PlusMinus.Minus);
                 } else if (e.Key == Key.Space) {
                     mc.MoveInSpiral();
                 } else if (e.Key == Key.O) {                    
@@ -96,9 +96,7 @@ namespace NagaraStage.Ui {
 #if !_NoHardWare
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             mc.AbortMoving();
-            mc.StopInching(MechaAxisAddress.XAddress);
-            mc.StopInching(MechaAxisAddress.YAddress);
-            mc.StopInching(MechaAxisAddress.ZAddress);
+            mc.SlowDownStopAll();
 #endif
         }
     }
