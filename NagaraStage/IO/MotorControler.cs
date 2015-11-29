@@ -221,8 +221,7 @@ namespace NagaraStage {
             /// モータコントロールボードのカウンタ（位置情報）を初期化します．
             /// </summary>
             /// <param name="axisAddress">初期化する軸</param>
-            public void InitializeMotorControlCounter(MechaAxisAddress axisAddress) {
-                VectorId axis = convertToAxis(axisAddress);
+            public void InitializeMotorControlCounter(VectorId axis) {
                 Boolean status;
                 status = Apci59.DataFullWrite(SlotNo, (short)axis, INTERNAL_COUNTER_WRITE, 0);
                 status = Apci59.DataFullWrite(SlotNo, (short)axis, EXTERNAL_COUNTER_WRITE, 0);
@@ -281,42 +280,6 @@ namespace NagaraStage {
                 return location;
             }
 
-            /// <summary>
-            /// モータの異常状態を検出します．
-            /// </summary>
-            /// <param name="axis">検出する軸</param>
-            /// <param name="isConfCheck">設定値の異常もチェックするかどうか</param>
-            /// <returns>異常状態</returns>
-            public MotorState GetAbnomalState(MechaAxisAddress axis, Boolean isConfCheck = false) {
-                MotorState motorState = MotorState.NoProblem;
-                byte returnValue = new byte();
-                Apci59.GetMechanicalSignal(SlotNo, (short)convertToAxis(axis), ref returnValue);
-                //byte returnValue = Converter.IODRV1_INpb((short)(axis + END_STATUS_READ));
-
-                // 設定値の異常
-                if (isConfCheck) {
-                    if ((returnValue & (byte)MotorState.ConfiguredValueNotCorrect) != 0x0) {
-                        motorState |= MotorState.ConfiguredValueNotCorrect;
-                    }
-                }
-
-                // オーバーヒート
-                if ((returnValue & (byte)MotorState.OverHeat) != 0x0) {
-                    motorState |= MotorState.OverHeat;
-                }
-
-                // マイナス方向に軸の限界
-                if ((returnValue & (byte)MotorState.AxisLimitMinus) != 0x0) {
-                    motorState |= MotorState.AxisLimitMinus;
-                }
-
-                // プラス方向に軸の限界
-                if ((returnValue & (byte)MotorState.AxisLimitPlus) != 0x0) {
-                    motorState |= MotorState.AxisLimitPlus;
-                }
-
-                return motorState;
-            }
 
             /// <summary>
             /// 現在のモータの速度を設定します．
@@ -406,7 +369,7 @@ namespace NagaraStage {
             /// <exception cref="NagaraStage.IO.MotorAxisException"></exception>
             public void ContinuousDrive(VectorId axis, PlusMinus direction, double speed) {
                 MechaAxisAddress axisAddress = convertToMechaAxisAddress(axis);
-                MotorState motorState = GetAbnomalState(axisAddress);
+                MotorState motorState = GetMotorState(axis);
 
                 if (motorState == MotorState.OverHeat) {
                     throw new MotorOverHeatException(Properties.Strings.MotorOverHeat);
@@ -469,7 +432,7 @@ namespace NagaraStage {
                 MotorState motorStatus = MotorState.NoProblem;
                 VectorId axis = convertToAxis(axisAddress);
 
-                motorStatus = GetAbnomalState(axisAddress);
+                motorStatus = GetMotorState(axis);
                 if (motorStatus != MotorState.NoProblem) {
                     // モータに異常を検知したら異常ステータスを返して，このメソッドを終了します．
                     return motorStatus;
@@ -827,7 +790,7 @@ namespace NagaraStage {
             public void Join(int interval = 5) {
                 while (IsMoving) {
                     Thread.Sleep(interval);
-                    MotorState status = GetAbnomalState(MechaAxisAddress.ZAddress);
+                    MotorState status = GetMotorState(VectorId.Z);//なんでZのみ?
                     switch (status) {
                         case MotorState.AxisLimitPlus:
                         case MotorState.AxisLimitMinus:
@@ -967,13 +930,13 @@ namespace NagaraStage {
 
                     // 異常状態を検出
                     if (!stopFlagX) {
-                        status = GetAbnomalState(MechaAxisAddress.XAddress);
+                        status = GetMotorState(VectorId.X);
                     }
                     if (!stopFlagY) {
-                        status = GetAbnomalState(MechaAxisAddress.YAddress);
+                        status = GetMotorState(VectorId.Y);
                     }
                     if (!stopFlagZ) {
-                        status = GetAbnomalState(MechaAxisAddress.ZAddress);
+                        status = GetMotorState(VectorId.Z);
                     }
 
                 } while ((!stopFlagX | !stopFlagY | !stopFlagZ) & status == MotorState.NoProblem);
