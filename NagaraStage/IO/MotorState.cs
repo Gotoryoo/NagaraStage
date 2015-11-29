@@ -9,7 +9,7 @@ namespace NagaraStage {
         /// モータの異常状態を定義します．
         /// </summary>
         /// <author email="o1007410@edu.gifu-u.ac.jp">Hirokazu Yokoyama</author>
-        public enum MotorAbnomalState {
+        public enum MotorState {
 
             /// <summary>
             /// 問題なし
