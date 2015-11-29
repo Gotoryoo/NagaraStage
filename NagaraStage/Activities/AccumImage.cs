@@ -207,9 +207,8 @@ namespace NagaraStage {
                         eventArgs.IsCompleted = false;
                         eventArgs.Exception = ex;
                     } finally {
-                        mc.StopInching(MechaAxisAddress.ZAddress);
-                        mc.StopInching(MechaAxisAddress.XAddress);
-                        mc.StopInching(MechaAxisAddress.YAddress);
+                        mc.SlowDownStopAll();
+
                         if (Exited != null) {
                             Exited(this, eventArgs);
                         }
@@ -288,7 +287,7 @@ namespace NagaraStage {
                 }//while
 
                 writer.Close();
-                mc.StopInching(MechaAxisAddress.ZAddress);
+                mc.SlowDownStop(VectorId.Z);
             }
 
 

@@ -74,9 +74,8 @@ namespace NagaraStage.Activities {
                 } finally {
                     MotorControler mc = MotorControler.GetInstance();
                     mc.AbortMoving();
-                    mc.StopInching(MechaAxisAddress.XAddress);
-                    mc.StopInching(MechaAxisAddress.YAddress);
-                    mc.StopInching(MechaAxisAddress.ZAddress);
+                    mc.SlowDownStopAll();
+
                 }
             })));
             //SurfaceLanding sl = new SurfaceLanding(parameterManager);

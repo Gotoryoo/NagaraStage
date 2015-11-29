@@ -84,9 +84,7 @@ namespace NagaraStage.Activities {
                 } finally {
                     MotorControler mc = MotorControler.GetInstance();
                     mc.AbortMoving();
-                    mc.StopInching(MechaAxisAddress.XAddress);
-                    mc.StopInching(MechaAxisAddress.YAddress);
-                    mc.StopInching(MechaAxisAddress.ZAddress);
+                    mc.SlowDownStopAll();
                 }
             })));
             return taskList;
@@ -243,7 +241,7 @@ namespace NagaraStage.Activities {
                             }//view
                             viewcounter = 0;
 
-                            mc.StopInching(MechaAxisAddress.ZAddress);
+                            mc.SlowDownStop(VectorId.Z);
                                                                 
                             twriter.Write(stlog);
                             writer.Write(bb);

@@ -109,9 +109,8 @@ namespace NagaraStage {
                     {
                         MotorControler mc = MotorControler.GetInstance(parameterManager);
                         mc.AbortMoving();
-                        mc.StopInching(MechaAxisAddress.XAddress);
-                        mc.StopInching(MechaAxisAddress.YAddress);
-                        mc.StopInching(MechaAxisAddress.ZAddress);
+                        mc.SlowDownStopAll();
+
                         if (handler != null)
                         {
                             handler(this, args);

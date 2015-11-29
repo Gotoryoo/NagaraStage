@@ -620,7 +620,7 @@ namespace NagaraStage.Activities {
 			LowTopRecognized(this, new eventArgs());
 			UpBottomRecognized(this, new eventArgs());
         	*/
-            mc.StopInching(MechaAxisAddress.ZAddress);
+            mc.SlowDownStop(VectorId.Z);
             surfaces[0] = mc.GetPoint().Z;
             System.Diagnostics.Debug.WriteLine(string.Format("{0}", mc.GetPoint().Z));
             Thread.Sleep(100);
@@ -650,7 +650,7 @@ namespace NagaraStage.Activities {
             }
 
 
-            mc.StopInching(MechaAxisAddress.ZAddress);
+            mc.SlowDownStop(VectorId.Z);
             surfaces[1] = mc.GetPoint().Z;
             System.Diagnostics.Debug.WriteLine(string.Format("{0}", mc.GetPoint().Z));
             Thread.Sleep(100);
@@ -667,7 +667,7 @@ namespace NagaraStage.Activities {
                 if (brightness < 2000) flag = false;
             }
 
-            mc.StopInching(MechaAxisAddress.ZAddress);
+            mc.SlowDownStop(VectorId.Z);
             surfaces[3] = mc.GetPoint().Z;
             System.Diagnostics.Debug.WriteLine(string.Format("{0}", mc.GetPoint().Z));
             Thread.Sleep(100);

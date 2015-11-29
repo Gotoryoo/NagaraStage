@@ -74,9 +74,7 @@ namespace NagaraStage.Activities {
                 } finally {
                     MotorControler mc = MotorControler.GetInstance();
                     mc.AbortMoving();
-                    mc.StopInching(MechaAxisAddress.XAddress);
-                    mc.StopInching(MechaAxisAddress.YAddress);
-                    mc.StopInching(MechaAxisAddress.ZAddress);
+                    mc.SlowDownStopAll();
                 }
             })));
             //SurfaceLanding sl = new SurfaceLanding(parameterManager);
@@ -217,7 +215,7 @@ namespace NagaraStage.Activities {
                             viewcounter = 0;
                             double endz = mc.GetPoint().Z;
 
-                            mc.StopInching(MechaAxisAddress.ZAddress);
+                            mc.SlowDownStop(VectorId.Z);
                             mc.Join();
                             Thread.Sleep(100);
 
@@ -312,7 +310,7 @@ namespace NagaraStage.Activities {
                             viewcounter = 0;
                             double endz = mc.GetPoint().Z;
 
-                            mc.StopInching(MechaAxisAddress.ZAddress);
+                            mc.SlowDownStop(VectorId.Z);
                             mc.Join();
                             Thread.Sleep(100);
 
