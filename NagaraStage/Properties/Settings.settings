@@ -57,13 +57,13 @@
       <Value Profile="(Default)">2E-05</Value>
     </Setting>
     <Setting Name="InitialVelocityX" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.004</Value>
+      <Value Profile="(Default)">0.02</Value>
     </Setting>
     <Setting Name="InitialVelocityY" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.04</Value>
+      <Value Profile="(Default)">0.02</Value>
     </Setting>
     <Setting Name="InitialVelocityZ" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.0036</Value>
+      <Value Profile="(Default)">0.04</Value>
     </Setting>
     <Setting Name="AccelTimeX" Type="System.Double" Scope="User">
       <Value Profile="(Default)">20</Value>
@@ -75,31 +75,31 @@
       <Value Profile="(Default)">2</Value>
     </Setting>
     <Setting Name="Speed1X" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.1</Value>
+      <Value Profile="(Default)">0.03</Value>
     </Setting>
     <Setting Name="Speed1Y" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.1</Value>
+      <Value Profile="(Default)">0.03</Value>
     </Setting>
     <Setting Name="Speed1Z" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0.01</Value>
     </Setting>
     <Setting Name="Speed2X" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.2</Value>
+      <Value Profile="(Default)">0.1</Value>
     </Setting>
     <Setting Name="Speed2Y" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.2</Value>
+      <Value Profile="(Default)">0.1</Value>
     </Setting>
     <Setting Name="Speed2Z" Type="System.Double" Scope="User">
       <Value Profile="(Default)">0.02</Value>
     </Setting>
     <Setting Name="Speed3X" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">15</Value>
+      <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="Speed3Y" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">15</Value>
+      <Value Profile="(Default)">10</Value>
     </Setting>
     <Setting Name="Speed3Z" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">0.1</Value>
+      <Value Profile="(Default)">0.07</Value>
     </Setting>
     <Setting Name="Speed4X" Type="System.Double" Scope="User">
       <Value Profile="(Default)">30</Value>

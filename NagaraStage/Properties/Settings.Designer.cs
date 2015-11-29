@@ -241,7 +241,7 @@ namespace NagaraStage.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.004")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.02")]
         public double InitialVelocityX {
             get {
                 return ((double)(this["InitialVelocityX"]));
@@ -253,7 +253,7 @@ namespace NagaraStage.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.04")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.02")]
         public double InitialVelocityY {
             get {
                 return ((double)(this["InitialVelocityY"]));
@@ -265,7 +265,7 @@ namespace NagaraStage.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.0036")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.04")]
         public double InitialVelocityZ {
             get {
                 return ((double)(this["InitialVelocityZ"]));
@@ -313,7 +313,7 @@ namespace NagaraStage.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.03")]
         public double Speed1X {
             get {
                 return ((double)(this["Speed1X"]));
@@ -325,7 +325,7 @@ namespace NagaraStage.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.03")]
         public double Speed1Y {
             get {
                 return ((double)(this["Speed1Y"]));
@@ -349,7 +349,7 @@ namespace NagaraStage.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.2")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
         public double Speed2X {
             get {
                 return ((double)(this["Speed2X"]));
@@ -361,7 +361,7 @@ namespace NagaraStage.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.2")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
         public double Speed2Y {
             get {
                 return ((double)(this["Speed2Y"]));
@@ -385,7 +385,7 @@ namespace NagaraStage.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
         public double Speed3X {
             get {
                 return ((double)(this["Speed3X"]));
@@ -397,7 +397,7 @@ namespace NagaraStage.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("15")]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
         public double Speed3Y {
             get {
                 return ((double)(this["Speed3Y"]));
@@ -409,7 +409,7 @@ namespace NagaraStage.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.07")]
         public double Speed3Z {
             get {
                 return ((double)(this["Speed3Z"]));
