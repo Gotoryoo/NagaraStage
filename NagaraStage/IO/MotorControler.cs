@@ -901,9 +901,10 @@ namespace NagaraStage {
             /// Range Dataを取得します．
             /// </summary>
             /// <param name="axis">取得する軸</param>
+            /// <param name="myspeed">speed[mm/sec]</param>
             /// <returns>RangeData</returns>
-            private int getRangeData(VectorId axis, double originalDirectionSpeed) {
-                double f = originalDirectionSpeed / parameterManager.MotorResolution.Index(axis);
+            private int getRangeData(VectorId axis, double myspeed) {
+                double f = myspeed / parameterManager.MotorResolution.Index(axis);
                 double range = (4000000 / f);// +0.5;
                 range = (range > 8191 ? 8191 : range);
 
@@ -990,7 +991,9 @@ namespace NagaraStage {
                 tolerance.Z = (encoderResolution.Z > motorResolution.Z ? 0.95 * encoderResolution.Z : 1.2 * motorResolution.Z);
             }
 
-
+            /// <summary>
+            /// スピード設定に関するパラメータ類を表示
+            /// </summary>
             public void DisplayStat() {
                 for (short ax = 0; ax < 3; ax++) {
                     int range = 0;
@@ -1057,8 +1060,8 @@ namespace NagaraStage {
                                 throw new MotorActiveException();
                             }
                         }
-                    } catch (MotorActiveException ex) {
-                    } catch (ThreadAbortException ex) {
+                    } catch (MotorActiveException) {
+                    } catch (ThreadAbortException) {
                     } finally {
                         SlowDownStopAll();
 
@@ -1312,8 +1315,8 @@ namespace NagaraStage {
                                 throw new MotorActiveException();
                             }
                         }
-                    } catch (MotorActiveException ex) {
-                    } catch (ThreadAbortException ex) {
+                    } catch (MotorActiveException) {
+                    } catch (ThreadAbortException) {
                     } finally {
                         SlowDownStopAll();
                     }
@@ -1343,7 +1346,7 @@ namespace NagaraStage {
             /// <summary>
             /// 減速停止します．
             /// </summary>
-            /// <param name="axisAddress">停止する軸</param>
+            /// <param name="axis">停止する軸</param>
             public void SlowDownStop(VectorId axis) {
 
                 if (false == Apci59.CommandWrite(SlotNo, (short)axis, Apci59.SLOW_DOWN_STOP)) return;
@@ -1369,10 +1372,12 @@ namespace NagaraStage {
                 SlowDownStop(VectorId.Y);
                 SlowDownStop(VectorId.Z);
             }
-            
 
 
 
+            /// <summary>
+            /// 閉じます
+            /// </summary>
             public static void Terminate() {
                 if (enabled) {
                     Apci59.Close(slotNo);
