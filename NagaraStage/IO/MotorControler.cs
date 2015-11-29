@@ -404,9 +404,8 @@ namespace NagaraStage {
             /// <param name="direction">方向</param>
             /// <exception cref="NagaraStage.IO.MotorOverHeatException"></exception>
             /// <exception cref="NagaraStage.IO.MotorAxisException"></exception>
-            public void Inch(MechaAxisAddress axisAddress, PlusMinus direction) {
-                VectorId axis = convertToAxis(axisAddress);
-                Boolean status = true;
+            public void ContinuousDrive(VectorId axis, PlusMinus direction) {
+                MechaAxisAddress axisAddress = convertToMechaAxisAddress(axis);
                 MotorAbnomalState motorState = GetAbnomalState(axisAddress);
 
                 if (motorState == MotorAbnomalState.OverHeat) {
@@ -416,6 +415,8 @@ namespace NagaraStage {
                 } else if (motorState == MotorAbnomalState.AxisLimitMinus & direction == PlusMinus.Minus) {
                     throw new MotorAxisException(Properties.Strings.MotorAxisLimitMinus);
                 }
+
+                Boolean status = true;
 
                 int rangeData = getRangeData(axis);
                 status = Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)rangeData);
@@ -451,30 +452,7 @@ namespace NagaraStage {
                 }
             }
 
-            public void Inch(VectorId axis, PlusMinus direction) {
-                Inch(convertToMechaAxisAddress(axis), direction);
-            }
 
-            /// <summary>
-            /// インチングを停止します．
-            /// </summary>
-            /// <param name="axisAddress">停止する軸</param>
-            public void StopInching(MechaAxisAddress axisAddress) {
-                VectorId axis = convertToAxis(axisAddress);
-
-                Apci59.CommandWrite(SlotNo, (short)axis, SLOW_DOWN_STOP);
-
-                bool status;
-                byte pbstat = 0x0;
-
-                while(true){
-                    status = Apci59.GetEndStatus(SlotNo, (short)axis, ref pbstat);
-                    //System.Diagnostics.Debug.WriteLine(String.Format("pbstat {0}", pbstat));
-                    if ( (pbstat & 0x01) == 0x0 ) break;
-                }
-                
-
-            }
 
             /// <summary>
             /// 指定距離を指定速度で移動するようにモータドライバに命令を発信します．
@@ -825,20 +803,20 @@ namespace NagaraStage {
                     }
                 }
 #if !_NoHardWare
-                StopInching(MechaAxisAddress.XAddress);
-                StopInching(MechaAxisAddress.YAddress);
-                StopInching(MechaAxisAddress.ZAddress);
+                SlowDownStopAll();
+
 #endif
             }
 
-            public void AbortMoving(MechaAxisAddress direction) {
+            public void AbortMoving(MechaAxisAddress axisAddress) {
                 if (movingThread != null) {
                     if (movingThread.IsAlive) {
                         movingThread.Abort();
                         movingThread.Join();
                     }
                 }
-                StopInching(direction);
+                VectorId axis = convertToAxis(axisAddress);
+                SlowDownStop(axis);
             }
 
             /// <summary>
@@ -1259,9 +1237,8 @@ namespace NagaraStage {
                     } catch (MotorActiveException ex) {
                     } catch (ThreadAbortException ex) {
                     } finally {
-                        StopInching(MechaAxisAddress.XAddress);
-                        StopInching(MechaAxisAddress.YAddress);
-                        StopInching(MechaAxisAddress.ZAddress);
+                        SlowDownStopAll();
+
                     }
                 })));
                 movingThread.IsBackground = true;
@@ -1515,9 +1492,7 @@ namespace NagaraStage {
                     } catch (MotorActiveException ex) {
                     } catch (ThreadAbortException ex) {
                     } finally {
-                        SlowDownStop(VectorId.X);
-                        SlowDownStop(VectorId.Y);
-                        SlowDownStop(VectorId.Z);
+                        SlowDownStopAll();
                     }
                 })));
                 movingThread.IsBackground = true;
@@ -1543,12 +1518,12 @@ namespace NagaraStage {
 
 
             /// <summary>
-            /// インチングを停止します．
+            /// 減速停止します．
             /// </summary>
             /// <param name="axisAddress">停止する軸</param>
             public void SlowDownStop(VectorId axis) {
 
-                if (false == Apci59.CommandWrite(SlotNo, 0, Apci59.SLOW_DOWN_STOP)) return;
+                if (false == Apci59.CommandWrite(SlotNo, (short)axis, Apci59.SLOW_DOWN_STOP)) return;
 
                 bool status;
                 byte pbstat = 0x0;
@@ -1560,6 +1535,20 @@ namespace NagaraStage {
                 }
 
             }
+
+
+            
+            /// <summary>
+            /// 全軸減速停止します
+            /// </summary>
+            public void SlowDownStopAll() {
+                SlowDownStop(VectorId.X);
+                SlowDownStop(VectorId.Y);
+                SlowDownStop(VectorId.Z);
+            }
+            
+
+
 
             public static void Terminate() {
                 if (enabled) {
