@@ -277,7 +277,7 @@ namespace NagaraStage.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("40")]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
         public double AccelTimeX {
             get {
                 return ((double)(this["AccelTimeX"]));
@@ -289,7 +289,7 @@ namespace NagaraStage.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("40")]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
         public double AccelTimeY {
             get {
                 return ((double)(this["AccelTimeY"]));

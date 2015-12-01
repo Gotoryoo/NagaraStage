@@ -322,10 +322,10 @@ namespace NagaraStage {
             /// </summary>
             /// <param name="speed">速度</param>
             /// <param name="axis">軸</param>
-            public void Inch(PlusMinus direction, double speed, VectorId axis) {
+            public void Inch(PlusMinus direction, double _speed, VectorId axis) {
                 Boolean status = true;
 
-                int rangeData = getRangeData(axis, speed);
+                int rangeData = getRangeData(axis, _speed);
                 status = Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)rangeData);
                 if (!status) {
                     throw new Exception(string.Format("range data is not correct．range data = {0}", rangeData));
@@ -338,14 +338,14 @@ namespace NagaraStage {
                         startStopSpeedData));
                 }
 
-                int objectSpeedData = getObjectSpeedData(axis, speed, rangeData);
+                int objectSpeedData = getObjectSpeedData(axis, _speed, rangeData);
                 status = Apci59.DataHalfWrite(SlotNo, (short)axis, OBJECT_SPEED_DATA_WRITE, (short)objectSpeedData);
                 if (!status) {
                     throw new Exception(string.Format("object speed data is not correct．object speed data = {0}",
                         objectSpeedData));
                 }
 
-                int rate1Data = getRate1Data(axis, speed, objectSpeedData, startStopSpeedData);
+                int rate1Data = getRate1Data(axis, _speed, objectSpeedData, startStopSpeedData);
                 status = Apci59.DataHalfWrite(SlotNo, (short)axis, RATE1_DATA_WRITE, (short)rate1Data);
                 if (!status) {
                     throw new Exception(string.Format("rate1 data is not correct．rate1 data = {0}",
@@ -365,7 +365,7 @@ namespace NagaraStage {
             /// <param name="direction">方向</param>
             /// <exception cref="NagaraStage.IO.MotorOverHeatException"></exception>
             /// <exception cref="NagaraStage.IO.MotorAxisException"></exception>
-            public void ContinuousDrive(VectorId axis, PlusMinus direction, double speed) {
+            public void ContinuousDrive(VectorId axis, PlusMinus direction, double _speed) {
                 MotorState motorState = GetMotorState(axis);
 
                 if (motorState == MotorState.OverHeat) {
@@ -377,7 +377,7 @@ namespace NagaraStage {
                 }
 
                 Boolean status = true;
-                int rangeData = getRangeData(axis, speed);
+                int rangeData = getRangeData(axis, _speed);
                 status = Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)rangeData);
                 if (!status) {
                     throw new Exception(string.Format("range data is not correct．range data = {0}", rangeData));
@@ -980,7 +980,7 @@ namespace NagaraStage {
             /// </summary>
             /// <param name="to"></param>
             /// <param name="speed">移動速度</param>
-            public void MovePointApproximate(Vector3 to, Vector3 speed) {
+            public void MovePointApproximate(Vector3 to, Vector3 _speed) {
                 if (movingThread != null) {
                     if (movingThread.IsAlive) {
                         AbortMoving();
@@ -1085,7 +1085,7 @@ namespace NagaraStage {
             /// <param name="axis">軸番号</param>
             /// <param name="distance">移動距離[mm]</param>
             /// <param name="speed">移動速度</param>
-            private MotorState PresetPulseDrive(VectorId axis, double distance, double speed) {
+            private MotorState PresetPulseDrive(VectorId axis, double distance, double _speed) {
                 MotorState motorStatus = MotorState.NoProblem;
                 motorStatus = GetMotorState(axis);
                 if (motorStatus != MotorState.NoProblem) {
@@ -1093,7 +1093,7 @@ namespace NagaraStage {
                 }
                 Boolean status;
                 
-                int rangeData = getRangeData(axis, speed);
+                int rangeData = getRangeData(axis, _speed);
                 status = Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)rangeData);
                 if (!status) {
                     throw new Exception(string.Format("range data is not correct．range data = {0}", rangeData));
@@ -1105,14 +1105,14 @@ namespace NagaraStage {
                     throw new Exception(string.Format("start stop data is not correct．start stop data = {0}", startStopSpeedData));
                 }
 
-                int objectSpeedData = getObjectSpeedData(axis, speed, rangeData);
+                int objectSpeedData = getObjectSpeedData(axis, _speed, rangeData);
                 status = Apci59.DataHalfWrite(SlotNo, (short)axis, OBJECT_SPEED_DATA_WRITE, (short)objectSpeedData);
                 if (!status) {
                     throw new Exception(string.Format("object speed data is not correct．object speed data = {0}",
                         objectSpeedData));
                 }
 
-                int rate1Data = getRate1Data(axis, speed);
+                int rate1Data = getRate1Data(axis, _speed);
                 status = Apci59.DataHalfWrite(SlotNo, (short)axis, RATE1_DATA_WRITE, (short)rate1Data);
                 if (!status) {
                     throw new Exception(string.Format("rate1 data is not correct．rate1 data = {0}",

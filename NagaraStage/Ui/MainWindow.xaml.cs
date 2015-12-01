@@ -1895,7 +1895,15 @@ namespace NagaraStage.Ui {
         private void MCTestButton_Click(object sender, RoutedEventArgs e) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             mc.DisplayStat();
-            mc.AAAAAA();
+            Vector3 currentpoint = new Vector3();
+
+            for (int i = 0; i < 3; i++) {
+                Vector3 distance = new Vector3(1, 1, 0.01);
+                mc.Move(distance);
+                mc.Join();
+                currentpoint = mc.GetPoint();
+                System.Console.WriteLine(string.Format("{0},{1},{2}", currentpoint.X, currentpoint.Y, currentpoint.Z));
+            }
             mc.DisplayStat();
         }
 
