@@ -144,6 +144,83 @@ namespace NagaraStage {
                 }
             }
 
+
+
+
+
+
+            public bool setVelocityParams(VectorId axis, double objSpeed) {
+            
+                Boolean status;
+                double resolution = parameterManager.MotorResolution.Index(axis);
+
+                // Range dataの設定
+                double f = objSpeed / resolution;
+                double rangeData = (4000000 / f);// +0.5;
+                double funit = 500.0 / (rangeData * 1.0);
+
+                int iRangeData = (int)rangeData;
+                iRangeData = (iRangeData > 8191 ? 8191 : iRangeData);
+                iRangeData = (iRangeData < 1 ? 1 : iRangeData);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)iRangeData);
+                if (!status) {
+                    throw new Exception(string.Format("range data is not correct．range data = {0}", rangeData));
+                }
+
+
+                // Start stop speed dataの作成
+                double ssSpeed = parameterManager.MotorInitialVelocity.Index(axis);
+
+                if (ssSpeed > objSpeed) {
+                    ssSpeed = objSpeed;
+                }
+                double ssSpeedData = (ssSpeed / resolution) / funit;
+
+                int iSsSpeedData = (int)ssSpeedData;
+                iSsSpeedData = (iSsSpeedData > 8191 ? 8191 : iSsSpeedData);
+                iSsSpeedData = (iSsSpeedData < 1 ? 1 : iSsSpeedData);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, START_STOP_SPEED_DATA_WRITE, (short)iSsSpeedData);
+                if (!status) {
+                    throw new Exception(string.Format("start stop data is not correct．start stop data = {0}", iSsSpeedData));
+                }
+
+                // Object speed data の作成
+                double objSpeedData = (objSpeed / resolution) / funit;
+
+                int iObjSpeedData = (int)objSpeedData;
+                iObjSpeedData = (iObjSpeedData > 8191 ? 8191 : iObjSpeedData);
+                iObjSpeedData = (iObjSpeedData < 1 ? 1 : iObjSpeedData);
+                status = Apci59.DataHalfWrite(SlotNo, (short)axis, OBJECT_SPEED_DATA_WRITE, (short)iObjSpeedData);
+                if (!status) {
+                    throw new Exception(string.Format("object speed data is not correct．object speed data = {0}", iObjSpeedData));
+                }
+
+                // Rate1 data の作成
+                double motorAccel = parameterManager.MotorAccelTime.Index(axis);
+
+                double Tunit = (objSpeed - ssSpeed) / motorAccel;
+                double rate1Data = 2048000.0 * Tunit;
+
+                int iRate1Data = (int)rate1Data;
+                iRate1Data = (iRate1Data > 8191 ? 8191 : iRate1Data);
+                iRate1Data = (iRate1Data < 1 ? 1 : iRate1Data);
+                status = Apci59.DataFullWrite(SlotNo, (short)axis, RATE1_DATA_WRITE, (short)iRate1Data);
+                if (!status) {
+                    throw new Exception(string.Format("rate1 data is not correct．rate1 data = {0}", iRate1Data));
+                }
+
+                // Rate2, 3, rate_change_point_1_2
+                status = Apci59.DataFullWrite(SlotNo, (short)axis, RATE2_DATA_WRITE, 0x1FFF);
+                status = Apci59.DataFullWrite(SlotNo, (short)axis, RATE3_DATA_WRITE, 0x1FFF);
+                status = Apci59.DataFullWrite(SlotNo, (short)axis, RATE_CHANGE_POINT_1_2_WRITE, 0x1FFF);
+
+                return true;
+            }
+
+
+
+
+
             /// <summary>
             /// I/Oドライバを初期化します
             /// </summary>
@@ -192,26 +269,9 @@ namespace NagaraStage {
                 status = Apci59.CommandWrite(SlotNo, (short)axis, ALARM_STOP_ENABLE_MODE_RESET);
                 status = Apci59.CommandWrite(SlotNo, (short)axis, INTERRUPT_OUT_ENABLE_MODE_RESET);
 
-                // Range dataの設定
-                int rangeData = getRangeData(axis);
-                status = Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)rangeData);
-
-                // Start stop speed dataの作成
-                int speedData = getStartStopSpeedData(axis);
-                status = Apci59.DataHalfWrite(SlotNo, (short)axis, START_STOP_SPEED_DATA_WRITE, (short)speedData);
-
-                // Object speed data の作成
-                int objectSpeedData = getObjectSpeedData(axis);
-                status = Apci59.DataHalfWrite(SlotNo, (short)axis, OBJECT_SPEED_DATA_WRITE, (short)objectSpeedData);
-
-                // Rate1 data の作成
-                int rate1Data = getRate1Data(axis);
-                status = Apci59.DataFullWrite(SlotNo, (short)axis, RATE1_DATA_WRITE, (short)rate1Data);
-
-                // Rate2, 3, rate_change_point_1_2
-                status = Apci59.DataFullWrite(SlotNo, (short)axis, RATE2_DATA_WRITE, 0x1FFF);
-                status = Apci59.DataFullWrite(SlotNo, (short)axis, RATE3_DATA_WRITE, 0x1FFF);
-                status = Apci59.DataFullWrite(SlotNo, (short)axis, RATE_CHANGE_POINT_1_2_WRITE, 0x1FFF);
+                // speedの設定
+                double tmpSpeed = getPresetSpeed(axis);
+                status = setVelocityParams(axis, tmpSpeed);
             }
 
 
@@ -322,35 +382,11 @@ namespace NagaraStage {
             /// </summary>
             /// <param name="speed">速度</param>
             /// <param name="axis">軸</param>
-            public void Inch(PlusMinus direction, double _speed, VectorId axis) {
+            public void Inch(PlusMinus direction, double objSpeed, VectorId axis) {
                 Boolean status = true;
 
-                int rangeData = getRangeData(axis, _speed);
-                status = Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)rangeData);
-                if (!status) {
-                    throw new Exception(string.Format("range data is not correct．range data = {0}", rangeData));
-                }
+                status = setVelocityParams(axis, objSpeed);
 
-                int startStopSpeedData = getStartStopSpeedData(axis, rangeData);
-                status = Apci59.DataHalfWrite(SlotNo, (short)axis, START_STOP_SPEED_DATA_WRITE, (short)startStopSpeedData);
-                if (!status) {
-                    throw new Exception(string.Format("start stop data is not correct．start stop data = {0}",
-                        startStopSpeedData));
-                }
-
-                int objectSpeedData = getObjectSpeedData(axis, _speed, rangeData);
-                status = Apci59.DataHalfWrite(SlotNo, (short)axis, OBJECT_SPEED_DATA_WRITE, (short)objectSpeedData);
-                if (!status) {
-                    throw new Exception(string.Format("object speed data is not correct．object speed data = {0}",
-                        objectSpeedData));
-                }
-
-                int rate1Data = getRate1Data(axis, _speed, objectSpeedData, startStopSpeedData);
-                status = Apci59.DataHalfWrite(SlotNo, (short)axis, RATE1_DATA_WRITE, (short)rate1Data);
-                if (!status) {
-                    throw new Exception(string.Format("rate1 data is not correct．rate1 data = {0}",
-                        rate1Data));
-                } 
                 byte command = (byte)(direction == PlusMinus.Plus ? PLUS_CONTINUOUS_DRIVE : MINUS_CONTINUOUS_DRIVE);
                 status = Apci59.CommandWrite(SlotNo, (short)axis, command);
                 if (!status) {
@@ -365,7 +401,7 @@ namespace NagaraStage {
             /// <param name="direction">方向</param>
             /// <exception cref="NagaraStage.IO.MotorOverHeatException"></exception>
             /// <exception cref="NagaraStage.IO.MotorAxisException"></exception>
-            public void ContinuousDrive(VectorId axis, PlusMinus direction, double _speed) {
+            public void ContinuousDrive(VectorId axis, PlusMinus direction, double objSpeed) {
                 MotorState motorState = GetMotorState(axis);
 
                 if (motorState == MotorState.OverHeat) {
@@ -377,32 +413,8 @@ namespace NagaraStage {
                 }
 
                 Boolean status = true;
-                int rangeData = getRangeData(axis, _speed);
-                status = Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)rangeData);
-                if (!status) {
-                    throw new Exception(string.Format("range data is not correct．range data = {0}", rangeData));
-                }
+                status = setVelocityParams(axis, objSpeed);
 
-                int startStopSpeedData = getStartStopSpeedData(axis);
-                status = Apci59.DataHalfWrite(SlotNo, (short)axis, START_STOP_SPEED_DATA_WRITE, (short)startStopSpeedData);
-                if (!status) {
-                    throw new Exception(string.Format("start stop data is not correct．start stop data = {0}",
-                        startStopSpeedData));
-                }
-
-                int objectSpeedData = getObjectSpeedData(axis);
-                status = Apci59.DataHalfWrite(SlotNo, (short)axis, OBJECT_SPEED_DATA_WRITE, (short)objectSpeedData);
-                if (!status) {
-                    throw new Exception(string.Format("object speed data is not correct．object speed data = {0}",
-                        objectSpeedData));
-                }
-
-                int rate1Data = getRate1Data(axis);
-                status = Apci59.DataHalfWrite(SlotNo, (short)axis, RATE1_DATA_WRITE, (short)rate1Data);
-                if (!status) {
-                    throw new Exception(string.Format("rate1 data is not correct．rate1 data = {0}",
-                        rate1Data));
-                }
 
                 byte command = (byte)(direction == PlusMinus.Plus ? PLUS_CONTINUOUS_DRIVE : MINUS_CONTINUOUS_DRIVE);
                 status = Apci59.CommandWrite(SlotNo, (short)axis, command);
@@ -423,7 +435,7 @@ namespace NagaraStage {
             /// <param name="distance">移動距離</param>
             /// <param name="oSpddt">移動速度</param>
             /// <returns>モータの異常検知結果</returns>
-            private MotorState InchUnit(VectorId axis, double distance, double oSpddt) {
+            private MotorState InchUnit(VectorId axis, double distance, double objSpeed) {
                 // このメソッドは途中でreturnをする場合があります．
 
                 MotorState motorStatus = MotorState.NoProblem;
@@ -434,17 +446,8 @@ namespace NagaraStage {
                     return motorStatus;
                 }
 
-                int rangeData = getRangeData(axis, oSpddt);
-                Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)rangeData);
-
-                int startStopSpeedData = getStartStopSpeedData(axis, rangeData);
-                Apci59.DataHalfWrite(SlotNo, (short)axis, START_STOP_SPEED_DATA_WRITE, (short)startStopSpeedData);
-
-                int objectSpeedData = getObjectSpeedData(axis, oSpddt, rangeData);
-                Apci59.DataHalfWrite(SlotNo, (short)axis, OBJECT_SPEED_DATA_WRITE, (short)objectSpeedData);
-
-                int rate1Data = getRate1Data(axis, oSpddt);
-                Apci59.DataHalfWrite(SlotNo, (short)axis, RATE1_DATA_WRITE, (short)rate1Data);
+                bool status;
+                status = setVelocityParams(axis, objSpeed);
 
                 // 移動量をパルス数に変換する
                 double resolution = parameterManager.MotorResolution.Index(axis);
@@ -810,110 +813,6 @@ namespace NagaraStage {
             }
 
 
-            /// <summary>
-            /// Range Dataを取得します．
-            /// </summary>
-            /// <param name="axis">取得する軸</param>
-            /// <param name="myspeed">speed[mm/sec]</param>
-            /// <returns>RangeData</returns>
-            private int getRangeData(VectorId axis, double myspeed) {
-                double f = myspeed / parameterManager.MotorResolution.Index(axis);
-                double range = (4000000 / f);// +0.5;
-                range = (range > 8191 ? 8191 : range);
-
-                return ((int)range < 1 ? 1 : (int)range);
-            }
-
-            public int getRangeData(VectorId axis) {
-                double originalDirectionSpeed = getSpeedDirection(axis);
-                return getRangeData(axis, originalDirectionSpeed);
-            }
-
-
-            /// <summary>
-            /// Rate1 Dataを取得します
-            /// </summary>
-            /// <param name="axis"></param>
-            /// <returns></returns>
-            private int getRate1Data(VectorId axis, double originalDirectionSpeed) {
-                double objectSpeedData = getObjectSpeedData(axis);
-                double startStopSpeed = getStartStopSpeedData(axis);
-                return getRate1Data(axis, originalDirectionSpeed, objectSpeedData, startStopSpeed);
-            }
-
-            private int getRate1Data(VectorId axis, double originalDirectionSpeed, double objectSpeedData, double startStopSpeed) {
-                double initialSpeed = parameterManager.MotorInitialVelocity.Index(axis);
-                double motorAccelTime = parameterManager.MotorAccelTime.Index(axis);
-                double accelerationTime;
-                int dt = 0;
-
-                if (objectSpeedData - startStopSpeed > 1) {
-                    accelerationTime = (originalDirectionSpeed - initialSpeed) / motorAccelTime;
-                    dt = (int)((2048000 / (objectSpeedData - startStopSpeed)) * accelerationTime);
-                    dt = (dt > 8191 ? 8191 : dt);
-                } else {
-                    dt = 1;
-                }
-
-                return dt;
-            }
-
-            public int getRate1Data(VectorId axis) {
-                double originalDirectionSpeed = getSpeedDirection(axis);
-                return getRate1Data(axis, originalDirectionSpeed);
-            }
-
-
-
-            /// <summary>
-            /// Object Speed Dataを取得します．
-            /// </summary>
-            /// <param name="axis">取得する軸</param>
-            /// <param name="oSpddt"></param>
-            /// <returns>Object Speed Data</returns>
-            public int getObjectSpeedData(VectorId axis, double oSpddt) {
-                double resolution = parameterManager.MotorResolution.Index(axis);
-                int rangeData = getRangeData(axis);
-                return (int)(((oSpddt / resolution) / (500.0 / rangeData)) + 0.5) & 0x1FFF;
-            }
-
-            public int getObjectSpeedData(VectorId axis, double oSpddt, double rangeData) {
-                double resolution = parameterManager.MotorResolution.Index(axis);
-                return (int)(((oSpddt / resolution) / (500.0 / rangeData)) + 0.5) & 0x1FFF;
-            }
-
-            /// <summary>
-            /// Object Speed Dataを取得します．
-            /// </summary>
-            /// <param name="axis">取得する軸</param>
-            /// <returns>Object Speed Data</returns>
-            private int getObjectSpeedData(VectorId axis) {
-                double oSpddt = getSpeedDirection(axis);
-                return getObjectSpeedData(axis, oSpddt);
-            }
-
-            /// <summary>
-            /// Start stop speed dataを取得します．
-            /// </summary>
-            /// <param name="axis">取得する軸</param>
-            /// <returns>StartStopSpeedData</returns>
-            private int getStartStopSpeedData(VectorId axis) {
-                double resolution = parameterManager.MotorResolution.Index(axis);
-                double startSpeedData = parameterManager.MotorInitialVelocity.Index(axis);
-                int rangeData = getRangeData(axis);
-                return ((int)(((startSpeedData / resolution) / (500.0 / rangeData)) + 0.5)) & 0x1FFF;
-            }
-
-            /// <summary>
-            /// Start stop speed dataを取得します．
-            /// </summary>
-            /// <param name="axis">取得する軸</param>
-            /// <returns>StartStopSpeedData</returns>
-            private int getStartStopSpeedData(VectorId axis, double rangeData) {
-                double resolution = parameterManager.MotorResolution.Index(axis);
-                double startSpeedData = parameterManager.MotorInitialVelocity.Index(axis);
-                return ((int)(((startSpeedData / resolution) / (500.0 / rangeData)) + 0.5)) & 0x1FFF;
-            }
 
 
             /// <summary>
@@ -939,7 +838,7 @@ namespace NagaraStage {
             /// </summary>
             /// <param name="axis">取得する軸</param>
             /// <returns>本来の速度</returns>
-            private double getSpeedDirection(VectorId axis) {
+            private double getPresetSpeed(VectorId axis) {
                 double retspeed = 0;
 
                 switch (axis) {
@@ -1085,39 +984,14 @@ namespace NagaraStage {
             /// <param name="axis">軸番号</param>
             /// <param name="distance">移動距離[mm]</param>
             /// <param name="speed">移動速度</param>
-            private MotorState PresetPulseDrive(VectorId axis, double distance, double _speed) {
+            private MotorState PresetPulseDrive(VectorId axis, double distance, double objSpeed) {
                 MotorState motorStatus = MotorState.NoProblem;
                 motorStatus = GetMotorState(axis);
                 if (motorStatus != MotorState.NoProblem) {
                     return motorStatus;
                 }
                 Boolean status;
-                
-                int rangeData = getRangeData(axis, _speed);
-                status = Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)rangeData);
-                if (!status) {
-                    throw new Exception(string.Format("range data is not correct．range data = {0}", rangeData));
-                }
-
-                int startStopSpeedData = getStartStopSpeedData(axis, rangeData);
-                status = Apci59.DataHalfWrite(SlotNo, (short)axis, START_STOP_SPEED_DATA_WRITE, (short)startStopSpeedData);
-                if (!status) {
-                    throw new Exception(string.Format("start stop data is not correct．start stop data = {0}", startStopSpeedData));
-                }
-
-                int objectSpeedData = getObjectSpeedData(axis, _speed, rangeData);
-                status = Apci59.DataHalfWrite(SlotNo, (short)axis, OBJECT_SPEED_DATA_WRITE, (short)objectSpeedData);
-                if (!status) {
-                    throw new Exception(string.Format("object speed data is not correct．object speed data = {0}",
-                        objectSpeedData));
-                }
-
-                int rate1Data = getRate1Data(axis, _speed);
-                status = Apci59.DataHalfWrite(SlotNo, (short)axis, RATE1_DATA_WRITE, (short)rate1Data);
-                if (!status) {
-                    throw new Exception(string.Format("rate1 data is not correct．rate1 data = {0}",
-                        rate1Data));
-                }
+                status = setVelocityParams(axis, objSpeed);
 
 
                 // 移動量をパルス数に変換する
