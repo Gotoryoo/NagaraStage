@@ -156,25 +156,25 @@ namespace NagaraStage {
 
                 // Range dataの設定
                 double f = objSpeed / resolution;
-                double rangeData = (4000000 / f);// +0.5;
-                double funit = 500.0 / (rangeData * 1.0);
+                double rangeData = (4000000 / f) + 0.5;
 
                 int iRangeData = (int)rangeData;
                 iRangeData = (iRangeData > 8191 ? 8191 : iRangeData);
                 iRangeData = (iRangeData < 1 ? 1 : iRangeData);
                 status = Apci59.DataHalfWrite(SlotNo, (short)axis, RANGE_WRITE, (short)iRangeData);
                 if (!status) {
-                    throw new Exception(string.Format("range data is not correct．range data = {0}", rangeData));
+                    throw new Exception(string.Format("range data is not correct．range data = {0}", iRangeData));
                 }
 
 
                 // Start stop speed dataの作成
                 double ssSpeed = parameterManager.MotorInitialVelocity.Index(axis);
+                double funit = 500.0 / (iRangeData * 1.0);
 
                 if (ssSpeed > objSpeed) {
                     ssSpeed = objSpeed;
                 }
-                double ssSpeedData = (ssSpeed / resolution) / funit;
+                double ssSpeedData = (ssSpeed / resolution) / funit + 0.5;
 
                 int iSsSpeedData = (int)ssSpeedData;
                 iSsSpeedData = (iSsSpeedData > 8191 ? 8191 : iSsSpeedData);
@@ -185,7 +185,7 @@ namespace NagaraStage {
                 }
 
                 // Object speed data の作成
-                double objSpeedData = (objSpeed / resolution) / funit;
+                double objSpeedData = (objSpeed / resolution) / funit + 0.5;
 
                 int iObjSpeedData = (int)objSpeedData;
                 iObjSpeedData = (iObjSpeedData > 8191 ? 8191 : iObjSpeedData);
@@ -198,8 +198,8 @@ namespace NagaraStage {
                 // Rate1 data の作成
                 double motorAccel = parameterManager.MotorAccelTime.Index(axis);
 
-                double Tunit = (objSpeed - ssSpeed) / motorAccel;
-                double rate1Data = 2048000.0 * Tunit;
+                double AccelTime = (objSpeed - ssSpeed) / motorAccel;
+                double rate1Data = 2048000.0 / (iObjSpeedData - iSsSpeedData) * AccelTime;
 
                 int iRate1Data = (int)rate1Data;
                 iRate1Data = (iRate1Data > 8191 ? 8191 : iRate1Data);
