@@ -761,6 +761,22 @@ namespace NagaraStage.Ui {
             SetElementOnWorkspace(shootingStage);
         }
 
+        private void AutomaticGridDetecetorButton_Click(object sender, RoutedEventArgs e) {
+            try {
+                IGridMarkRecognizer GridMarkRecognizer = coordManager;
+                Vector2 viewerPoint = GridMarkRecognizer.SearchGridMark();
+                if (viewerPoint.X < 0 || viewerPoint.Y < 0) {
+                    System.Diagnostics.Debug.WriteLine(String.Format("grid mark not found"));
+                } else {
+                    System.Diagnostics.Debug.WriteLine(String.Format("{0}  {1}", viewerPoint.X, viewerPoint.Y));
+                }
+            } catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine(String.Format("ex"));
+            }
+        }
+
+
+
         private void startDetectGridMarkButton_Click(object sender, RoutedEventArgs e) {
             bool continuFlag = true;
             GridMarkSearch gridmarkSearch = GridMarkSearch.GetInstance(coordManager, parameterManager);
@@ -1922,6 +1938,7 @@ namespace NagaraStage.Ui {
             manager.Enqueue(c1);
             manager.Start();
         }
+
         private void Class2Button_Click(object sender, RoutedEventArgs e) {
             if (parameterManager.Magnification != 50) {
                 MessageBox.Show(String.Format(Properties.Strings.LensTypeException02, 50));
@@ -1933,6 +1950,19 @@ namespace NagaraStage.Ui {
             manager.Enqueue(c2);
             manager.Start();
         }
+
+
+
+        private void DATFileButton_Click(object sender, RoutedEventArgs e) {
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            DATFile dat = DATFile.GetInstance(parameterManager);
+
+            manager.Enqueue(dat);
+            manager.Start();
+        }
+
+
+
 
         private void start_following_Click(object sender, RoutedEventArgs e) {//Ξ追跡アルゴリズム
             TracksManager tm = parameterManager.TracksManager;

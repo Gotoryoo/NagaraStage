@@ -142,6 +142,7 @@
             </ribbon:RibbonTab>
             <ribbon:RibbonTab x:Name="coordTab" Header="{Binding Source={StaticResource strings}, Path=CoordTab}">
                 <ribbon:RibbonGroup Header="{Binding Source={StaticResource strings}, Path=DetectGridMark}">
+                    
                     <ribbon:RibbonButton
                         x:Name="startDetectGridMarkButton" 
                         Label="{Binding Source={StaticResource strings}, Path=AutoDetect}"
@@ -172,6 +173,7 @@
                             </ribbon:RibbonGalleryCategory>
                         </ribbon:RibbonGallery>
                     </ribbon:RibbonMenuButton>
+                    
                     <ribbon:RibbonButton 
                         Name="clearGridMarksButton" 
                         SmallImageSource="/Images/init.png"
@@ -200,6 +202,10 @@
                         Name="BeamDetectionButton" 
                         SmallImageSource="/Images/init.png"
                         Label="{Binding Source={StaticResource strings}, Path=BeamDetection}" Click="BeamDetectionButton_Click" />
+                    <ribbon:RibbonButton 
+                        Name="AutomaticGridDetecetorButton" 
+                        SmallImageSource="/Images/init.png"
+                        Label="{Binding Source={StaticResource strings}, Path=AutoGrid}" Click="AutomaticGridDetecetorButton_Click" />
                 </ribbon:RibbonGroup>
                 <ribbon:RibbonGroup Header="{Binding Source={StaticResource strings}, Path=BeamDetect}">                    
                 </ribbon:RibbonGroup>
@@ -251,6 +257,10 @@
                         x:Name="Class2Button" 
                         Label="Class2"
                         LargeImageSource="/Images/start.png" Click="Class2Button_Click" />
+                    <ribbon:RibbonButton
+                        x:Name="DATFileButton" 
+                        Label="DATFile"
+                        LargeImageSource="/Images/start.png" Click="DATFileButton_Click" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>             
             <ribbon:RibbonTab

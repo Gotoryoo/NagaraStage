@@ -118,6 +118,7 @@
     <Compile Include="Activities\Class1.cs" />
     <Compile Include="Activities\Class2.cs" />
     <Compile Include="Activities\CorrectionByGridMark.cs" />
+    <Compile Include="Activities\DATFile.cs" />
     <Compile Include="Activities\GridMeasure.cs" />
     <Compile Include="Activities\MotorMove.cs" />
     <Compile Include="Activities\OverallScan.cs" />
