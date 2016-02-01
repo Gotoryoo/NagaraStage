@@ -261,6 +261,10 @@
                         x:Name="DATFileButton" 
                         Label="DATFile"
                         LargeImageSource="/Images/start.png" Click="DATFileButton_Click" />
+                    <ribbon:RibbonButton
+                        x:Name="GridTakingButton" 
+                        Label="GridTaking"
+                        LargeImageSource="/Images/start.png" Click="GridTakingButton_Click" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>             
             <ribbon:RibbonTab
