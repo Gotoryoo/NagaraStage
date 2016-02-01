@@ -1962,6 +1962,19 @@ namespace NagaraStage.Ui {
         }
 
 
+        private void GridTakingButton_Click(object sender, RoutedEventArgs e) {
+            if (parameterManager.Magnification != 10) {
+                MessageBox.Show(String.Format(Properties.Strings.LensTypeException02, 10));
+                return;
+            }
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            GridTaking gt = GridTaking.GetInstance(parameterManager);
+
+            manager.Enqueue(gt);
+            manager.Start();
+        }
+
+        
 
 
         private void start_following_Click(object sender, RoutedEventArgs e) {//Ξ追跡アルゴリズム
