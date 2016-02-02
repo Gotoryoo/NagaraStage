@@ -134,9 +134,9 @@ namespace NagaraStage.Activities {
         /// <exception cref="NagaraStage.Parameter.LensTypeException"></exception>
         public void Start() {
             // 定義済みグリッドマークが少なすぎないかを確認
-            if (!IsGridMarkedToStart) {
-                throw new GridMarkFewException();
-            }
+            //if (!IsGridMarkedToStart) {
+            //    throw new GridMarkFewException();
+            //}
 
             // レンズタイプがX10であるかを確認
             if (parameterManager.Magnification != LensMagnification) {
@@ -182,7 +182,8 @@ namespace NagaraStage.Activities {
                     mc.MoveDistance(-0.01, VectorId.Z);
                     mc.Join();
                     byte[] b = camera.ArrayImage;
-                    Mat mat = new Mat(440, 512, MatType.CV_8U, b);
+                    Mat mat0 = new Mat(440, 512, MatType.CV_8U, b);
+                    Mat mat = mat0.Clone();
                     Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
                     //mat.ImWrite(String.Format(@"c:\img\{0}_g.bmp",
                     //    System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
