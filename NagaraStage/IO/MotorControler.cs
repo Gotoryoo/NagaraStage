@@ -44,7 +44,6 @@ namespace NagaraStage {
             private static MotorControler instance;
             private ParameterManager parameterManager;
             private Vector3 speed;
-            private int limitPol0;
             private Vector3 tolerance = new Vector3();
             private Thread movingThread;
             //private Thread isMovingPointContinuemovingThread;
@@ -261,6 +260,7 @@ namespace NagaraStage {
                 }
 
                 // エンコーダ入力仕様(4てい倍)
+                int limitPol0 = 252;//default val
                 limitPol0 = (int)(parameterManager.LimitPol != 0 ? parameterManager.LimitPol : limitPol0);
                 status = Apci59.Mode2Write(SlotNo, (short)axis, (byte)limitPol0);
 
