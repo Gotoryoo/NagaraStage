@@ -205,7 +205,7 @@
                     <ribbon:RibbonButton 
                         Name="AutomaticGridDetecetorButton" 
                         SmallImageSource="/Images/init.png"
-                        Label="{Binding Source={StaticResource strings}, Path=AutoGrid}" Click="AutomaticGridDetecetorButton_Click" />
+                        Label="DetectAGrid", Path=AutoGrid}" Click="AutomaticGridDetecetorButton_Click" />
                 </ribbon:RibbonGroup>
                 <ribbon:RibbonGroup Header="{Binding Source={StaticResource strings}, Path=BeamDetect}">                    
                 </ribbon:RibbonGroup>
