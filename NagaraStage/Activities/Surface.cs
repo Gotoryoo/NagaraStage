@@ -612,7 +612,7 @@ namespace NagaraStage.Activities {
             flag = true;
             while (flag) {
                 int brightness = CountHitPixels();
-                if (brightness > 12000) flag = false;
+                if (brightness > 8000) flag = false;
             }
             /*
 			UpTopRecognized(this, new eventArgs());
