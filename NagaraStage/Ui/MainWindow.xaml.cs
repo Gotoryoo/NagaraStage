@@ -788,12 +788,12 @@ namespace NagaraStage.Ui {
                     ) == MessageBoxResult.Yes);
             }
 
-            if (!gridmarkSearch.IsGridMarkedToStart) {
-                MessageBox.Show(
-                    Properties.Strings.GridMarkNotDefinedMin,
-                    Properties.Strings.Error);
-                continuFlag = false;
-            }
+            //if (!gridmarkSearch.IsGridMarkedToStart) {
+            //    MessageBox.Show(
+            //        Properties.Strings.GridMarkNotDefinedMin,
+            //        Properties.Strings.Error);
+            //    continuFlag = false;
+            //}
 
             if (parameterManager.Magnification
                 != ParameterManager.LensMagnificationOfGridMarkSearch) {
