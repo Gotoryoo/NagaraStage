@@ -82,7 +82,7 @@ namespace NagaraStage.Activities {
             return taskList;
         }
 
-
+        //surfacercog not change!!
         private void surfrecog(int thre, double deltaz){
 
             MotorControler mc = MotorControler.GetInstance(parameterManager);
@@ -111,229 +111,99 @@ namespace NagaraStage.Activities {
 
 
 
+
         private void task() {
-            MotorControler mc = MotorControler.GetInstance(parameterManager);
-            Surface sur = Surface.GetInstance(parameterManager);
-            Camera camera = Camera.GetInstance();
-            Led led = Led.GetInstance();
-            CoordManager cm = new CoordManager(parameterManager);
-
-
-            Vector3 initialpoint = mc.GetPoint();
-
-            int pixthre = 500;
-
-
-            for (int bx = -5; bx <= 5 ; bx++) {
-                for (int by = -5; by <= 5 ; by++) {
-
-
-
-                    string txtfileName = string.Format(@"E:\img\{0}_{1}.txt",bx,by);
-                    StreamWriter twriter = File.CreateText(txtfileName);
-
-                    Vector3 blockstartpoint = new Vector3();
-                    blockstartpoint.X = initialpoint.X + bx * 1.0;
-                    blockstartpoint.Y = initialpoint.Y + by * 1.0;
-                    blockstartpoint.Z = initialpoint.Z;
-
-                    mc.MoveTo(new Vector3(blockstartpoint.X + 0.5, blockstartpoint.Y + 0.5, initialpoint.Z - 0.020));
-                    mc.Join();
-
-                    int ledbrightness = led.AdjustLight(parameterManager);
-
-
-                    camera.Start();
-                    surfrecog(pixthre, 0.003);
-                    camera.Stop();
-                    double surfaceZup = mc.GetPoint().Z;
-
-
-
-                    //上面　　ベース中からはじめ、ベース上側を表面認識
-                    //ベース上側からはじめてZ方向正の向きにスキャン
-
-
-                    for (int vy = 0; vy < 10; vy++) {
-                        
-                        Vector3 linestartpoint = mc.GetPoint();
-                        linestartpoint.X = blockstartpoint.X;
-                        linestartpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY;
-                        linestartpoint.Z = surfaceZup;
-                        
-                        for (int vx = 0; vx < 8; ) {
-                            
-                            if (vx == 0) {
-                                Vector3 approachingpoint = mc.GetPoint();
-                                approachingpoint.X = blockstartpoint.X + vx * parameterManager.SpiralShiftX - 0.05;
-                                approachingpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY - 0.05;
-                                approachingpoint.Z = linestartpoint.Z - 0.006;
-                                mc.MoveTo(approachingpoint);
-                                mc.Join();
-                            }
-                                                                                  
-                            Vector3 viewstartpoint = mc.GetPoint();
-                            viewstartpoint.X = blockstartpoint.X + vx * parameterManager.SpiralShiftX;
-                            viewstartpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY;
-                            viewstartpoint.Z = linestartpoint.Z - 0.006;
-
-                            mc.MoveTo(viewstartpoint);
-                            mc.Join();
-                            Thread.Sleep(100);
-
-                            Vector3 viewpoint = mc.GetPoint();
-
-                            byte[] bb = new byte[440 * 512 * 16];
-                            string datfileName = string.Format(@"E:\img\u_{0}_{1}_{2}_{3}.dat",
-                                (int)(viewpoint.X * 1000),
-                                (int)(viewpoint.Y * 1000),
-                                vx,
-                                vy
-                                );
-                            BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
-
-                            mc.Inch(PlusMinus.Plus, 0.15, VectorId.Z);
-
-                            int viewcounter = 0;
-                            while (viewcounter < 16 + 3) {
-                                byte[] b = Ipt.CaptureMain();
-                                Vector3 p = mc.GetPoint();
-
-                                if (viewcounter >= 3) {
-                                    b.CopyTo(bb, 440 * 512 * (viewcounter - 3));
-
-                                    string stlog = "";
-                                    stlog += String.Format("{0}   {1}  {2}  {3}\n",
-                                            ledbrightness,
-                                            p.X,
-                                            p.Y,
-                                            p.Z);
-                                    twriter.Write(stlog);
-                                }
-                                viewcounter++;
-                            }//view
-                            viewcounter = 0;
-                            double endz = mc.GetPoint().Z;
-
-                            mc.SlowDownStop(VectorId.Z);
-                            mc.Join();
-                            Thread.Sleep(100);
-
-                            if (endz - viewstartpoint.Z < 0.070) {
-                                vx++;
-                                writer.Write(bb);
-                                writer.Flush();
-                                writer.Close();
-                            }
-                        }//vx
-                    }//vy
-
-
-
-
-
-
-
-
-                    //下面　　ベース中からはじめ、ベース下側を表面認識
-                    //ベース下側からはじめてZ方向負の向きにスキャン
-
-                    mc.MoveTo(new Vector3(blockstartpoint.X + 0.5, blockstartpoint.Y + 0.5, initialpoint.Z - 0.140));
-                    mc.Join();
-
-                    camera.Start();
-                    surfrecog(pixthre, -0.003);
-                    camera.Stop();
-
-                    double surfaceZdown = mc.GetPoint().Z;
-
-
-                    for (int vy = 0; vy < 10; vy++) {
-
-                        Vector3 linestartpoint = mc.GetPoint();
-                        linestartpoint.X = blockstartpoint.X;
-                        linestartpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY;
-                        linestartpoint.Z = surfaceZdown;
-
-
-                        for (int vx = 0; vx < 8; ) {
-
-                            if (vx == 0) {
-                                Vector3 approachingpoint = mc.GetPoint();
-                                approachingpoint.X = blockstartpoint.X + vx * parameterManager.SpiralShiftX - 0.05;
-                                approachingpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY - 0.05;
-                                approachingpoint.Z = linestartpoint.Z + 0.006; 
-                                mc.MoveTo(approachingpoint);
-                                mc.Join();
-                            }
-
-                            Vector3 viewstartpoint = mc.GetPoint();
-                            viewstartpoint.X = blockstartpoint.X + vx * parameterManager.SpiralShiftX;
-                            viewstartpoint.Y = blockstartpoint.Y + vy * parameterManager.SpiralShiftY;
-                            viewstartpoint.Z = linestartpoint.Z + 0.006;
-
-                            mc.MoveTo(viewstartpoint);
-                            mc.Join();
-                            Thread.Sleep(100);
-
-                            Vector3 viewpoint = mc.GetPoint();
-
-                            byte[] bb = new byte[440 * 512 * 16];
-                            string datfileName = string.Format(@"E:\img\d_{0}_{1}_{2}_{3}.dat",
-                                (int)(viewpoint.X * 1000),
-                                (int)(viewpoint.Y * 1000),
-                                vx,
-                                vy
-                                );
-                            BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
-
-                            mc.Inch(PlusMinus.Minus, 0.15, VectorId.Z);
-
-                            int viewcounter = 0;
-                            while (viewcounter < 16 + 3) {
-                                byte[] b = Ipt.CaptureMain();
-                                Vector3 p = mc.GetPoint();
-
-                                if (viewcounter >= 3) {
-                                    b.CopyTo(bb, 440 * 512 * (viewcounter - 3));
-
-                                    string stlog = "";
-                                    stlog += String.Format("{0}   {1}  {2}  {3}\n",
-                                            ledbrightness,
-                                            p.X,
-                                            p.Y,
-                                            p.Z);
-                                    twriter.Write(stlog);
-                                }
-                                viewcounter++;
-                            }//view
-                            viewcounter = 0;
-                            double endz = mc.GetPoint().Z;
-
-                            mc.SlowDownStop(VectorId.Z);
-                            mc.Join();
-                            Thread.Sleep(100);
-
-                            if (viewstartpoint.Z - endz < 0.070) {
-                                vx++;
-                                writer.Write(bb);
-                                writer.Flush();
-                                writer.Close();
-                            }
-                        }//vx
-                    }//vy
-
-
-
-
-
-                    camera.Stop();
-                    twriter.Close();
-
-                }//blocky
-            }//blockx
             
-        }//task
+             try {
+                MotorControler mc = MotorControler.GetInstance(parameterManager);
+                Surface sur = Surface.GetInstance(parameterManager);
+                Camera camera = Camera.GetInstance();
+                Led led = Led.GetInstance();
+                CoordManager cm = new CoordManager(parameterManager);
+
+                Vector3 InitPoint = mc.GetPoint();
+                int viewcounter = 0;
+
+
+                //string txtfileName = string.Format(@"{0}\{1}.txt",
+                //    direcotryPath, System.DateTime.Now.ToString("yyyyMMdd_HHmmss_ffff"));
+                //StreamWriter twriter = File.CreateText(txtfileName);
+
+                 //text読み込み
+//                List<pointscan> PSList = new List<pointscan>();
+                List<Point2d> PSList = new List<Point2d>();
+
+                var reader = new StreamReader(File.OpenRead(@"C:\affine_position.txt"));
+                //bool headerflag = true;
+
+
+                while (!reader.EndOfStream) {
+                    var line = reader.ReadLine();
+                    string[] delimiter = { " " };
+                    var values = line.Split(delimiter, StringSplitOptions.RemoveEmptyEntries);
+
+                    Point2d p2 = new Point2d(
+                        double.Parse(values[0]),
+                        double.Parse(values[1])
+                        );
+                    PSList.Add(p2);
+                }
+                
+ 
+               int pixthre = 500;
+
+               for (int pp = 0; pp < PSList.Count(); pp++) {
+
+                    viewcounter = 0;
+                    
+                    Vector3 movepoint = new Vector3(PSList[pp].X, PSList[pp].Y, InitPoint.Z);
+                    mc.MoveTo(movepoint);
+
+                    //camera.Start();
+                    //surfrecog(pixthre, 0.003);
+                    //camera.Stop();
+                    //double surfaceZup = mc.GetPoint().Z;
+
+                    //movepoint.Z = surfaceZup;
+                    //mc.MoveTo(movepoint);
+                    mc.Join();
+
+                    //SurfPoint = mc.GetPoint();
+                    
+                    
+                    camera.Start();
+                    led.AdjustLight(parameterManager);
+                    camera.Stop();
+
+                   Vector3 p = mc.GetPoint();
+                   byte[] b = Ipt.CaptureMain();
+                   Mat src = new Mat(440, 512, MatType.CV_8U, b);
+
+
+
+                   String filename = String.Format(@"C:\img\grid\{0}_{1}_.png",
+                            (p.X * 1000).ToString("0.0"),
+                            (p.Y * 1000).ToString("0.0"));
+
+                   Cv2.ImWrite(filename, src);
+
+
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
+
+                }
+
+                camera.Start();
+
+            } catch (SystemException) {
+
+            }
+            
+        }
+
+ 
+
 
         /*
         int viewcounter = 0;
