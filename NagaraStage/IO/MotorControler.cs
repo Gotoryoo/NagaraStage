@@ -649,9 +649,9 @@ namespace NagaraStage {
                     switch (status) {
                         case MotorState.AxisLimitPlus:
                         case MotorState.AxisLimitMinus:
-                            throw new MotorAxisException();
+                            throw new MotorException("axis limit");
                         case MotorState.OverHeat:
-                            throw new MotorOverHeatException();
+                            throw new MotorException("overheat");
                     }
 
                 }

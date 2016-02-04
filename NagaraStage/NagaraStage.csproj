@@ -165,9 +165,8 @@
     <Compile Include="IO\Led.cs" />
     <Compile Include="IO\MotorState.cs" />
     <Compile Include="IO\MotorActiveException.cs" />
-    <Compile Include="IO\MotorAxisException.cs" />
+    <Compile Include="IO\MotorException.cs" />
     <Compile Include="IO\MotorControler.cs" />
-    <Compile Include="IO\MotorOverHeatException.cs" />
     <Compile Include="Ipt.cs" />
     <Compile Include="Logger\SurfaceArgs.cs" />
     <Compile Include="Logger\SurfaceLogger.cs" />
