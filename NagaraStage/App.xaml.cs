@@ -29,8 +29,7 @@ using NagaraStage.IO;
  * </p>
  * @author Hirokazu Yokoyama <o1007410@edu.gifu-u.ac.jp>
  */
-using OpenCvSharp.CPlusPlus;
-using OpenCvSharp;
+
 namespace NagaraStage {
     /// <summary>
     /// アプリケーションのエントリーポイントクラスです．Main関数を持っており，
@@ -53,12 +52,6 @@ namespace NagaraStage {
             SplashScreen splashScreen = new SplashScreen("Images/splash01.jpg");
             splashScreen.Show(true);
 
-            //Cv2.ImRead(@"c:\aaaaaa.bmp");
-            //Mat mat = Mat.Zeros(440, 512, MatType.CV_8UC1);
-            //mat = ~mat;
-            //Cv2.Line(mat, Cv.Point(100,150), Cv.Point(300,1), new Scalar(0,0,0));
-            //Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
-            //mat.ImWrite(@"c:\aaaaaa.bmp");
 
             /* ユーザーインターフェイスの言語選択を行う */
             // 設定ファイルから使用する言語を取得するが，失敗した場合はシステムと同じ言語にする．

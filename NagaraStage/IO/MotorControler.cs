@@ -9,8 +9,6 @@ using NagaraStage;
 using NagaraStage.Parameter;
 using NagaraStage.IO.Driver;
 
-using OpenCvSharp;
-using OpenCvSharp.CPlusPlus;
 
 namespace NagaraStage {
     namespace IO {
