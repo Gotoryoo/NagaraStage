@@ -47,9 +47,9 @@ namespace NagaraStage.Parameter {
         public const int LensMagnificationOfGridMarkSearch = 10;
 
         /// <summary>PlateNoが変更されたときのイベント</summary>
-        public event EventHandler<IntEventArgs> PlateNoChanged;
+        public event EventHandler<IntEventArgs> PlateChanged;
         /// <summary>ModuleNoTypeが変更されたときのイベント</summary>
-        public event EventHandler<IntEventArgs> ModuleNoChanged;
+        public event EventHandler<IntEventArgs> ModuleChanged;
         /// <summary>LensTypeが変更されたときのイベント</summary>
         public event EventHandler<LensEventArgs> LensTypeChanged;
         /// <summary>EmulsionIndexUpが変更されたときのイベント</summary>
@@ -118,8 +118,8 @@ namespace NagaraStage.Parameter {
                 }
                 plateNo = value;
                 Ipt.InitializeCoodination(1, plateNo);
-                if (PlateNoChanged != null) {
-                    PlateNoChanged(this, new IntEventArgs(value));
+                if (PlateChanged != null) {
+                    PlateChanged(this, new IntEventArgs(value));
                 }
             }
         }
@@ -134,8 +134,8 @@ namespace NagaraStage.Parameter {
                     throw new ArgumentException(Properties.Strings.ModuleNoOutOfRangeException);
                 }
                 moduleNo = value;
-                if (ModuleNoChanged != null) {
-                    ModuleNoChanged(this, new IntEventArgs(value));
+                if (ModuleChanged != null) {
+                    ModuleChanged(this, new IntEventArgs(value));
                 }
             }
         }

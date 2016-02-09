@@ -62,8 +62,8 @@ namespace NagaraStage.Ui {
 
             this.KeyDown += KeyHandleStageControl_KeyDown_1;
 
-            this.parameterManager.PlateNoChanged += emulsionNumber_Changed;
-            this.parameterManager.ModuleNoChanged += emulsionNumber_Changed;
+            this.parameterManager.PlateChanged += emulsionNumber_Changed;
+            this.parameterManager.ModuleChanged += emulsionNumber_Changed;
             this.parameterManager.EmulsionTypeChanged += emulsionType_Changed;
             this.parameterManager.LensTypeChanged += lensType_Changed;
             this.window.RibbonTabSelected += windowRibbonTab_Selected;
