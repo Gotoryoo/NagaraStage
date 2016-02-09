@@ -89,7 +89,7 @@ namespace NagaraStage.Ui {
                     mc.SpiralBack();
                 }
 #endif
-            } catch (MotorAxisException ex) {
+            } catch (MotorException ex) {
                 WriteLine(ex.Message);
             }
         }

@@ -403,11 +403,11 @@ namespace NagaraStage {
                 MotorState motorState = GetMotorState(axis);
 
                 if (motorState == MotorState.OverHeat) {
-                    throw new MotorOverHeatException(Properties.Strings.MotorOverHeat);
+                    throw new MotorException("MotorOverHeat");
                 } else if (motorState == MotorState.AxisLimitPlus & direction == PlusMinus.Plus) {
-                    throw new MotorAxisException(Properties.Strings.MotorAxisLimitPlus);
+                    throw new MotorException("MotorAxisLimitPlus");
                 } else if (motorState == MotorState.AxisLimitMinus & direction == PlusMinus.Minus) {
-                    throw new MotorAxisException(Properties.Strings.MotorAxisLimitMinus);
+                    throw new MotorException("MotorAxisLimitMinus");
                 }
 
                 Boolean status = true;
