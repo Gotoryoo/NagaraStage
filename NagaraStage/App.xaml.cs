@@ -41,7 +41,7 @@ namespace NagaraStage {
     public partial class App : Application {
         private static System.Threading.Mutex mutex;
         public ParameterManager ParameterManager;
-        public ILog logger;
+        public static ILog logger;
 
         /// <summary>
         /// アプリケーションのエントリーポイント(メイン関数)です．ここから開始されます．
@@ -50,8 +50,8 @@ namespace NagaraStage {
         public static void Main(string[] args) {                        
             App app = new App();
 
-            app.logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-            app.logger.Info("start");
+            App.logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            App.logger.Info("start");
 
             app.InitializeComponent();
 

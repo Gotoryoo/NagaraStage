@@ -593,7 +593,7 @@ namespace NagaraStage.Activities {
 		/// recogThreadの行う処理です．このメソッドを直接呼び出さないでください．
 		/// </summary>
 		private void recogThread_Task() {
-//            logger.Info("Surface.recogThread_Task() start");
+            App.logger.Info("Surface.recogThread_Task() start");
 
 			if (Started != null) {
 				Started(this, new EventArgs());
