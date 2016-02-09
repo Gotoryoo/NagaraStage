@@ -684,6 +684,17 @@ namespace NagaraStage.Ui {
             }
         }
 
+
+        private void readMagThetaButton_Click(object sender, RoutedEventArgs e) {
+            try {
+                coordManager.readMagTheta();
+                stage.WriteLine(String.Format("mag={0}, theta={1}", coordManager.MagnitOfGrid, coordManager.AngleOfGrid));
+            } catch (Exception ex) {
+                MessageBox.Show(ex.Message, Properties.Strings.Error);
+            }
+        }
+
+
         /*---------------------------------------------------------------------
          * アプリケーションメニューアイテムのイベントハンドラ
          * ------------------------------------------------------------------*/
