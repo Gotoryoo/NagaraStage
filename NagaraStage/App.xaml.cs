@@ -9,6 +9,8 @@ using System.Globalization;
 using NagaraStage.Parameter;
 using NagaraStage.IO;
 
+using log4net;
+
 /**
  * @mainpage
  * <h1>Nagara Stage</h1>
@@ -39,6 +41,7 @@ namespace NagaraStage {
     public partial class App : Application {
         private static System.Threading.Mutex mutex;
         public ParameterManager ParameterManager;
+        public ILog logger;
 
         /// <summary>
         /// アプリケーションのエントリーポイント(メイン関数)です．ここから開始されます．
@@ -46,6 +49,10 @@ namespace NagaraStage {
         [STAThread()]
         public static void Main(string[] args) {                        
             App app = new App();
+
+            app.logger = LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+            app.logger.Info("start");
+
             app.InitializeComponent();
 
             // スプラッシュ画像の表示
@@ -90,6 +97,7 @@ namespace NagaraStage {
             try {
                 ParameterManager = new ParameterManager();
                 ParameterManager.Initialize();
+
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message + NagaraStage.Properties.Strings.InitParamException01);
                 Environment.Exit(1);
