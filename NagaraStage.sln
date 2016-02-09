@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2010
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ipt", "ipt\ipt.vcxproj", "{53849D65-AFF8-4C80-85BA-8CCA7855F59F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libgel", "libgel\libgel.vcxproj", "{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C84D1B39-BE99-4205-9495-B737570C450F}"
 	ProjectSection(SolutionItems) = preProject
 		Local.testsettings = Local.testsettings
@@ -24,7 +22,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NagaraStage", "NagaraStage\NagaraStage.csproj", "{ED0C5141-448C-48AD-AC01-926A3549436C}"
 	ProjectSection(ProjectDependencies) = postProject
 		{53849D65-AFF8-4C80-85BA-8CCA7855F59F} = {53849D65-AFF8-4C80-85BA-8CCA7855F59F}
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6} = {3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}
 	EndProjectSection
 EndProject
 Global
@@ -60,21 +57,6 @@ Global
 		{53849D65-AFF8-4C80-85BA-8CCA7855F59F}.Release|Win32.Build.0 = Release|Win32
 		{53849D65-AFF8-4C80-85BA-8CCA7855F59F}.Release|x86.ActiveCfg = Release|Win32
 		{53849D65-AFF8-4C80-85BA-8CCA7855F59F}.Release|x86.Build.0 = Release|Win32
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Debug_NoHardware|Mixed Platforms.ActiveCfg = Debug_NoHardware|x64
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Debug_NoHardware|Mixed Platforms.Build.0 = Debug_NoHardware|x64
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Debug_NoHardware|Win32.ActiveCfg = Debug_NoHardware|Win32
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Debug_NoHardware|Win32.Build.0 = Debug_NoHardware|Win32
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Debug_NoHardware|x86.ActiveCfg = Debug_NoHardware|x64
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Debug|Mixed Platforms.ActiveCfg = Debug|x64
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Debug|Win32.ActiveCfg = Debug|Win32
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Debug|Win32.Build.0 = Debug|Win32
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Debug|x86.ActiveCfg = Debug|Win32
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Debug|x86.Build.0 = Debug|Win32
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Release|Mixed Platforms.ActiveCfg = Release|x64
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Release|Win32.ActiveCfg = Release|Win32
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Release|Win32.Build.0 = Release|Win32
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Release|x86.ActiveCfg = Release|Win32
-		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Release|x86.Build.0 = Release|Win32
 		{BFA8EA1D-C8F4-40E1-95CB-DA0F7155363F}.Debug_NoHardware|Mixed Platforms.ActiveCfg = Debug|x86
 		{BFA8EA1D-C8F4-40E1-95CB-DA0F7155363F}.Debug_NoHardware|Win32.ActiveCfg = Debug|x86
 		{BFA8EA1D-C8F4-40E1-95CB-DA0F7155363F}.Debug_NoHardware|Win32.Build.0 = Debug|x86
