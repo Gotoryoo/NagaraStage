@@ -124,20 +124,16 @@
                     </ribbon:RibbonMenuButton>
                     <ribbon:RibbonButton 
                         Name="surfaceRecogConfigButton" 
-                        Label="{Binding Source={StaticResource strings}, Path=Config}"
+                        Label="Config"
                         SmallImageSource="/NagaraStage;component/Images/config.png" Click="surfaceRecogConfigButton_Click" />
                     <ribbon:RibbonButton
                         Name="surfaceRecogAbortButton"
-                        Label="{Binding Source={StaticResource strings}, Path=Abort}"
+                        Label="Abort"
                         SmallImageSource="/NagaraStage;component/Images/stop.png" Click="surfaceRecogAbortButton_Click" />
-                    <ribbon:RibbonButton
-                        Name="surfaceVerifButton"
-                        Label="{Binding Source={StaticResource strings}, Path=Verif}"
-                        SmallImageSource="/NagaraStage;component/Images/config.png" Click="surfaceVerifButton_Click" />
                     <ribbon:RibbonButton 
                         Name="SurfaceLandingButton" 
                         SmallImageSource="/Images/init.png"
-                        Label="{Binding Source={StaticResource strings}, Path=SurfaceLanding}" Click="SurfaceLandingButton_Click" />
+                        Label="SurfaceLanding" Click="SurfaceLandingButton_Click" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>
             <ribbon:RibbonTab x:Name="coordTab" Header="{Binding Source={StaticResource strings}, Path=CoordTab}">

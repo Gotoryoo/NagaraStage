@@ -447,11 +447,6 @@ namespace NagaraStage.Ui {
             SetElementOnWorkspace(surfaceConfig);
         }
 
-        private void surfaceVerifButton_Click(object sender, RoutedEventArgs e) {
-            SurfaceVerif verif = new SurfaceVerif(this);
-            verif.NextControl = Workspace.PresentControl;
-            SetElementOnWorkspace(verif);
-        }
 
         private void surfaceRecogAbortButton_Click(object sender, RoutedEventArgs e) {
             Surface surface = Surface.GetInstance(parameterManager);

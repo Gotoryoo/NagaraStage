@@ -169,8 +169,6 @@
     <Compile Include="IO\MotorException.cs" />
     <Compile Include="IO\MotorControler.cs" />
     <Compile Include="Ipt.cs" />
-    <Compile Include="Logger\SurfaceArgs.cs" />
-    <Compile Include="Logger\SurfaceLogger.cs" />
     <Compile Include="MessageList.cs" />
     <Compile Include="Parameter\EmulsionEventArgs.cs" />
     <Compile Include="Parameter\EmulsionIndex.cs" />
@@ -261,9 +259,6 @@
     <Compile Include="Ui\SurfaceConfig.xaml.cs">
       <DependentUpon>SurfaceConfig.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Ui\SurfaceVerif.xaml.cs">
-      <DependentUpon>SurfaceVerif.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Ui\SystemConfControl.xaml.cs">
       <DependentUpon>SystemConfControl.xaml</DependentUpon>
     </Compile>
@@ -332,10 +327,6 @@
     <Page Include="Ui\SurfaceConfig.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Ui\SurfaceVerif.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Ui\SystemConfControl.xaml">
       <SubType>Designer</SubType>
