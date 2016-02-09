@@ -12,8 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurfaceTestProject", "SurfaceTestProject\SurfaceTestProject.csproj", "{B06A7829-7940-4810-AF63-FCC5BD98D1DD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GridMarkSearchTest", "GridMarkSearchTest\GridMarkSearchTest.csproj", "{BFA8EA1D-C8F4-40E1-95CB-DA0F7155363F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BeamSpotDetectTest", "BeamSpotDetectTest\BeamSpotDetectTest.csproj", "{6F20BF14-F88D-4883-9CBB-5D13CA1877E6}"
@@ -77,22 +75,6 @@ Global
 		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Release|Win32.Build.0 = Release|Win32
 		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Release|x86.ActiveCfg = Release|Win32
 		{3F62C08A-6255-426E-A1B9-2BFFBDC49BB6}.Release|x86.Build.0 = Release|Win32
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Debug_NoHardware|Mixed Platforms.ActiveCfg = Debug|x86
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Debug_NoHardware|Mixed Platforms.Build.0 = Debug|x86
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Debug_NoHardware|Win32.ActiveCfg = Debug|x86
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Debug_NoHardware|Win32.Build.0 = Debug|x86
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Debug_NoHardware|x86.ActiveCfg = Debug|x86
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Debug_NoHardware|x86.Build.0 = Debug|x86
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Debug|Win32.ActiveCfg = Debug|x86
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Debug|x86.ActiveCfg = Debug|x86
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Debug|x86.Build.0 = Debug|x86
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Release|Mixed Platforms.Build.0 = Release|x86
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Release|Win32.ActiveCfg = Release|x86
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Release|x86.ActiveCfg = Release|x86
-		{B06A7829-7940-4810-AF63-FCC5BD98D1DD}.Release|x86.Build.0 = Release|x86
 		{BFA8EA1D-C8F4-40E1-95CB-DA0F7155363F}.Debug_NoHardware|Mixed Platforms.ActiveCfg = Debug|x86
 		{BFA8EA1D-C8F4-40E1-95CB-DA0F7155363F}.Debug_NoHardware|Win32.ActiveCfg = Debug|x86
 		{BFA8EA1D-C8F4-40E1-95CB-DA0F7155363F}.Debug_NoHardware|Win32.Build.0 = Debug|x86
