@@ -205,7 +205,6 @@
     <Compile Include="ShootingMode.cs" />
     <Compile Include="Size.cs" />
     <Compile Include="SpiralEventArgs.cs" />
-    <Compile Include="SpiralSearch.cs" />
     <Compile Include="Properties\Strings.ko-KR.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
