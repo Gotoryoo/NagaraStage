@@ -176,6 +176,7 @@ namespace NagaraStage {
             }
 #endif
             NagaraStage.Properties.Settings.Default.Save();
+            App.logger.Info("exit");
         }
     }
 }
