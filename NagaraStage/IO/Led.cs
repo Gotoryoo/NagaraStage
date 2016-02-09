@@ -230,8 +230,7 @@ namespace NagaraStage.IO {
                     //MotorControler mc = MotorControler.GetInstance();
                     //Vector3 stage = mc.GetPoint();
                     //Ipt.MtoG(1, stage.X, stage.Y, ref xGrid, ref yGrid);
-                    string error = string.Format("Failed to LightAdjust");
-                    ErrorLog.OutputError(error);
+                    App.logger.Error("Failed to LightAdjust");
                 }
 
                 DAout(goodLightStlength, parameterManager);

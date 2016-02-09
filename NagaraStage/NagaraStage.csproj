@@ -144,7 +144,6 @@
     <Compile Include="Activities\Surface.cs" />
     <Compile Include="Activities\SurfaceFailedException.cs" />
     <Compile Include="CoordManager.cs" />
-    <Compile Include="ErrorLog.cs" />
     <Compile Include="GridMark.cs" />
     <Compile Include="GridMarkDefinitionUtil.cs" />
     <Compile Include="GridMarkEventArgs.cs" />
