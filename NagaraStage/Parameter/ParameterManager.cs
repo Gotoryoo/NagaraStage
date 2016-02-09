@@ -190,7 +190,7 @@ namespace NagaraStage.Parameter {
                 );
 #endif
                 if (EmulsionIndexDownChanged != null) {
-                    EmulsionIndexDownChanged(this, new DoubleEventArgs(value));
+                    EmulsionIndexDownChanged(this, new EventArgs());
                 }
             }
         }
