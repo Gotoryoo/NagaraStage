@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
+using System.IO;
 
 using NagaraStage.Parameter;
 using NagaraStage.IO;
@@ -189,8 +190,8 @@ namespace NagaraStage {
              int emY = ParameterManager.ImageResolution.Height;
              Vector3 motorPosition = mc.GetPoint();
              Vector2 p = new Vector2();
-             p.X = motorPosition.X + (x - emX / 2) * parameterManager.CameraMainResolution;
-             p.Y = motorPosition.Y - (y - emY / 2) * parameterManager.CameraSubResolution;
+             p.X = motorPosition.X - (x - emX / 2) * parameterManager.CameraMainResolution;
+             p.Y = motorPosition.Y + (y - emY / 2) * parameterManager.CameraSubResolution;
              return p;
         }
 
@@ -255,19 +256,25 @@ namespace NagaraStage {
 
             Camera c = Camera.GetInstance();
             byte[] b = c.ArrayImage;
-            Mat mat = new Mat(440, 512, MatType.CV_8U, b);
+            Mat mat0 = new Mat(440, 512, MatType.CV_8U, b);
+            Mat mat = mat0.Clone();
+            Cv2.GaussianBlur(mat, mat, Cv.Size(121, 121), -1);
             mat.ImWrite(String.Format(@"c:\img\{0}_b.bmp",
                 System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
-         
-            Cv2.GaussianBlur(mat, mat, Cv.Size(5, 5), -1);
-            //Cv2.Threshold(mat, mat, 60, 255, ThresholdType.BinaryInv);
-            Cv2.Threshold(mat, mat, 60, 255, ThresholdType.BinaryInv);
+
+            Mat gau = mat.Clone();
+            Cv2.GaussianBlur(gau, gau, Cv.Size(231, 231), -1);
+            Cv2.Subtract(gau, mat, mat);
+            mat.ImWrite(String.Format(@"c:\img\{0}_d.bmp",
+            System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
+
+            Cv2.Threshold(mat, mat, 22, 255, ThresholdType.Binary);
             mat.ImWrite(String.Format(@"c:\img\{0}_t.bmp",
                 System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
         
             Moments mom = new Moments(mat);
             if (mom.M00 == 0) status++;
-            if (mom.M00 < 500*255) status++;
+            if (mom.M00 > 4000*255) status++;//面積分布のヒストグラムから設定。面積4000pix以内。2015Dec
             if (status != 0) {
                 throw new GridMarkNotFoundException();
             }
@@ -539,7 +546,68 @@ namespace NagaraStage {
                 parameterManager.EmulsionIndexUp, 
                 parameterManager.EmulsionIndexDown);
             System.Diagnostics.Debug.WriteLine(String.Format("mag: {0}, theta: {1}", magnitOfGrid, angleOfGrid));
+
+
+
+            string datarootdirpath = string.Format(@"C:\test");
+            System.IO.DirectoryInfo mydir = System.IO.Directory.CreateDirectory(datarootdirpath);
+
+            string txtfileName_grid = datarootdirpath + string.Format(@"\mag_theta.txt");
+            StreamWriter twriter_grid = File.CreateText(txtfileName_grid);
+            twriter_grid.WriteLine("{0} {1}", magnitOfGrid, angleOfGrid);
+            twriter_grid.Close();
+
+
+            string txtfileName_grid3x3 = datarootdirpath + string.Format(@"\stagecoord_grid3x3.txt");
+            StreamWriter twriter_grid3x3 = File.CreateText(txtfileName_grid3x3);
+            for (int i = 0; i < AllGridMarksNum; i++ ) {
+                twriter_grid3x3.WriteLine("{0} {1}", gridMarks[i].x, gridMarks[i].y);
+            }
+            twriter_grid3x3.Close();
+
         }
+
+        /// <summary>
+        /// ファイルに記録されたmag thateを読み込む。．
+        /// </summary>
+        /// <exception cref="System.Exception">定義されたグリッドマーク数が少ない場合</exception>
+        static List<Point> ReadLocationFile(string licationtxt) {
+            List<Point> LStage = new List<Point>();
+
+            string line;
+
+            System.IO.StreamReader file = new System.IO.StreamReader(licationtxt);
+            while ((line = file.ReadLine()) != null) {
+                string[] data = line.Split(' ');
+                double sx = double.Parse(data[1]);
+                double sy = double.Parse(data[2]);
+                LStage.Add(new Point(sx, sy));
+            }
+            file.Close();
+
+            return LStage;
+        }
+
+        public void readMagTheta() {
+            string datarootdirpath = string.Format(@"C:\test");
+            string line;
+            System.IO.StreamReader file = new System.IO.StreamReader(datarootdirpath + @"\mag_theta.txt");
+            line = file.ReadLine();
+            string[] data = line.Split(' ');
+            magnitOfGrid = double.Parse(data[0]);
+            angleOfGrid = double.Parse(data[1]);
+            file.Close();
+
+            Ipt.SetGridLocal(
+                (short)parameterManager.PlateNo,
+                magnitOfGrid,
+                angleOfGrid,
+                parameterManager.EmulsionIndexUp,
+                parameterManager.EmulsionIndexDown);
+            System.Diagnostics.Debug.WriteLine(String.Format("mag: {0}, theta: {1}", magnitOfGrid, angleOfGrid));
+        }
+        
+
 
         /// <summary>
         /// 座標の補正値を算出して，返します．
