@@ -131,7 +131,6 @@
     <Compile Include="Activities\TigerPointScan.cs" />
     <Compile Include="Activities\TigerScan.cs" />
     <Compile Include="Affine.cs" />
-    <Compile Include="GelLayer.cs" />
     <Compile Include="Activities\GridMarkSearch.cs" />
     <Compile Include="Activities\IActivity.cs" />
     <Compile Include="Activities\InActionException.cs" />
