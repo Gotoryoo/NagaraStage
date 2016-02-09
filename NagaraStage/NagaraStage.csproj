@@ -152,7 +152,6 @@
     <Compile Include="IAffine.cs" />
     <Compile Include="IGridMarkRecognizer.cs" />
     <Compile Include="ImageUtility.cs" />
-    <Compile Include="IndexMeasure.cs" />
     <Compile Include="IntEventArgs.cs" />
     <Compile Include="IO\Camera.cs" />
     <Compile Include="IO\CameraType.cs" />

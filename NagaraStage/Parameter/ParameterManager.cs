@@ -342,13 +342,7 @@ namespace NagaraStage.Parameter {
             tracksManager.Initialize();
         }
 
-        /// <summary>
-        /// 三平方の定理(ピタゴラスの定理)の計算を行い，その結果を返します．
-        /// </summary>
-        /// <returns>計算結果</returns>
-        public static double DistPP(double x, double y) {
-            return Math.Sqrt(x * x + y * y);
-        }
+
 
         /// <summary>
         /// モジュール番号が適正かどうかを判定します．
