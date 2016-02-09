@@ -11,7 +11,7 @@ namespace NagaraStage {
     /// a, b, p
     /// c, d, q
     /// </summary>
-    public struct Affine : IAffine {
+    public struct Affine {
         private double a, b, c, d, p, q;
         public double A { get { return a; } set { a = value; } }
         public double B { get { return b; } set { b = value; } }

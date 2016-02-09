@@ -147,7 +147,6 @@
     <Compile Include="GridMarkFewException.cs" />
     <Compile Include="GridMarkNotFoundException.cs" />
     <Compile Include="GridMarkPoint.cs" />
-    <Compile Include="IAffine.cs" />
     <Compile Include="IGridMarkRecognizer.cs" />
     <Compile Include="ImageUtility.cs" />
     <Compile Include="IO\Camera.cs" />
