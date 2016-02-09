@@ -138,7 +138,6 @@
     <Compile Include="Activities\Surface.cs" />
     <Compile Include="Activities\SurfaceFailedException.cs" />
     <Compile Include="CoordManager.cs" />
-    <Compile Include="DoubleEventArgs.cs" />
     <Compile Include="ErrorLog.cs" />
     <Compile Include="Gel.cs" />
     <Compile Include="GridMark.cs" />
@@ -151,7 +150,6 @@
     <Compile Include="IAffine.cs" />
     <Compile Include="IGridMarkRecognizer.cs" />
     <Compile Include="ImageUtility.cs" />
-    <Compile Include="IntEventArgs.cs" />
     <Compile Include="IO\Camera.cs" />
     <Compile Include="IO\CameraType.cs" />
     <Compile Include="IO\Driver\Apci59.cs" />

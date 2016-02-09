@@ -351,7 +351,7 @@ namespace NagaraStage.Ui {
 
         private void stage_Loaded(object sender, RoutedEventArgs e) {
             // 各イベントハンドラを実行して初期化する．
-            emulsionNumber_Changed(this, new IntEventArgs(0));
+            emulsionNumber_Changed(this, new EventArgs());
             emulsionType_Changed(this, new EmulsionEventArgs(parameterManager.EmulsionType));
             lensType_Changed(this, new LensEventArgs(parameterManager.Magnification));
 
@@ -399,7 +399,7 @@ namespace NagaraStage.Ui {
                 : Properties.Strings.ThinType);
         }
 
-        private void emulsionNumber_Changed(object sender, IntEventArgs e) {
+        private void emulsionNumber_Changed(object sender, EventArgs e) {
             string str = string.Format(
                 "{0}: {1:00}-#{2:00}",
                 Properties.Strings.Emulsion,

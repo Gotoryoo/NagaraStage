@@ -47,15 +47,15 @@ namespace NagaraStage.Parameter {
         public const int LensMagnificationOfGridMarkSearch = 10;
 
         /// <summary>PlateNoが変更されたときのイベント</summary>
-        public event EventHandler<IntEventArgs> PlateChanged;
+        public event EventHandler<EventArgs> PlateChanged;
         /// <summary>ModuleNoTypeが変更されたときのイベント</summary>
-        public event EventHandler<IntEventArgs> ModuleChanged;
+        public event EventHandler<EventArgs> ModuleChanged;
         /// <summary>LensTypeが変更されたときのイベント</summary>
         public event EventHandler<LensEventArgs> LensTypeChanged;
         /// <summary>EmulsionIndexUpが変更されたときのイベント</summary>
-        public event EventHandler<DoubleEventArgs> EmulsionIndexUpChanged;
+        public event EventHandler<EventArgs> EmulsionIndexUpChanged;
         /// <summary>EmulsionIndexDownが変更されたときのイベント</summary>
-        public event EventHandler<DoubleEventArgs> EmulsionIndexDownChanged;
+        public event EventHandler<EventArgs> EmulsionIndexDownChanged;
         /// <summary>EmulsionTypeが変更されたときのイベント</summary>
         public event EventHandler<EmulsionEventArgs> EmulsionTypeChanged;
 
@@ -119,7 +119,7 @@ namespace NagaraStage.Parameter {
                 plateNo = value;
                 Ipt.InitializeCoodination(1, plateNo);
                 if (PlateChanged != null) {
-                    PlateChanged(this, new IntEventArgs(value));
+                    PlateChanged(this, new EventArgs());
                 }
             }
         }
@@ -135,7 +135,7 @@ namespace NagaraStage.Parameter {
                 }
                 moduleNo = value;
                 if (ModuleChanged != null) {
-                    ModuleChanged(this, new IntEventArgs(value));
+                    ModuleChanged(this, new EventArgs());
                 }
             }
         }
@@ -162,7 +162,7 @@ namespace NagaraStage.Parameter {
                 );
 #endif
                 if (EmulsionIndexUpChanged != null) {
-                    EmulsionIndexUpChanged(this, new DoubleEventArgs(value));
+                    EmulsionIndexUpChanged(this, new EventArgs());
                 }
 
             }
