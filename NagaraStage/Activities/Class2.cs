@@ -182,15 +182,7 @@ namespace NagaraStage.Activities {
                             Thread.Sleep(100);
 
                             Vector3 viewpoint = mc.GetPoint();
-
-                            byte[] bb = new byte[440 * 512 * 16];
-                            string datfileName = string.Format(@"E:\img\u_{0}_{1}_{2}_{3}.dat",
-                                (int)(viewpoint.X * 1000),
-                                (int)(viewpoint.Y * 1000),
-                                vx,
-                                vy
-                                );
-                            BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
+                            List<ImageTaking> lit = new List<ImageTaking>();
 
                             mc.Inch(PlusMinus.Plus, 0.15, VectorId.Z);
 
@@ -200,7 +192,7 @@ namespace NagaraStage.Activities {
                                 Vector3 p = mc.GetPoint();
 
                                 if (viewcounter >= 3) {
-                                    b.CopyTo(bb, 440 * 512 * (viewcounter - 3));
+                                    ImageTaking it = new ImageTaking(p, b);
 
                                     string stlog = "";
                                     stlog += String.Format("{0}   {1}  {2}  {3}\n",
@@ -209,6 +201,7 @@ namespace NagaraStage.Activities {
                                             p.Y,
                                             p.Z);
                                     twriter.Write(stlog);
+
                                 }
                                 viewcounter++;
                             }//view
@@ -217,13 +210,22 @@ namespace NagaraStage.Activities {
 
                             mc.SlowDownStop(VectorId.Z);
                             mc.Join();
-                            Thread.Sleep(100);
 
                             if (endz - viewstartpoint.Z < 0.070) {
+
+                                tsparams tsp = new tsparams();
+                                tsp.phthre = 10;
+                                List<microtrack> lm = TrackSelector.Select(lit, tsp);
+                                foreach (microtrack m in lm) {
+                                    double viewx = viewpoint.X;
+                                    double viewy = viewpoint.Y;
+                                    double pixelx = 135.0 / 512.0;
+                                    double pixely = 115.0 / 440.0;
+                                    double x = viewx - (m.cx - 256) * pixelx;
+                                    double y = viewy + (m.cy - 220) * pixely;
+                                    Console.WriteLine(string.Format("{0:0.0} {1:0.0}   {2:0.0} {3:0.0}    {4:0.0} {5:0.0}  {6:0.0} {7:0.0}", m.ph, m.pv, m.ax, m.ay, x, y, m.cx, m.cy));
+                                }
                                 vx++;
-                                writer.Write(bb);
-                                writer.Flush();
-                                writer.Close();
                             }
                         }//vx
                     }//vy

@@ -143,6 +143,7 @@
     <Compile Include="Activities\ISurface.cs" />
     <Compile Include="Activities\Surface.cs" />
     <Compile Include="Activities\SurfaceFailedException.cs" />
+    <Compile Include="BasicImageProc.cs" />
     <Compile Include="CoordManager.cs" />
     <Compile Include="GridMark.cs" />
     <Compile Include="GridMarkDefinitionUtil.cs" />
@@ -210,6 +211,7 @@
     </Compile>
     <Compile Include="StringResource.cs" />
     <Compile Include="TigerPatternMatch.cs" />
+    <Compile Include="TrackSelector.cs" />
     <Compile Include="Ui\CameraViewer.xaml.cs">
       <DependentUpon>CameraViewer.xaml</DependentUpon>
     </Compile>
