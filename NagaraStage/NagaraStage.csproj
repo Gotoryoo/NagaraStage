@@ -597,12 +597,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ImageEnhancement\ImageEnhancement.vcxproj">
-      <Project>{3700589F-9CC7-43AB-8DF8-F5E1D222CF6C}</Project>
-      <Name>ImageEnhancement</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -16,7 +16,7 @@ using System.Windows.Threading;
 using NagaraStage.Activities;
 using NagaraStage.Parameter;
 using NagaraStage.IO;
-using NagaraStage.ImageEnhancement;
+
 
 namespace NagaraStage.Ui {
     /// <summary>
@@ -136,9 +136,11 @@ namespace NagaraStage.Ui {
         }
 
         private void saveProjectedImages() {
+            /*
             AccumImage accumImage = AccumImage.GetInstance(parameterManager);
             BitmapSource dst = ImageEnhancement.LibCv.Add(accumImage.ShootParaImages);
             ImageUtility.Save(dst, fileName + "." + Extention);
+             */
         }
 
         private void ledSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e) {
