@@ -315,6 +315,10 @@ namespace NagaraStage {
                 public const int IMG_FS_2048H_1024V = 17;
                 public const int IMG_FS_1920H_1024V = 18;
 
+                public const int IP_NORMAL  =   0;    /* Normal Return */
+                public const int IP_ERROR   =   -1;   /* Error Return */
+                public const int IP_PARA_ERR  = 100;  /* Parameter Error */
+                public const int IP_ALLOC_ERR = 100;  /* Allocate Error */
             }
 
             [StructLayout(LayoutKind.Sequential)]
