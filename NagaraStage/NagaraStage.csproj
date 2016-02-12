@@ -171,7 +171,6 @@
     <Compile Include="Parameter\EmulsionEventArgs.cs" />
     <Compile Include="Parameter\EmulsionParameter.cs" />
     <Compile Include="Parameter\EmulsionType.cs" />
-    <Compile Include="Parameter\EmulsionTypeException.cs" />
     <Compile Include="Parameter\GridParameter.cs" />
     <Compile Include="Parameter\IFileParser.cs" />
     <Compile Include="Parameter\ILensParameter.cs" />
