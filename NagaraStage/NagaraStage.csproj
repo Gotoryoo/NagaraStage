@@ -160,7 +160,6 @@
     <Compile Include="IO\Driver\Apci59Constants.cs" />
     <Compile Include="IO\Driver\Apci59Resouce.cs" />
     <Compile Include="IO\Driver\ApciErrorCode.cs" />
-    <Compile Include="IO\Driver\VP910.cs" />
     <Compile Include="IO\Driver\VP910Define.cs" />
     <Compile Include="IO\Led.cs" />
     <Compile Include="IO\MotorState.cs" />
