@@ -14,22 +14,11 @@ using log4net;
 /**
  * @mainpage
  * <h1>Nagara Stage</h1>
- * <p>ようこそ，NagaraStageへ</p>
- * <h2>Nagara Stageとは？</h2>
- * <p>かつて行われたE373実験では，エマルション(Emulsion)上に残る粒子の軌跡であるトラック(Track)を分析するためにAutoStageが開発されました．
- * 当時開発されたAutoStageを用いてE373実験のデータ分析を行いました．そしてE373実験の規模を拡大させた<strong>E07実験</strong>が行われようとしています．
- * E07実験はE373実験と比べ実験規模が多きいため，トラックなどの分析量が膨大になることが予想されています．
- * 膨大な量のデータを分析するにはコンピュータによる支援は不可欠です．NagaraStageはその先駆けとして開発を行っています．
- * </p>
- * <h2>仕様・指針</h2>
- * <p>E373実験は1997年に行われました．当時と比べコンピュータの事情は大きく変化しました．当時のAutoStageはVisual Basic6で書かれていました．
- * しかし，2012年現在においてVisual Basic6は古きものとなってしまいました．今後の将来を考えても新しいプラットフォームに移行する必要があると思います．
- * そこで，新AutoStageであるこのNagaraStageは.Net Framework4.0というプラットフォームを使っています．言語はC\#です．
- * </p>
- * <p>基本的には.Net Framework4.0，C\#で開発を行いますが，画像処理など高い演算能力を必要とする部分はネイティブ言語であるC++を使います．
- * また，.Net Frameworkの機能にもアクセスする必要もあるため，C++を拡張したC++/CLIも使っています．
- * </p>
+ * 
+ * <p>Nagara Stageは、E07実験の解析のために開発した顕微鏡制御のプログラムです．
+ * <p>E373実験の解析に使ったプログラム：AutoStageはVisual Basic6で書かれていました．このNagaraStageは, .Net Framework4.0というプラットフォームを使っています．言語はC\#です．
  * @author Hirokazu Yokoyama <o1007410@edu.gifu-u.ac.jp>
+ * @author Junya Yoshida <jyoshida@gifu-u.ac.jp>
  */
 
 namespace NagaraStage {
@@ -165,16 +154,6 @@ namespace NagaraStage {
                 mutex.Close();
             }
 
-#if !_NoHardWare
-            // モータを原点に戻す.
-            MotorControler mc = MotorControler.GetInstance(ParameterManager);
-            try {
-                //mc.MovePointXY(0, 0);
-                //mc.Join();
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message);
-            }
-#endif
             NagaraStage.Properties.Settings.Default.Save();
             App.logger.Info("exit");
         }
