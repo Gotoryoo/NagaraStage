@@ -6,6 +6,16 @@ using System.Text;
 using System.Text.RegularExpressions;
 
 namespace NagaraStage.Parameter {
+
+        /// <summary>
+        /// エマルジョンのインデックス（正確にはShrinkageFactor）をそれぞれ格納する構造体です．
+        /// </summary>
+        /// <author>Hirokazu Yokoyama</author>
+        public struct EmulsionIndex {
+            public double Up;
+            public double Down;
+        }
+
     /// <summary>
     /// エマルション，プレート及びレンズに関するパラメータ,及びモータ，カメラその他に関するパラメータを管理するクラスです．
     /// </summary>

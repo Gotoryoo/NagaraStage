@@ -169,7 +169,6 @@
     <Compile Include="Ipt.cs" />
     <Compile Include="MessageList.cs" />
     <Compile Include="Parameter\EmulsionEventArgs.cs" />
-    <Compile Include="Parameter\EmulsionIndex.cs" />
     <Compile Include="Parameter\EmulsionParameter.cs" />
     <Compile Include="Parameter\EmulsionType.cs" />
     <Compile Include="Parameter\EmulsionTypeException.cs" />
