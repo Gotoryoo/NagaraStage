@@ -46,8 +46,6 @@ namespace NagaraStage {
         [DllImport("ipt.dll", EntryPoint = "IP_NichiPrint")]
         public static extern void printNichi(int hWnd, int hDC, int hi, int level, byte src, byte bak, int emType );        
 
-        [DllImport("ipt.dll", EntryPoint = "IP_ReadSocketIniFile")]
-        public static extern int ReadSocketIniFile();
 
         [DllImport("ipt.dll", EntryPoint = "IP_GetDeviceID")]
         public static extern int GetDeviceId();

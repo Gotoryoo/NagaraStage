@@ -134,16 +134,20 @@ namespace NagaraStage {
             public void Initialize() {
 #if !_NoHardWare
                 try {
+                    deviceId = 0;
+
                     int retCode = new int();
-                    retCode = Ipt.Initialize(0, ref retCode);
-                    retCode = Ipt.ReadSocketIniFile();
+                    retCode = Ipt.Initialize(deviceId, ref retCode);
+                    if (retCode==-1) {
+                        throw new Exception("Initializing VP910 was failed.");
+                    }
+
                     Ipt.SetCameraType((int)Camera.CameraType);
 
                     deviceId = Ipt.GetDeviceId();
 
                     VP910Define.SelectCamera(deviceId, 0, (int)Camera.CameraType);
                     VP910Define.SetTrigerMode(deviceId, 2);
-
 
                 } catch (Exception) {
                     throw new Exception("Initializing VP910 was failed.");
