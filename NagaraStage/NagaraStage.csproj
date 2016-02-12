@@ -153,7 +153,6 @@
     <Compile Include="GridMarkNotFoundException.cs" />
     <Compile Include="GridMarkPoint.cs" />
     <Compile Include="IGridMarkRecognizer.cs" />
-    <Compile Include="ImageUtility.cs" />
     <Compile Include="IO\Camera.cs" />
     <Compile Include="IO\CameraType.cs" />
     <Compile Include="IO\Driver\Apci59.cs" />

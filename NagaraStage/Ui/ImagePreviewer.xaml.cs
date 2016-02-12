@@ -46,11 +46,12 @@ namespace NagaraStage.Ui {
         }
 
         private void saveButton_Click(object sender, RoutedEventArgs e) {
+            /*
             try {
                 ImageUtility.Save(view, refferenceTextBox.Text);
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message);
-            }
+            }*/
 
             DialogResult = true;
         }
