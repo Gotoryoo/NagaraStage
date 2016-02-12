@@ -30,6 +30,13 @@ namespace NagaraStage {
             /// </summary>
             public const int Stride = Width * 1;
 
+            /// <summary>
+            /// 使用しているカメラタイプ
+            /// </summary>
+            public static CameraType CameraType {
+                get { return CameraType.SONY_XC_HR3000_2I_59MHz; }
+            }
+
             private static Camera instance;
             private Boolean flagBreakCaptureLoop;
             private Thread capturingThread;

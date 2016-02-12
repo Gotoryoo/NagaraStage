@@ -121,13 +121,14 @@ namespace NagaraStage {
             }
             // IP5000 カメラの初期化
             try {
+                Camera cam = Camera.GetInstance();
+
+
                 int retCode = new int();
                 retCode = Ipt.Initialize(0, ref retCode);
                 retCode = Ipt.ReadSocketIniFile();
-                Ipt.SetCameraType((int)Profile.CameraType);
-                if (Profile.CameraType == CameraType.SONY_XC_HR3000_2I_59MHz) {
-                    NagaraStage.IO.Driver.VP910.InitializeLUT(Ipt.GetDeviceId());
-                }
+                Ipt.SetCameraType((int)Camera.CameraType);
+                IO.Driver.VP910.InitializeLUT(Ipt.GetDeviceId());
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message + NagaraStage.Properties.Strings.InitCameraExcetion01);
                 Environment.Exit(1);

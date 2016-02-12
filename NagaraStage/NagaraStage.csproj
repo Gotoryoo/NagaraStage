@@ -189,7 +189,6 @@
     <Compile Include="Parameter\TrackNotExistException.cs" />
     <Compile Include="Parameter\TracksManager.cs" />
     <Compile Include="PlusMinus.cs" />
-    <Compile Include="Profile.cs" />
     <Compile Include="Properties\Strings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

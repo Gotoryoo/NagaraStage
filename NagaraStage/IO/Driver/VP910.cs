@@ -66,7 +66,7 @@ namespace NagaraStage {
                     int cameraShutterSpeed = 0;
                     int deviceId = Ipt.GetDeviceId();
 
-                    VP910Define.SelectCamera(deviceId, 0, (int)Profile.CameraType);
+                    VP910Define.SelectCamera(deviceId, 0, (int)Camera.CameraType);
                     VP910Define.SetTrigerMode(deviceId, 2);
 
                     switch (emulsionType) {
