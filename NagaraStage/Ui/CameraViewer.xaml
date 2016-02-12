@@ -5,5 +5,5 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
              d:DesignHeight="440" d:DesignWidth="512" Background="White">
-    <Image Name="cameraLayer" Source="/NagaraStage;component/Images/miku01.jpg" />
+    <Image Name="cameraLayer" Source="/NagaraStage;component/Images/noimage.png" />
 </Canvas>

@@ -45,7 +45,7 @@ namespace NagaraStage {
             app.InitializeComponent();
 
             // スプラッシュ画像の表示
-            SplashScreen splashScreen = new SplashScreen("Images/splash01.jpg");
+            SplashScreen splashScreen = new SplashScreen("Images/splash01.png");
             splashScreen.Show(true);
 
 

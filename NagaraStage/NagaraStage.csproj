@@ -402,7 +402,6 @@
     <Resource Include="Images\LeftArrow.png" />
     <Resource Include="Images\lens.png" />
     <Resource Include="Images\microscope.png" />
-    <Resource Include="Images\miku01.jpg" />
     <Resource Include="Images\move01.png" />
     <Resource Include="Images\new.png" />
     <Resource Include="Images\open.png" />
@@ -410,7 +409,6 @@
     <Resource Include="Images\RightArrow.png" />
     <Resource Include="Images\SmallIcon.png" />
     <Resource Include="Images\spiral.png" />
-    <SplashScreen Include="Images\splash01.jpg" />
     <Resource Include="Images\start.png" />
     <Resource Include="Images\stop.png" />
     <Resource Include="Images\stop2.png" />
@@ -581,6 +579,8 @@
     <Content Include="dll\x86\opencv_videostab248.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Resource Include="Images\noimage.png" />
+    <Resource Include="Images\splash01.png" />
     <Content Include="VP900CMD.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
