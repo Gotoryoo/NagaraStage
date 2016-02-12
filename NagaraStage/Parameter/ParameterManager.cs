@@ -212,7 +212,8 @@ namespace NagaraStage.Parameter {
                         EmulsionParameter.AngleRangeOfThick + 0.01,
                         EmulsionParameter.AngleStepMin
                         );
-                    IO.Driver.VP910.InitializeCamera(value);
+                    IO.Camera cam = IO.Camera.GetInstance();
+                    cam.SetShutterMode(value);
                     Ipt.InitializeIchiLib(
                         (int)value,
                         CoordManager.NumStep,

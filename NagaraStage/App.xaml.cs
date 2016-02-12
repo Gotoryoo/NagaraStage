@@ -119,16 +119,11 @@ namespace NagaraStage {
                 MessageBox.Show(ex.Message + NagaraStage.Properties.Strings.InitMotorException01);
                 Environment.Exit(1);
             }
-            // IP5000 カメラの初期化
+            //カメラの初期化
             try {
                 Camera cam = Camera.GetInstance();
+                cam.Initialize();
 
-
-                int retCode = new int();
-                retCode = Ipt.Initialize(0, ref retCode);
-                retCode = Ipt.ReadSocketIniFile();
-                Ipt.SetCameraType((int)Camera.CameraType);
-                IO.Driver.VP910.InitializeLUT(Ipt.GetDeviceId());
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message + NagaraStage.Properties.Strings.InitCameraExcetion01);
                 Environment.Exit(1);
