@@ -247,7 +247,7 @@
                         LargeImageSource="/Images/start.png" Click="MCTestButton_Click" />
                     <ribbon:RibbonButton
                         x:Name="GridMeasureButton" 
-                        Label="GridMeasure"
+                        Label="GridMeasure07"
                         LargeImageSource="/Images/start.png" Click="GridMeasureButton_Click" />
                     <ribbon:RibbonButton
                         x:Name="Class1Button" 

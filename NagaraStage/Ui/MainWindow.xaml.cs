@@ -1932,7 +1932,7 @@ namespace NagaraStage.Ui {
 
         private void GridMeasureButton_Click(object sender, RoutedEventArgs e) {
             ActivityManager manager = ActivityManager.GetInstance(parameterManager);
-            GridMeasure gm = GridMeasure.GetInstance(parameterManager);
+            GridMeasure07 gm = GridMeasure07.GetInstance(parameterManager);
 
             manager.Enqueue(gm);
             manager.Start();
