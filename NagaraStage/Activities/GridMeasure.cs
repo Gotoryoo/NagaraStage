@@ -82,7 +82,7 @@ namespace NagaraStage.Activities {
             Led led = Led.GetInstance();
             CoordManager cm = new CoordManager(parameterManager);
 
-            
+
 
 
 
@@ -296,50 +296,50 @@ namespace NagaraStage.Activities {
                     string FileName = string.Format(@"C:\img\x{0}_y{1}.bmp", x, y);
                     Cv2.ImWrite(FileName, mat2);
 
-                    
+
                     Cv2.GaussianBlur(mat2, mat2, Cv.Size(7, 7), -1);
 
                     Cv2.Threshold(mat2, mat2, 60, 255, ThresholdType.BinaryInv);
 
                     Moments mom2 = new Moments(mat2);
-                   
+
                     double cx2 = mom2.M10 / mom2.M00;
                     double cy2 = mom2.M01 / mom2.M00;
-                    
-           /*       Mat innercir = Mat.Zeros(440, 512, MatType.CV_8UC1);
-                    Cv2.Circle(innercir, new Point(cx2, cy2), 10, new Scalar(255, 255, 255), 3);
-                    int innerpath = Cv2.CountNonZero(innercir);
-                    Cv2.BitwiseAnd(innercir, mat2, innercir);
-                    int innersum = Cv2.CountNonZero(innercir);
 
-                    Mat outercir = Mat.Zeros(440, 512, MatType.CV_8UC1);
-                    Cv2.Circle(outercir, new Point(cx2, cy2), 100, new Scalar(255, 255, 255), 3);
-                    int outerpath = Cv2.CountNonZero(outercir);
-                    Cv2.BitwiseAnd(outercir, mat2, outercir);
-                    int outersum = Cv2.CountNonZero(outercir);
+                    /*       Mat innercir = Mat.Zeros(440, 512, MatType.CV_8UC1);
+                             Cv2.Circle(innercir, new Point(cx2, cy2), 10, new Scalar(255, 255, 255), 3);
+                             int innerpath = Cv2.CountNonZero(innercir);
+                             Cv2.BitwiseAnd(innercir, mat2, innercir);
+                             int innersum = Cv2.CountNonZero(innercir);
 
-                    double innerratio = innersum * 1.0 / innerpath * 1.0;
-                    double outerratio = outersum * 1.0 / outerpath * 1.0;
-                    */
-                   
+                             Mat outercir = Mat.Zeros(440, 512, MatType.CV_8UC1);
+                             Cv2.Circle(outercir, new Point(cx2, cy2), 100, new Scalar(255, 255, 255), 3);
+                             int outerpath = Cv2.CountNonZero(outercir);
+                             Cv2.BitwiseAnd(outercir, mat2, outercir);
+                             int outersum = Cv2.CountNonZero(outercir);
+
+                             double innerratio = innersum * 1.0 / innerpath * 1.0;
+                             double outerratio = outersum * 1.0 / outerpath * 1.0;
+                             */
+
 
                     Vector2 grid_meas2 = cm.TransToEmulsionCoord((int)(cx2), (int)(cy2));
 
 
 
                     FileName = string.Format(@"C:\img\after_x{0}_y{1}.bmp", x, y);
-                    Cv2.ImWrite(FileName, mat2 );
-                    
+                    Cv2.ImWrite(FileName, mat2);
+
                     string stlog = "";
                     stlog += String.Format("{0} {1} {2:f4} {3:f4} {4:f4} {5:f4}\n",
-                            x*10,
-                            y*10,
+                            x * 10,
+                            y * 10,
                             predpoint.X,
                             predpoint.Y,
                             grid_meas2.X,
                             grid_meas2.Y);
                     twriter.Write(stlog);
-                    
+
                 }//for y
             }//for x
 
