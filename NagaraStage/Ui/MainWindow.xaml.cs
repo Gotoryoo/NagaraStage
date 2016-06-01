@@ -2990,7 +2990,7 @@ namespace NagaraStage.Ui {
                        
               Led led_ = Led.GetInstance();
               led_.AdjustLight(parameterManager);
-              Thread.Sleep(500); 
+              Thread.Sleep(500); //Wait for 5s
 
               //////////////////////////////Surfacerecog/////////////////////////////////////.................................../////////
 
@@ -3007,7 +3007,7 @@ namespace NagaraStage.Ui {
                       }
                   }
 
-                  // すでに表面認識が実行中であれば停止するかどうか尋ねる．
+                  
                   //Surface surface = Surface.GetInstance(parameterManager);
                   if (surface.IsActive) {
                       MessageBoxResult r = MessageBox.Show(
@@ -3088,7 +3088,7 @@ namespace NagaraStage.Ui {
 
                   Vector3 initial = mc.GetPoint();///////initialpoint
 
-                  double Sh = 0.5 / (surface.UpTop - surface.UpBottom);
+                /*  double Sh = 0.5 / (surface.UpTop - surface.UpBottom);
 
                   //ここから角度によって撮影間隔を変更するように書き換える。
                   double tansi = Math.Sqrt(myTrack.MsDX * myTrack.MsDX + myTrack.MsDY * myTrack.MsDY);
@@ -3452,9 +3452,387 @@ namespace NagaraStage.Ui {
                       twriter_msdxdy_low.WriteLine("{0} {1} {2}", i, p.X, p.Y);
                   }
                   twriter_msdxdy_low.Close();
-          /*    } catch (Exception ex) {
-                MessageBox.Show("Cannot follow");
-            }*/
+          //   } catch (Exception ex) {
+          //      MessageBox.Show("Cannot follow");*/
+         //  * ....................................................
+           // }*/
+          double Sh = 0.5 / (surface.UpTop - surface.UpBottom);
+
+          //ここから角度によって撮影間隔を変更するように書き換える。
+          double tansi = Math.Sqrt(myTrack.MsDX * myTrack.MsDX + myTrack.MsDY * myTrack.MsDY);
+          double theta = Math.Atan(tansi);
+          //絶対値の大きさを入れる。dzはマイナスの値になるようにする。
+          double dz_price;
+          double dz;
+
+          double dz_price_img = (6 * Math.Cos(theta) / Sh) / 1000;
+          double dz_img = dz_price_img * (-1);
+          //
+          string datarootdirpathw = string.Format(@"C:\test\{0}", myTrack.IdString);
+          System.IO.DirectoryInfo mydir_ = System.IO.Directory.CreateDirectory(datarootdirpathw);
+          //
+
+          //必要なlistをまとめる
+          //List<ImageTaking> LiITUpTrack = new List<ImageTaking>();
+
+          List<OpenCvSharp.CPlusPlus.Point2d> Msdxdy = new List<OpenCvSharp.CPlusPlus.Point2d>();
+          Msdxdy.Add(new OpenCvSharp.CPlusPlus.Point2d(myTrack.MsDX, myTrack.MsDY));
+
+          List<OpenCvSharp.CPlusPlus.Point3d> LStage = new List<OpenCvSharp.CPlusPlus.Point3d>();
+          List<OpenCvSharp.CPlusPlus.Point> LPeak = new List<OpenCvSharp.CPlusPlus.Point>();//i番目の画像で実際に見つかったトラックの座標。pixel座標で視野中心からの差分。
+          List<Point3d> LTrack = new List<Point3d>();//i番目の画像で実際に見つかったトラックの座標のステージ座標
+
+          List<List<ImageTaking>> UpTrackInfo = new List<List<ImageTaking>>();
+
+          //エラー防止のために下ゲルの処理の際に必要なListをここに移動した。
+          double Sh_low;
+          Sh_low = 0.5 / (surface.LowTop - surface.LowBottom);
+
+          List<OpenCvSharp.CPlusPlus.Point2d> Msdxdy_Low = new List<OpenCvSharp.CPlusPlus.Point2d>();
+
+          //List<ImageTaking> LiITLowMid = new List<ImageTaking>();
+          List<OpenCvSharp.CPlusPlus.Point3d> LStage_Low = new List<OpenCvSharp.CPlusPlus.Point3d>();
+          List<OpenCvSharp.CPlusPlus.Point> LPeak_Low = new List<OpenCvSharp.CPlusPlus.Point>();//i番目の画像で実際に見つかったトラックの座標。pixel座標で視野中心からの差分。
+          List<Point3d> LTrack_Low = new List<Point3d>();//i番目の画像で実際に見つかったトラックの座標のステージ座標
+          List<List<ImageTaking>> LowTrackInfo = new List<List<ImageTaking>>();
+
+
+          //今までのtrack追跡プログラムとは異なる角度等の使い方をする。
+          dz_price_img = (6 * Math.Cos(theta) / Sh) / 1000;
+          dz_img = dz_price_img * (-1);
+          dz = dz_img;
+
+          int gotobase = 0;
+          int not_detect = 0;
+
+          for (int i = 0; gotobase < 1; i++) {
+              ///////移動して画像処理をしたときに、baseの中に入らないようにする。
+              Vector3 initialpos = mc.GetPoint();
+              double moverange = 7 * dz_img;
+              double predpoint = moverange + initialpos.Z;
+
+              if (predpoint < surface.UpBottom)//もしもbaseに入りそうなら、8枚目の画像がちょうどbaseを撮影するようにdzを調整する。
+                {
+                  gotobase = 1;
+
+                  dz = surface.UpBottom - initialpos.Z + 7 * dz_price_img;
+              }
+              ////////
+
+              //gotobase = 1のときは、移動して画像を撮影するようにする。
+              if (i != 0) {
+                  Vector3 dstpoint = new Vector3(
+                      LTrack[i - 1].X + Msdxdy[i].X * dz * Sh,
+                      LTrack[i - 1].Y + Msdxdy[i].Y * dz * Sh,
+                      LTrack[i - 1].Z + dz
+                      );
+                  mc.MovePoint(dstpoint);
+                  mc.Join();
+              }
+
+              List<ImageTaking> LiITUpMid = TakeSequentialImage(
+                  Msdxdy[i].X * Sh,
+                  Msdxdy[i].Y * Sh,
+                  dz_img,
+                  8);
+
+              ////画像の保存、座標の保存。
+              LStage.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITUpMid[7].StageCoord.X, LiITUpMid[7].StageCoord.Y, LiITUpMid[7].StageCoord.Z));
+              LiITUpMid[7].img.ImWrite(datarootdirpathw + string.Format(@"\img_l_up_{0}.bmp", i));
+
+              UpTrackInfo.Add(LiITUpMid);//撮影した8枚の画像と、撮影した位置を記録する。
+
+              //撮影した画像をここで処理する。
+              List<Mat> binimages = new List<Mat>();
+              for (int t = 0; t <= 7; t++) {
+                  Mat bin = (Mat)DogContrastBinalize(LiITUpMid[t].img);
+
+                  double xx = myTrack.MsDX * myTrack.MsDX;
+                  double yy = myTrack.MsDY * myTrack.MsDY;
+                  if (Math.Sqrt(xx + yy) >= 0.4) {
+                      Cv2.Dilate(bin, bin, new Mat());
+                  }
+                  Cv2.Dilate(bin, bin, new Mat());
+                  binimages.Add(bin);
+              }
+
+              //trackを重ねる処理を入れる。
+              Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);//画像の8枚目におけるtrackのpixel座標を算出する。
+
+              if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
+                  //追跡に失敗した時に最後に検出したtrack座標に移動してから、追跡に失敗した地点の画像を撮影するようにする。
+                  //mc.MovePoint(LTrack[i - 1].X, LTrack[i - 1].Y, LTrack[i - 1].Z);
+                  mc.Join();
+
+                  not_detect = 1;
+                  goto not_detect_track;
+              }
+
+              //検出したpixel座標をstage座標に変換するなどlistに追加する。
+
+              LPeak.Add(new OpenCvSharp.CPlusPlus.Point(pixel_cen.X - 256, pixel_cen.Y - 220));
+
+              double firstx = LStage[i].X - LPeak[i].X * 0.000267;
+              double firsty = LStage[i].Y + LPeak[i].Y * 0.000267;
+              double firstz = LStage[i].Z;
+              LTrack.Add(new Point3d(firstx, firsty, firstz));
+              //
+
+              //上側乳剤層上面の1回目のtrack検出によって、次のtrackの位置を検出する角度を求める。
+              //その角度が、1回目のtrack検出の結果によって大きな角度にならないように調整をする。
+
+              if (i == 0) {
+                  Msdxdy.Add(new OpenCvSharp.CPlusPlus.Point2d(myTrack.MsDX, myTrack.MsDY));
+
+              } else if (i == 1) {
+                  List<Point3d> LTrack_ghost = new List<Point3d>();
+                  double dzPrev = (LStage[0].Z - surface.UpTop) * Sh;
+                  double Lghost_x = LTrack[0].X - Msdxdy[i].X * dzPrev;
+                  double Lghost_y = LTrack[0].Y - Msdxdy[i].Y * dzPrev;
+                  LTrack_ghost.Add(new Point3d(Lghost_x, Lghost_y, surface.UpTop));//上側乳剤層上面にtrackがあるならどの位置にあるかを算出する。
+
+                  string txtfileName_ltrackghost = datarootdirpathw + string.Format(@"\LTrack_ghost.txt");
+                  StreamWriter twriter_ltrackghost = File.CreateText(txtfileName_ltrackghost);
+                  twriter_ltrackghost.WriteLine("{0} {1} {2}", LTrack_ghost[0].X, LTrack_ghost[0].Y, LTrack_ghost[0].Z);
+                  twriter_ltrackghost.Close();
+
+                  OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LTrack_ghost[0], LTrack[0], LTrack[1]);
+                  Msdxdy.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
+
+              } else {
+                  OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LTrack[i - 2], LTrack[i - 1], LTrack[i]);
+                  Msdxdy.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
+              }
+
+
+          }//for　i-loop
+
+          //baseまたぎ
+          int ltrack_counter = LTrack.Count();
+          int msdxdy_counter = Msdxdy.Count();
+
+          mc.MovePoint(
+              LTrack[ltrack_counter - 1].X + Msdxdy[msdxdy_counter - 1].X * (surface.LowTop - surface.UpBottom),
+              LTrack[ltrack_counter - 1].Y + Msdxdy[msdxdy_counter - 1].Y * (surface.LowTop - surface.UpBottom),
+              surface.LowTop
+              );
+          mc.Join();
+
+          //////ここから下gelの処理
+          Msdxdy_Low.Add(new OpenCvSharp.CPlusPlus.Point2d(Msdxdy[msdxdy_counter - 1].X, Msdxdy[msdxdy_counter - 1].Y));
+
+          //今までのtrack追跡プログラムとは異なる角度等の使い方をする。
+          dz_price_img = (6 * Math.Cos(theta) / Sh_low) / 1000;
+          dz_img = dz_price_img * (-1);
+          dz = dz_img;
+
+          int goto_dgel = 0;
+
+          for (int i = 0; goto_dgel < 1; i++) {
+              ///////移動して画像処理をしたときに、下gelの下に入らないようにする。
+              Vector3 initialpos = mc.GetPoint();
+              double moverange = 7 * dz_img;
+              double predpoint = moverange + initialpos.Z;
+
+              if (predpoint < surface.LowBottom)//もしもbaseに入りそうなら、8枚目の画像がちょうど下gelを撮影するようにdzを調整する。
+                {
+                  goto_dgel = 1;
+
+                  dz = surface.LowBottom - initialpos.Z + 7 * dz_price_img;
+              }
+              ////////
+
+              //goto_dgel == 1のときは、移動して画像を撮影するようにする。
+              if (i != 0) {
+                  Vector3 dstpoint = new Vector3(
+                  LTrack_Low[i - 1].X + Msdxdy_Low[i].X * dz * Sh_low,
+                  LTrack_Low[i - 1].Y + Msdxdy_Low[i].Y * dz * Sh_low,
+                  LTrack_Low[i - 1].Z + dz
+                  );
+                  mc.MovePoint(dstpoint);
+                  mc.Join();
+              }
+
+              //今までのtrack追跡プログラムとは異なる角度等の使い方をする。
+              List<ImageTaking> LiITLowMid = TakeSequentialImage(
+                  Msdxdy[i].X * Sh_low,
+                  Msdxdy[i].Y * Sh_low,
+                  dz_img,
+                  8);
+
+              //画像・座標の記録
+              LStage_Low.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITLowMid[7].StageCoord.X, LiITLowMid[7].StageCoord.Y, LiITLowMid[7].StageCoord.Z));
+              LiITLowMid[7].img.ImWrite(datarootdirpathw + string.Format(@"\img_l_low_{0}.bmp", i));
+
+              LowTrackInfo.Add(LiITLowMid);//撮影した8枚の画像と、撮影した位置を記録する。
+
+              //撮影した画像をここで処理する。
+              List<Mat> binimages = new List<Mat>();
+              for (int t = 0; t <= 7; t++) {
+                  Mat bin = (Mat)DogContrastBinalize(LiITLowMid[t].img);
+
+                  double xx = myTrack.MsDX * myTrack.MsDX;
+                  double yy = myTrack.MsDY * myTrack.MsDY;
+                  if (Math.Sqrt(xx + yy) >= 0.4) {
+                      Cv2.Dilate(bin, bin, new Mat());
+                  }
+                  Cv2.Dilate(bin, bin, new Mat());
+                  binimages.Add(bin);
+              }
+              //trackを重ねる処理を入れる。
+              Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);//画像の8枚目におけるtrackのpixel座標を算出する。
+
+              //もし検出に失敗した場合はループを抜ける。
+              if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
+                  //mc.MovePoint(LTrack_Low[i - 1].X, LTrack_Low[i - 1].Y, LTrack_Low[i - 1].Z);
+                  mc.Join();
+
+                  not_detect = 1;
+                  goto not_detect_track;
+              }
+              //
+
+              //検出したpixel座標をstage座標に変換するなどlistに追加する。
+              LPeak_Low.Add(new OpenCvSharp.CPlusPlus.Point(pixel_cen.X - 256, pixel_cen.Y - 220));
+
+              double firstx = LStage_Low[i].X - LPeak_Low[i].X * 0.000267;
+              double firsty = LStage_Low[i].Y + LPeak_Low[i].Y * 0.000267;
+              double firstz = LStage_Low[i].Z;
+              LTrack_Low.Add(new Point3d(firstx, firsty, firstz));
+              //
+
+              //ここからは、最小二乗法で角度を算出するプログラムである。
+              //上側乳剤層上面の1回目のtrack検出によって、次のtrackの位置を検出する角度を求める。
+              //その角度が、1回目のtrack検出の結果によって大きな角度にならないように調整をする。
+              if (i == 0) {
+                  OpenCvSharp.CPlusPlus.Point2d Tangle_l = ApproximateStraightBase(Sh, Sh_low, LTrack[ltrack_counter - 2], LTrack[ltrack_counter - 1], LTrack_Low[i], surface);
+                  Msdxdy_Low.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle_l.X, Tangle_l.Y));
+              } else if (i == 1) {
+                  OpenCvSharp.CPlusPlus.Point2d Tangle_l = ApproximateStraightBase(Sh, Sh_low, LTrack[ltrack_counter - 1], LTrack_Low[i - 1], LTrack_Low[i], surface);
+                  Msdxdy_Low.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle_l.X, Tangle_l.Y));
+              } else {
+                  OpenCvSharp.CPlusPlus.Point2d Tangle_l = ApproximateStraight(Sh_low, LTrack_Low[i - 2], LTrack_Low[i - 1], LTrack_Low[i]);
+                  Msdxdy_Low.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle_l.X, Tangle_l.Y));
+              }
+
+
+          }//i_loop
+
+          //
+          int ltrack_low_count = LTrack_Low.Count();
+          mc.MovePointXY(LTrack_Low[ltrack_low_count - 1].X, LTrack_Low[ltrack_low_count - 1].Y);
+
+          mc.Join();
+
+          //検出に失敗した場合は、ループを抜けてここに来る。
+      not_detect_track: ;//検出に失敗したと考えられる地点で画像を取得し、下ゲル下面まで移動する。(現在は下ゲル下面とするが、今後変更する可能性有。)
+
+          if (not_detect != 0) {
+              //写真撮影
+              List<ImageTaking> NotDetect = TakeSequentialImage(
+                      Msdxdy[0].X * Sh,
+                      Msdxdy[0].Y * Sh,
+                      0,
+                      1);
+
+              string txtfileName_t_not_detect = datarootdirpathw + string.Format(@"\not_detect.txt");
+              StreamWriter twriter_t_not_detect = File.CreateText(txtfileName_t_not_detect);
+              for (int i = 0; i < NotDetect.Count; i++) {
+                  NotDetect[i].img.ImWrite(datarootdirpathw + string.Format(@"\img_t_not_detect.bmp"));
+                  Vector3 p = NotDetect[i].StageCoord;
+                  twriter_t_not_detect.WriteLine("{0} {1} {2} {3}", i, p.X, p.Y, p.Z);
+              }
+              twriter_t_not_detect.Close();
+
+              mc.MovePointZ(surface.LowBottom);
+
+              mc.Join();
+          }
+
+
+          //file write out up_gel
+          string txtfileName_sh_up = datarootdirpathw + string.Format(@"\Sh_up.txt");
+          StreamWriter twriter_sh_up = File.CreateText(txtfileName_sh_up);
+          twriter_sh_up.WriteLine("{0}", Sh);
+          twriter_sh_up.Close();
+
+          //file write out
+          string txtfileName_t_info_up = datarootdirpathw + string.Format(@"\location_up.txt");
+          StreamWriter twriter_t_info_up = File.CreateText(txtfileName_t_info_up);
+          for (int i = 0; i < UpTrackInfo.Count; i++) {
+              for (int t = 0; t < UpTrackInfo[i].Count; t++) {
+                  UpTrackInfo[i][t].img.ImWrite(datarootdirpathw + string.Format(@"\img_t_info_up_{0}-{1}.bmp", i, t));
+                  Vector3 p = UpTrackInfo[i][t].StageCoord;
+                  twriter_t_info_up.WriteLine("{0} {1} {2} {3} {4}", i, t, p.X, p.Y, p.Z);
+              }
+          }
+          twriter_t_info_up.Close();
+
+          string txtfileName_lpeak = datarootdirpathw + string.Format(@"\lpeak_up.txt");
+          StreamWriter twriter_lpeak = File.CreateText(txtfileName_lpeak);
+          for (int i = 0; i < LPeak.Count(); i++) {
+              OpenCvSharp.CPlusPlus.Point p = LPeak[i];
+              twriter_lpeak.WriteLine("{0} {1} {2}", i, p.X, p.Y);
+          }
+          twriter_lpeak.Close();
+
+          string txtfileName_ltrack = datarootdirpathw + string.Format(@"\ltrack_up.txt");
+          StreamWriter twriter_ltrack = File.CreateText(txtfileName_ltrack);
+          for (int i = 0; i < LTrack.Count(); i++) {
+              OpenCvSharp.CPlusPlus.Point3d p = LTrack[i];
+              twriter_ltrack.WriteLine("{0} {1} {2} {3}", i, p.X, p.Y, p.Z);
+          }
+          twriter_ltrack.Close();
+
+          string txtfileName_msdxdy = datarootdirpathw + string.Format(@"\msdxdy.txt");
+          StreamWriter twriter_msdxdy = File.CreateText(txtfileName_msdxdy);
+          for (int i = 0; i < Msdxdy.Count(); i++) {
+              OpenCvSharp.CPlusPlus.Point2d p = Msdxdy[i];
+              twriter_msdxdy.WriteLine("{0} {1} {2}", i, p.X, p.Y);
+          }
+          twriter_msdxdy.Close();
+
+
+          //file write out low_gel
+          string txtfileName_sh_low = datarootdirpathw + string.Format(@"\Sh_low.txt");
+          StreamWriter twriter_sh_low = File.CreateText(txtfileName_sh_low);
+          twriter_sh_low.WriteLine("{0}", Sh_low);
+          twriter_sh_low.Close();
+
+          string txtfileName_t_info_low = datarootdirpathw + string.Format(@"\location_low.txt");
+          StreamWriter twriter_t_info_low = File.CreateText(txtfileName_t_info_low);
+          for (int i = 0; i < LowTrackInfo.Count; i++) {
+              for (int t = 0; t < LowTrackInfo[i].Count; t++) {
+                  LowTrackInfo[i][t].img.ImWrite(datarootdirpathw + string.Format(@"\img_t_info_low_{0}-{1}.bmp", i, t));
+                  Vector3 p = LowTrackInfo[i][t].StageCoord;
+                  twriter_t_info_low.WriteLine("{0} {1} {2} {3} {4}", i, t, p.X, p.Y, p.Z);
+              }
+          }
+          twriter_t_info_low.Close();
+
+          string txtfileName_lpeak_low = datarootdirpathw + string.Format(@"\lpeak_low.txt");
+          StreamWriter twriter_lpeak_low = File.CreateText(txtfileName_lpeak_low);
+          for (int i = 0; i < LPeak_Low.Count(); i++) {
+              OpenCvSharp.CPlusPlus.Point p = LPeak_Low[i];
+              twriter_lpeak_low.WriteLine("{0} {1} {2}", i, p.X, p.Y);
+          }
+          twriter_lpeak_low.Close();
+
+          string txtfileName_ltrack_low = datarootdirpathw + string.Format(@"\ltrack_low.txt");
+          StreamWriter twriter_ltrack_low = File.CreateText(txtfileName_ltrack_low);
+          for (int i = 0; i < LTrack_Low.Count(); i++) {
+              OpenCvSharp.CPlusPlus.Point3d p = LTrack_Low[i];
+              twriter_ltrack_low.WriteLine("{0} {1} {2} {3}", i, p.X, p.Y, p.Z);
+          }
+          twriter_ltrack_low.Close();
+
+          string txtfileName_msdxdy_low = datarootdirpathw + string.Format(@"\msdxdy_low.txt");
+          StreamWriter twriter_msdxdy_low = File.CreateText(txtfileName_msdxdy_low);
+          for (int i = 0; i < Msdxdy_Low.Count(); i++) {
+              OpenCvSharp.CPlusPlus.Point2d p = Msdxdy_Low[i];
+              twriter_msdxdy_low.WriteLine("{0} {1} {2}", i, p.X, p.Y);
+          }
+          twriter_msdxdy_low.Close();//*/
 
        //.................Taking Photo in buttom of down layer.......................//
 
