@@ -456,12 +456,12 @@ namespace NagaraStage.Activities {
 
 		/// <summary>上ゲル下面の座標を取得します．</summary>
 		public double UpBottom {
-			get { return surfaces[1]; }
+			get { return surfaces[1]; }//
 		}
 
 		/// <summary>下ゲル上面の座標を取得します．</summary>
 		public double LowTop {
-			get { return surfaces[2]; }
+			get { return surfaces[2]; }//
 		}
 
 		/// <summary>下ゲル下面の座標を取得します．</summary>
@@ -614,7 +614,8 @@ namespace NagaraStage.Activities {
             flag = true;
             while (flag) {
                 int brightness = CountHitPixels();
-                if (brightness > 8000) flag = false;
+              if (brightness > 8000) flag = false;
+             //if (brightness < 10000) flag = false;//
             }
             /*
 			UpTopRecognized(this, new eventArgs());
@@ -626,58 +627,70 @@ namespace NagaraStage.Activities {
             surfaces[0] = mc.GetPoint().Z;
             System.Diagnostics.Debug.WriteLine(string.Format("{0}", mc.GetPoint().Z));
             Thread.Sleep(100);
+         
 
 
             mc.Move(new Vector3(0.0, 0.0, -0.2));
             mc.Join();
             Thread.Sleep(100);
-
+           
 
             mc.Inch(PlusMinus.Minus, motorSpeed, VectorId.Z);
             flag = true;
             while (flag) {
                 int brightness = CountHitPixels();
-                if (brightness < 4000) flag = false;
+                if (brightness < 5000) flag = false;//
+               // if (brightness < 4000) flag = false;
             }
 
 
-            surfaces[2] = mc.GetPoint().Z;
+            surfaces[1] = mc.GetPoint().Z;//
+           // surfaces[2] = mc.GetPoint().Z;
             System.Diagnostics.Debug.WriteLine(string.Format("{0}", mc.GetPoint().Z));
 
             
             flag = true;
             while (flag) {
                 int brightness = CountHitPixels();
-                if (brightness > 4000) flag = false;
+                //if (brightness > 4000) flag = false;
+                if (brightness > 5000) flag = false;
             }
 
 
             mc.SlowDownStop(VectorId.Z);
-            surfaces[1] = mc.GetPoint().Z;
+           // surfaces[1] = mc.GetPoint().Z;
+            surfaces[2] = mc.GetPoint().Z;//
             System.Diagnostics.Debug.WriteLine(string.Format("{0}", mc.GetPoint().Z));
             Thread.Sleep(100);
+           // Thread.Sleep(150);//
 
-            mc.Move(new Vector3(0.0, 0.0, -0.2));
+          //  mc.Move(new Vector3(0.0, 0.0, -0.2));
+            mc.Move(new Vector3(0.0, 0.0, -0.23));//
             mc.Join();
             Thread.Sleep(100);
+            //Thread.Sleep(150);//
 
             mc.Inch(PlusMinus.Minus, motorSpeed, VectorId.Z);
 
             flag = true;
             while (flag) {
                 int brightness = CountHitPixels();
-                if (brightness < 2000) flag = false;
+               // if (brightness < 2000) flag = false;
+                if (brightness < 3000) flag = false;//
             }
 
             mc.SlowDownStop(VectorId.Z);
             surfaces[3] = mc.GetPoint().Z;
             System.Diagnostics.Debug.WriteLine(string.Format("{0}", mc.GetPoint().Z));
             Thread.Sleep(100);
+           // Thread.Sleep(150);//
 
-            temp_z = (surfaces[0] - 0.05) - mc.GetPoint().Z;
+           // temp_z = (surfaces[0] - 0.05) - mc.GetPoint().Z;
+            temp_z = (surfaces[0] + 0.02) - mc.GetPoint().Z;//
             mc.Move(new Vector3(0.0, 0.0, temp_z));
             mc.Join();
             Thread.Sleep(100);
+            //Thread.Sleep(150);//
 
 
             /*
