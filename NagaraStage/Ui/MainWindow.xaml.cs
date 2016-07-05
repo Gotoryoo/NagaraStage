@@ -3107,13 +3107,13 @@ namespace NagaraStage.Ui {
             for (int i = 0; gotobase < 1; i++) {
 
                 Vector3 initialpos = mc.GetPoint();
-                double moverange = 9* dz_img;
+                double moverange = (number_of_images - 1) * dz_img;
                 double predpoint = moverange + initialpos.Z;
 
                 if (predpoint < surface.UpBottom) {
                     gotobase = 1;
 
-                    dz = surface.UpBottom - initialpos.Z + 7 * dz_price_img;
+                    dz = surface.UpBottom - initialpos.Z + (number_of_images - 1) * dz_price_img;
                 }
 
 
@@ -3132,16 +3132,16 @@ namespace NagaraStage.Ui {
                     Msdxdy[i].X * Sh,//Dx
                     Msdxdy[i].Y * Sh,//Dy
                     dz_img,//Dz
-                    10);//number of images
+                    number_of_images);//number of images
 
 
-                LStage.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITUpMid[9].StageCoord.X, LiITUpMid[9].StageCoord.Y, LiITUpMid[9].StageCoord.Z));
-                LiITUpMid[9].img.ImWrite(datarootdirpath + string.Format(@"\img_l_up_{0}.png", i));
+                LStage.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITUpMid[number_of_images - 1].StageCoord.X, LiITUpMid[number_of_images - 1].StageCoord.Y, LiITUpMid[number_of_images - 1].StageCoord.Z));
+                LiITUpMid[number_of_images - 1].img.ImWrite(datarootdirpath + string.Format(@"\img_l_up_{0}.png", i));
                 UpTrackInfo.Add(LiITUpMid);
 
 
                 List<Mat> binimages = new List<Mat>();
-                for (int t = 0; t <= 9; t++) {
+                for (int t = 0; t <= number_of_images - 1; t++) {
                     Mat bin = (Mat)DogContrastBinalize(LiITUpMid[t].img);
 
                     double xx = myTrack.MsDX * myTrack.MsDX;
@@ -3154,7 +3154,7 @@ namespace NagaraStage.Ui {
                 }
 
                 //trackを重ねる処理を入れる。
-                Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 5);// true);
+                Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, hits);// true);
                 //Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, true);
 
                 if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
@@ -3227,14 +3227,14 @@ namespace NagaraStage.Ui {
             for (int i = 0; goto_dgel < 1; i++) {
                 ///////移動して画像処理をしたときに、下gelの下に入らないようにする。
                 Vector3 initialpos = mc.GetPoint();
-                double moverange = 9 * dz_img;
+                double moverange = (number_of_images - 1) * dz_img;
                 double predpoint = moverange + initialpos.Z;
 
                 if (predpoint < surface.LowBottom)//もしもbaseに入りそうなら、8枚目の画像がちょうど下gelを撮影するようにdzを調整する。
                 {
                     goto_dgel = 1;
 
-                    dz = surface.LowBottom - initialpos.Z + 9 * dz_price_img;
+                    dz = surface.LowBottom - initialpos.Z + (number_of_images - 1) * dz_price_img;
                 }
                 ////////
 
@@ -3254,10 +3254,10 @@ namespace NagaraStage.Ui {
                     Msdxdy[i].X * Sh_low,
                     Msdxdy[i].Y * Sh_low,
                     dz_img,
-                    10);
+                    number_of_images);
 
                 //画像・座標の記録
-                LStage_Low.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITLowMid[9].StageCoord.X, LiITLowMid[9].StageCoord.Y, LiITLowMid[9].StageCoord.Z));
+                LStage_Low.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITLowMid[number_of_images - 1].StageCoord.X, LiITLowMid[number_of_images - 1].StageCoord.Y, LiITLowMid[number_of_images - 1].StageCoord.Z));
                 LiITLowMid[7].img.ImWrite(datarootdirpath + string.Format(@"\img_l_low_{0}.png", i));
 
                 LowTrackInfo.Add(LiITLowMid);//撮影した8枚の画像と、撮影した位置を記録する。
@@ -3265,7 +3265,7 @@ namespace NagaraStage.Ui {
                 
                 //撮影した画像をここで処理する。
                 List<Mat> binimages = new List<Mat>();
-                for (int t = 0; t <= 9; t++) {
+                for (int t = 0; t <= number_of_images - 1; t++) {
                     Mat bin = (Mat)DogContrastBinalize(LiITLowMid[t].img);
 
                     double xx = myTrack.MsDX * myTrack.MsDX;
@@ -3277,7 +3277,7 @@ namespace NagaraStage.Ui {
                     binimages.Add(bin);
                 }
                 //trackを重ねる処理を入れる。
-                Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 5);//, true);//画像の8枚目におけるtrackのpixel座標を算出する。
+                Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, hits);//, true);//画像の8枚目におけるtrackのpixel座標を算出する。
 
                 //もし検出に失敗した場合はループを抜ける。
                 if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
