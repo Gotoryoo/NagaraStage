@@ -2510,7 +2510,7 @@ namespace NagaraStage.Ui {
         }
 
 
-        //       ....................2016/5/18.........../MKS for automatic track following combination////////////////
+//       ....................2016/5/18.........../MKS for automatic track following combination////////////////
 
         //.. Approximatestraightbase
         static Point2d ApproximateStraightBase(double sh, double sh_low, Point3d ltrack, Point3d ltrack2, Point3d ltrack3, Surface surface) {
@@ -2875,7 +2875,7 @@ namespace NagaraStage.Ui {
             return lit;
         }
 
-//........................................2016/06/08/ MKSOE
+//........................................2016/06/08/ MKSOE/ ............................
         private void NearGridParameter() {
            
             try {
@@ -2938,7 +2938,7 @@ namespace NagaraStage.Ui {
                 System.Diagnostics.Debug.WriteLine("エントリポイントが見当たりません。 " + ex.Message);
             }
         }
-
+        //.......................................................................
 
         private void gotrack(Track myTrack) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
@@ -2949,10 +2949,19 @@ namespace NagaraStage.Ui {
             });
            
         }
+        //.......................................................................
+
         private void surfacerecog() {
             Surface surface = Surface.GetInstance(parameterManager);
             MotorControler mc = MotorControler.GetInstance(parameterManager);
+/*
+            string[] sp = myTrack.IdString.Split('-');
 
+            //string datfileName = string.Format("{0}.dat", System.DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+            string datfileName = string.Format(@"c:\test\bpm\{0}\{1}-{2}-{3}-{4}-{5}.dat", mod, mod, pl, sp[0], sp[1], System.DateTime.Now.ToString("ddHHmmss"));
+            BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
+            */
+           
             try {
                 if (mc.IsMoving) {
                     MessageBoxResult r = MessageBox.Show(
@@ -2965,20 +2974,9 @@ namespace NagaraStage.Ui {
                         return;
                     }
                 }
-
+                mc.Join();
 
                 //Surface surface = Surface.GetInstance(parameterManager);
-                if (surface.IsActive) {
-                    MessageBoxResult r = MessageBox.Show(
-                        Properties.Strings.SurfaceException02,
-                        Properties.Strings.Abort + "?",
-                        MessageBoxButton.YesNo);
-                    if (r == MessageBoxResult.Yes) {
-                        surface.Abort();
-                    } else {
-                        return;
-                    }
-                }
 
                 try {
                     surface.Start(true);
@@ -2986,22 +2984,23 @@ namespace NagaraStage.Ui {
                 } catch (Exception ex) {
                     MessageBox.Show(ex.Message, Properties.Strings.Error);
                 }
-            } catch (Exception ex) {
+           } catch (Exception ex) {
                 MessageBox.Show(ex.Message, Properties.Strings.Error);
-            }
+           }
             mc.Join();
 
         }
+        //........................................................................
         private void BPMW(Track myTrack, int mod, int pl) {
 
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             try {
 
-                string datarootdirpath = string.Format(@"C:\test\bpm\{0}", mod);
+                string datarootdirpath = string.Format(@"C:\MKS_test\bpm\{0}-{1}", mod, pl);
                 System.IO.DirectoryInfo mydir = System.IO.Directory.CreateDirectory(datarootdirpath);
                 string[] sp = myTrack.IdString.Split('-');
-                string uptxt = string.Format(@"c:\test\bpm\{0}\{1}-{2}-{3}-{4}_up.txt", mod, mod, pl, sp[0], sp[1]);
-                string dwtxt = string.Format(@"c:\test\bpm\{0}\{1}-{2}-{3}-{4}_dw.txt", mod, mod, pl - 1, sp[0], sp[1]);
+                string uptxt = string.Format(@"c:\MKS_test\bpm\{0}-{1}\{2}-{3}-{4}-{5}_up.txt", mod, pl, mod, pl, sp[0], sp[1]);
+                string dwtxt = string.Format(@"c:\MKS_test\bpm\{0}-{1}\{2}-{3}-{4}-{5}_dw.txt", mod, pl - 1, mod, pl - 1, sp[0], sp[1]);
                 BeamDetection(uptxt, true);
 
                 BeamPatternMatch bpm = new BeamPatternMatch(8, 200);
@@ -3027,7 +3026,7 @@ namespace NagaraStage.Ui {
                 MessageBox.Show("No beam battern。 ");
             }
         }
-
+        //........................................................................
         private void GoTopUp() {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             Surface surface = Surface.GetInstance(parameterManager);
@@ -3041,11 +3040,12 @@ namespace NagaraStage.Ui {
             }
 
         }
+        //.......................................................................
         private void Detectbeam(Track myTrack, int mod, int pl) {
             try {
                 string[] sp = myTrack.IdString.Split('-');
-                string dwtxt = string.Format(@"c:\test\bpm\{0}\{1}-{2}-{3}-{4}_dw.txt", mod, mod, pl, sp[0], sp[1]);
-                string datarootdirpath = string.Format(@"C:\test\bpm\{0}", mod);
+                string dwtxt = string.Format(@"c:\MKS_test\bpm\{0}-{1}\{2}-{3}-{4}-{5}_dw.txt", mod, pl, mod, pl, sp[0], sp[1]);
+                string datarootdirpath = string.Format(@"C:\MKS_test\bpm\{0}-{1}", mod, pl);
                 System.IO.DirectoryInfo mydir = System.IO.Directory.CreateDirectory(datarootdirpath);
                 System.IO.DirectoryInfo mydir2 = System.IO.Directory.CreateDirectory(datarootdirpath);
                 BeamDetection(dwtxt, false);
@@ -3053,133 +3053,20 @@ namespace NagaraStage.Ui {
                 MessageBox.Show("ID is not exist ");
             }
         }
-        private void Full_Automatic_Tracking_button(object sender, RoutedEventArgs e) {
-
-            MotorControler mc = MotorControler.GetInstance(parameterManager);
-            Camera camera = Camera.GetInstance();
-            TracksManager tm = parameterManager.TracksManager;
-            Surface surface = Surface.GetInstance(parameterManager);
-            int mod = parameterManager.ModuleNo;
-            int pl = parameterManager.PlateNo;
-            Led led_ = Led.GetInstance();
-
-            for (int i = 0; i < tm.NumOfTracks; i++) {
-                Track myTrack = tm.GetTrack(i);
-                Console.WriteLine(myTrack.IdString);
-                MessageBoxResult r;
-             // Massage box to check tracking is ok or not, if OK is put, will go to track position.
-          /*      r = MessageBox.Show(
-                  String.Format("Let's go to {0}; {1} {2}. OK->Go, Cancel->exit", myTrack.IdString, myTrack.MsX, myTrack.MsY),
-                  Properties.Strings.LensTypeSetting,
-                  MessageBoxButton.OKCancel);
-                if (r == MessageBoxResult.Cancel) {
-                    return;
-                }*/
-
-             // Go to the track position
-                double dstx = myTrack.MsX;
-                double dsty = myTrack.MsY;
-                mc.MovePointXY(dstx, dsty, delegate {
-                    stage.WriteLine(Properties.Strings.MovingComplete);
-                });
-                mc.Join();
-
-             // Oil putting time
-                Thread.Sleep(3000);
-                led_.AdjustLight(parameterManager);
-
-
-             // Go to near grid mark and get parameter for shrinkage in X,Y
-                NearGridParameter();
-
-             // Go to track position after correction with near gridmark
-                gotrack(myTrack);             
-                mc.Join();
-                Vector3 initialpos = mc.GetPoint();
-                led_.AdjustLight(parameterManager);
-                Thread.Sleep(500);
-                 
-               
-             // Detection of boundaries of emulsion layers                
-                surfacerecog();
-                mc.Join();
-                Thread.Sleep(100);
-           /*     Double Base = (Math.Abs(surface.UpBottom) - Math.Abs(surface.LowTop)) * 1000;
-                Double Uplayer = (Math.Abs(surface.UpTop) - Math.Abs(surface.UpBottom)) * 1000;
-                Double LowLayer = (Math.Abs(surface.LowTop) - Math.Abs(surface.LowBottom)) * 1000;
-
-                if (Base >= 50.0 || Uplayer < 200.0 || LowLayer < 200.0) { 
-                        mc.MoveTo(initialpos);
-                        mc.Join();
-                        led_.AdjustLight(parameterManager);
-                        Thread.Sleep(500);
-                        surfacerecog();
-                        mc.Join();
-                    } 
-                                                      
-                */
-
-       
-             // Beampatternmatching
-                BPMW(myTrack, mod, pl); 
-                mc.Join();
-                Thread.Sleep(100);
-
-             // Tracking in emulsion
-                Tracking(myTrack);
-
-             // Taking Beam pattern
-                Detectbeam(myTrack, mod, pl);
-
-             // Go to top of uppr layer after tracking is finished
-                GoTopUp();
-                mc.Join();
-                Thread.Sleep(100);
-
-                //  } else { }
-
-
-           /*   // Massage box to cheack tracking is ok or not, it Ok is put, it will go to next track.
-                r = MessageBox.Show(
-                     "OK->Next, Cancel->exit",
-                     Properties.Strings.LensTypeSetting,
-                     MessageBoxButton.OKCancel);
-                if (r == MessageBoxResult.Cancel) {
-                    return;
-                }*/
+        //........................................................................
                    
-
-            }
-        }
-
-
-        
-            /*
-
-
-            goTheNearestGridMark();
-
-            setHFDXDY();
-
-            LightAdjustment();
-
-            Thread.Sleep(500); //Wait for 5s
-
-            BoundoryRecognition();
-
-            BeamPatternMatch();
-            */
-
-
-        private void Tracking(Track myTrack) {
+        private void Tracking(Track myTrack, int mod, int pl, bool dubflag) {
 
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             Camera camera = Camera.GetInstance();
             Surface surface = Surface.GetInstance(parameterManager);
             Vector3 initial = mc.GetPoint();
-            
+//            TimeLogger tl = new TimeLogger("savepath");
 
             //for up layer
+
+            int number_of_images = 10;
+            int hits = 5;
 
             double Sh = 0.5 / (surface.UpTop - surface.UpBottom);
             double tansi = Math.Sqrt(myTrack.MsDX * myTrack.MsDX + myTrack.MsDY * myTrack.MsDY);
@@ -3201,7 +3088,7 @@ namespace NagaraStage.Ui {
             List<List<ImageTaking>> UpTrackInfo = new List<List<ImageTaking>>();
 
             //for down layer................................................................
-
+//            tl.Rec("down");
             double Sh_low;
             Sh_low = 0.5 / (surface.LowTop - surface.LowBottom);
 
@@ -3220,7 +3107,7 @@ namespace NagaraStage.Ui {
             for (int i = 0; gotobase < 1; i++) {
 
                 Vector3 initialpos = mc.GetPoint();
-                double moverange = 7 * dz_img;
+                double moverange = 9* dz_img;
                 double predpoint = moverange + initialpos.Z;
 
                 if (predpoint < surface.UpBottom) {
@@ -3245,16 +3132,16 @@ namespace NagaraStage.Ui {
                     Msdxdy[i].X * Sh,//Dx
                     Msdxdy[i].Y * Sh,//Dy
                     dz_img,//Dz
-                    8);//number of images
+                    10);//number of images
 
 
-                LStage.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITUpMid[7].StageCoord.X, LiITUpMid[7].StageCoord.Y, LiITUpMid[7].StageCoord.Z));
-                LiITUpMid[7].img.ImWrite(datarootdirpath + string.Format(@"\img_l_up_{0}.bmp", i));
+                LStage.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITUpMid[9].StageCoord.X, LiITUpMid[9].StageCoord.Y, LiITUpMid[9].StageCoord.Z));
+                LiITUpMid[9].img.ImWrite(datarootdirpath + string.Format(@"\img_l_up_{0}.png", i));
                 UpTrackInfo.Add(LiITUpMid);
 
 
                 List<Mat> binimages = new List<Mat>();
-                for (int t = 0; t <= 7; t++) {
+                for (int t = 0; t <= 9; t++) {
                     Mat bin = (Mat)DogContrastBinalize(LiITUpMid[t].img);
 
                     double xx = myTrack.MsDX * myTrack.MsDX;
@@ -3267,7 +3154,7 @@ namespace NagaraStage.Ui {
                 }
 
                 //trackを重ねる処理を入れる。
-                Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);
+                Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 5);// true);
                 //Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, true);
 
                 if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
@@ -3340,14 +3227,14 @@ namespace NagaraStage.Ui {
             for (int i = 0; goto_dgel < 1; i++) {
                 ///////移動して画像処理をしたときに、下gelの下に入らないようにする。
                 Vector3 initialpos = mc.GetPoint();
-                double moverange = 7 * dz_img;
+                double moverange = 9 * dz_img;
                 double predpoint = moverange + initialpos.Z;
 
                 if (predpoint < surface.LowBottom)//もしもbaseに入りそうなら、8枚目の画像がちょうど下gelを撮影するようにdzを調整する。
                 {
                     goto_dgel = 1;
 
-                    dz = surface.LowBottom - initialpos.Z + 7 * dz_price_img;
+                    dz = surface.LowBottom - initialpos.Z + 9 * dz_price_img;
                 }
                 ////////
 
@@ -3367,17 +3254,18 @@ namespace NagaraStage.Ui {
                     Msdxdy[i].X * Sh_low,
                     Msdxdy[i].Y * Sh_low,
                     dz_img,
-                    8);
+                    10);
 
                 //画像・座標の記録
-                LStage_Low.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITLowMid[7].StageCoord.X, LiITLowMid[7].StageCoord.Y, LiITLowMid[7].StageCoord.Z));
-                LiITLowMid[7].img.ImWrite(datarootdirpath + string.Format(@"\img_l_low_{0}.bmp", i));
+                LStage_Low.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITLowMid[9].StageCoord.X, LiITLowMid[9].StageCoord.Y, LiITLowMid[9].StageCoord.Z));
+                LiITLowMid[7].img.ImWrite(datarootdirpath + string.Format(@"\img_l_low_{0}.png", i));
 
                 LowTrackInfo.Add(LiITLowMid);//撮影した8枚の画像と、撮影した位置を記録する。
-
+                
+                
                 //撮影した画像をここで処理する。
                 List<Mat> binimages = new List<Mat>();
-                for (int t = 0; t <= 7; t++) {
+                for (int t = 0; t <= 9; t++) {
                     Mat bin = (Mat)DogContrastBinalize(LiITLowMid[t].img);
 
                     double xx = myTrack.MsDX * myTrack.MsDX;
@@ -3389,7 +3277,7 @@ namespace NagaraStage.Ui {
                     binimages.Add(bin);
                 }
                 //trackを重ねる処理を入れる。
-                Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);//画像の8枚目におけるtrackのpixel座標を算出する。
+                Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 5);//, true);//画像の8枚目におけるtrackのpixel座標を算出する。
 
                 //もし検出に失敗した場合はループを抜ける。
                 if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
@@ -3437,23 +3325,39 @@ namespace NagaraStage.Ui {
         not_detect_track: ;//検出に失敗したと考えられる地点で画像を取得し、下ゲル下面まで移動する。(現在は下ゲル下面とするが、今後変更する可能性有。)
 
             if (not_detect != 0) {
+               //Vector dzz = 
+                Vector3 currentpoint = mc.GetPoint();
+                Vector3 dstpoint_ = new Vector3(
+                  currentpoint.X - Msdxdy[0].X * 0.05* Sh,
+                  currentpoint.Y - Msdxdy[0].Y * 0.05 * Sh,
+                  currentpoint.Z - 0.05
+                   );
+                mc.MovePoint(dstpoint_);
+                mc.Join();
+
+
                 //写真撮影
                 List<ImageTaking> NotDetect = TakeSequentialImage(
                         Msdxdy[0].X * Sh,
                         Msdxdy[0].Y * Sh,
-                        0,
-                        1);
+                        0.006,
+                       20);
+               
 
                 string txtfileName_t_not_detect = datarootdirpath + string.Format(@"\not_detect.txt");
                 StreamWriter twriter_t_not_detect = File.CreateText(txtfileName_t_not_detect);
                 for (int i = 0; i < NotDetect.Count; i++) {
-                    NotDetect[i].img.ImWrite(datarootdirpath + string.Format(@"\img_t_not_detect.bmp"));
+                    NotDetect[i].img.ImWrite(datarootdirpath + string.Format(@"\img_t_not_detect_{0}.png", i));
                     Vector3 p = NotDetect[i].StageCoord;
                     twriter_t_not_detect.WriteLine("{0} {1} {2} {3}", i, p.X, p.Y, p.Z);
                 }
                 twriter_t_not_detect.Close();
 
-                mc.MovePointZ(surface.LowBottom);
+                //mc.MovePointZ(surface.LowBottom);
+                Vector3 cc = mc.GetPoint();
+                double Zp = surface.UpTop;
+                mc.MoveTo(new Vector3(cc.X, cc.Y, Zp));
+                mc.Join();
 
                 mc.Join();
             }
@@ -3471,7 +3375,7 @@ namespace NagaraStage.Ui {
             StreamWriter twriter_t_info_up = File.CreateText(txtfileName_t_info_up);
             for (int i = 0; i < UpTrackInfo.Count; i++) {
                 for (int t = 0; t < UpTrackInfo[i].Count; t++) {
-                    UpTrackInfo[i][t].img.ImWrite(datarootdirpath + string.Format(@"\img_t_info_up_{0}-{1}.bmp", i, t));
+                    UpTrackInfo[i][t].img.ImWrite(datarootdirpath + string.Format(@"\img_t_info_up_{0}-{1}.png", i, t));
                     Vector3 p = UpTrackInfo[i][t].StageCoord;
                     twriter_t_info_up.WriteLine("{0} {1} {2} {3} {4}", i, t, p.X, p.Y, p.Z);
                 }
@@ -3510,12 +3414,13 @@ namespace NagaraStage.Ui {
             twriter_sh_low.Close();
 
             string txtfileName_t_info_low = datarootdirpath + string.Format(@"\location_low.txt");
-            StreamWriter twriter_t_info_low = File.CreateText(txtfileName_t_info_low);
+            StreamWriter twriter_t_info_low = File.CreateText(txtfileName_t_info_low);          
             for (int i = 0; i < LowTrackInfo.Count; i++) {
                 for (int t = 0; t < LowTrackInfo[i].Count; t++) {
-                    LowTrackInfo[i][t].img.ImWrite(datarootdirpath + string.Format(@"\img_t_info_low_{0}-{1}.bmp", i, t));
+                    LowTrackInfo[i][t].img.ImWrite(datarootdirpath + string.Format(@"\img_t_info_low_{0}-{1}.png", i, t));
                     Vector3 p = LowTrackInfo[i][t].StageCoord;
                     twriter_t_info_low.WriteLine("{0} {1} {2} {3} {4}", i, t, p.X, p.Y, p.Z);
+                    
                 }
             }
             twriter_t_info_low.Close();
@@ -3543,10 +3448,229 @@ namespace NagaraStage.Ui {
                 twriter_msdxdy_low.WriteLine("{0} {1} {2}", i, p.X, p.Y);
             }
             twriter_msdxdy_low.Close();
-        }///////initialpoint
+
+
+            if (dubflag == false){
+                string TPC;
+                int LL = LStage_Low.Count;
+                if (LL == 0) {
+                    TPC = "No Tracking";
+                    return;
+                    
+                } else {
+                    double LZ = Math.Abs(LStage_Low[LL - 1].Z);
+                    int UU = LStage.Count;
+                    double UZ = Math.Abs(LStage[UU - 1].Z);
+                   
+                    if (LZ+0.003 >= Math.Abs(surface.LowBottom)) {
+                        TPC = "Pass";
+                    } else {
+
+                        TPC = "NoPass";
+                    }
+             
+               //     string[] sp1 = myTrack.IdString.Split('-');
+
+                /*    string logtxt_ = string.Format(@"c:\test\bpm\{0}\{1}-{2}_TK.txt", mod, mod, pl);
+                    //string log_ = string.Format("{0} \n", sw.Elapsed);
+                    string log_ = string.Format("{0} {1} {2} {3} {4} \n", sp1[0], sp1[1], TPC, LZ, Math.Abs(surface.LowBottom));
+                    StreamWriter swr = new StreamWriter(logtxt_, true, Encoding.ASCII);
+                    swr.Write(log_);
+                    swr.Close();*/
+                   
+                    string[] sp1 = myTrack.IdString.Split('-');
+                    string logtxt_ = string.Format(@"c:\test\bpm\{0}\{1}-{2}_TCK.txt", mod, mod, pl);
+                    //string log_ = string.Format("{0} \n", sw.Elapsed);
+                    string log_ = string.Format("{0} {1} {2} {3} {4} \n", sp1[0], sp1[1], TPC, LZ, Math.Abs(surface.LowBottom));
+                    StreamWriter swr = new StreamWriter(logtxt_, true, Encoding.ASCII);
+                    swr.Write(log_);
+                    swr.Close();
+                }
+            }
+    }
+        //........................................................................
+
+        private void Full_Automatic_Tracking_button(object sender, RoutedEventArgs e) {
+
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            Camera camera = Camera.GetInstance();
+            TracksManager tm = parameterManager.TracksManager;
+            Surface surface = Surface.GetInstance(parameterManager);
+            int mod = parameterManager.ModuleNo;
+            int pl = parameterManager.PlateNo;
+            bool dubflag;
+            Led led_ = Led.GetInstance();
+           
+            
+
+            for (int i = 0; i < tm.NumOfTracks; i++) {
+                Track myTrack = tm.GetTrack(i);
+                Console.WriteLine(myTrack.IdString);
+                string[] sp1 = myTrack.IdString.Split('-');
+
+                string logtxt = string.Format(@"C:\MKS_test\WorkingTime\{0}\{1}-{2}_Trackingtime.txt", mod, mod, pl);
+                SimpleLogger SL1 = new SimpleLogger(logtxt, sp1[0], sp1[1]);
+                SL1.Info("Tracking Start");
+
+                MessageBoxResult r;
+                // Massage box to check tracking is ok or not, if OK is put, will go to track position.
+            /*    r = MessageBox.Show(
+                  String.Format("Let's go to {0}; {1} {2}. OK->Go, Cancel->exit", myTrack.IdString, myTrack.MsX, myTrack.MsY),
+                  Properties.Strings.LensTypeSetting,
+                  MessageBoxButton.OKCancel);
+                if (r == MessageBoxResult.Cancel) {
+                    return;
+                }*/
+
+
+             // Go to the track position
+                double dstx = myTrack.MsX;
+                double dsty = myTrack.MsY;
+                mc.MovePointXY(dstx, dsty, delegate {
+                    stage.WriteLine(Properties.Strings.MovingComplete);
+                });
+                mc.Join();
+
+
+             // Oil putting time
+                Thread.Sleep(3000);
+                led_.AdjustLight(parameterManager);
+
+
+             // Go to near grid mark and get parameter for shrinkage in X,Y
+                NearGridParameter();
+
+
+             // Go to track position after correction with near gridmark
+                gotrack(myTrack);
+                mc.Join();
+                Vector3 initialpos = mc.GetPoint();
+
+
+                bool surfacerecogOK = false;
+
+             // Detection of boundaries of emulsion layers
+                for (int trial = 0; trial < 5; trial++ ) {
+                    mc.MoveTo(initialpos);
+                    mc.Join();
+
+                    mc.MoveTo(new Vector3(initialpos.X, initialpos.Y, initialpos.Z + 0.02));
+                    mc.Join();
+                    led_.AdjustLight(parameterManager);
+                    Thread.Sleep(500);
+                    surfacerecog();
+                    while (surface.IsActive) {
+                        Thread.Sleep(500);
+                    }
+                    mc.Join();
+                    Double Base = (surface.UpBottom - surface.LowTop) * 1000;
+                    Double UpLayer = (surface.UpTop - surface.UpBottom) * 1000;
+                    Double LowLayer = (surface.LowTop - surface.LowBottom) * 1000;
+
+                    if (Base < 50.0 && UpLayer > 200.0 && LowLayer > 200.0) {
+                        surfacerecogOK = true;
+                        break;
+                    }
+                }
+
+                if (surfacerecogOK == false) {
+                    continue;//go to the next track
+                }
+
+             // Beampatternmatching
+                BPMW(myTrack, mod, pl);
+                mc.Join();
+                Thread.Sleep(100);
+
+
+                // Tracking in emulsion
+                Tracking(myTrack, mod, pl, false);
+              
+                // #If the the followed track is stop or cause event, go to Upper surface and to the next track#
+
+
+                // Taking Beam pattern
+                Detectbeam(myTrack, mod, pl);
+
+
+                // Go to top of uppr layer after tracking is finished
+                GoTopUp();
+                mc.Join();
+                Thread.Sleep(100);
 
 
 
+
+                // Massage box to cheack tracking is ok or not, it Ok is put, it will go to next track.
+              /*  r = MessageBox.Show(
+                     "OK->Next, Cancel->exit",
+                     Properties.Strings.LensTypeSetting,
+                     MessageBoxButton.OKCancel);
+                if (r == MessageBoxResult.Cancel) {
+                    return;
+                }*/
+                SL1.Info("Tracking End");
+
+            }
+        }
+
+
+// ##############################################################################################
+                        //AUTOMATIC TRACKING FOR PL#2
+
+        private void Full_Automatic_Tracking_PL2_button(object sender, RoutedEventArgs e) {
+
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            Camera camera = Camera.GetInstance();
+            TracksManager tm = parameterManager.TracksManager;
+            Track myTrack = tm.GetTrack(tm.TrackingIndex);
+            Surface surface = Surface.GetInstance(parameterManager);
+            int mod = parameterManager.ModuleNo;
+            int pl = parameterManager.PlateNo;
+            bool dubflag;
+            Led led_ = Led.GetInstance();
+            string[] sp1 = myTrack.IdString.Split('-');
+
+            string logtxt = string.Format(@"C:\MKS_test\WorkingTime\{0}\{1}-{2}_TTracking.txt", mod, mod, pl);
+            SimpleLogger SL1 = new SimpleLogger(logtxt, sp1[0], sp1[1]);
+
+            // Tracking in emulsion
+            SL1.Info("Tracking Start");            
+            Tracking(myTrack, mod, pl, false);
+           
+
+
+            // Taking Beam pattern            
+            Detectbeam(myTrack, mod, pl);
+            
+
+            // Go to top of uppr layer after tracking is finished
+            GoTopUp();
+            mc.Join();
+            SL1.Info("Tracking End");
+        }
+         
+
+        private void GoNearGrid_CorrecteTrackPosition_button(object sender, RoutedEventArgs e) {  
+        TracksManager tm = parameterManager.TracksManager;
+        Track myTrack = tm.GetTrack(tm.TrackingIndex);
+        int mod = parameterManager.ModuleNo;
+        int pl = parameterManager.PlateNo;
+        string[] sp1 = myTrack.IdString.Split('-');
+        MotorControler mc = MotorControler.GetInstance(parameterManager);
+        string logtxt = string.Format(@"C:\MKS_test\WorkingTime\{0}\{1}-{2}_TNeargrid.txt", mod, mod, pl);
+        SimpleLogger SL2 = new SimpleLogger(logtxt, sp1[0], sp1[1]);
+        SL2.Info("Neargrid Start");
+
+        NearGridParameter();
+        gotrack(myTrack);
+        mc.Join();
+        Led led_ = Led.GetInstance();
+        led_.AdjustLight(parameterManager);
+        Thread.Sleep(200);
+        surfacerecog();
+        SL2.Info("Neargrid End");
+        }
 
 
 
@@ -4646,13 +4770,13 @@ namespace NagaraStage.Ui {
             for (int i = 0; gotobase < 1; i++) {
 
                 Vector3 initialpos = mc.GetPoint();
-                double moverange = 7 * dz_img;
+                double moverange = 9 * dz_img;
                 double predpoint = moverange + initialpos.Z;
 
                 if (predpoint < surface.UpBottom) {
                     gotobase = 1;
 
-                    dz = surface.UpBottom - initialpos.Z + 7 * dz_price_img;
+                    dz = surface.UpBottom - initialpos.Z + 9 * dz_price_img;
                 }
 
 
@@ -4671,16 +4795,16 @@ namespace NagaraStage.Ui {
                     Msdxdy[i].X * Sh,//Dx
                     Msdxdy[i].Y * Sh,//Dy
                     dz_img,//Dz
-                    8);//number of images
+                    10);//number of images
 
 
-                LStage.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITUpMid[7].StageCoord.X, LiITUpMid[7].StageCoord.Y, LiITUpMid[7].StageCoord.Z));
-                LiITUpMid[7].img.ImWrite(datarootdirpath + string.Format(@"\img_l_up_{0}.bmp", i));
+                LStage.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITUpMid[9].StageCoord.X, LiITUpMid[9].StageCoord.Y, LiITUpMid[9].StageCoord.Z));
+                LiITUpMid[9].img.ImWrite(datarootdirpath + string.Format(@"\img_l_up_{0}.bmp", i));
                 UpTrackInfo.Add(LiITUpMid);
 
 
                 List<Mat> binimages = new List<Mat>();
-                for (int t = 0; t <= 7; t++) {
+                for (int t = 0; t <= 9; t++) {
                     Mat bin = (Mat)DogContrastBinalize(LiITUpMid[t].img);
 
                     double xx = myTrack.MsDX * myTrack.MsDX;
@@ -4693,7 +4817,7 @@ namespace NagaraStage.Ui {
                 }
 
                 //trackを重ねる処理を入れる。
-                Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);
+                Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 6);//, true);
                 //Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, true);
 
                 if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
@@ -4766,14 +4890,14 @@ namespace NagaraStage.Ui {
             for (int i = 0; goto_dgel < 1; i++) {
                 ///////移動して画像処理をしたときに、下gelの下に入らないようにする。
                 Vector3 initialpos = mc.GetPoint();
-                double moverange = 7 * dz_img;
+                double moverange = 9 * dz_img;
                 double predpoint = moverange + initialpos.Z;
 
                 if (predpoint < surface.LowBottom)//もしもbaseに入りそうなら、8枚目の画像がちょうど下gelを撮影するようにdzを調整する。
                 {
                     goto_dgel = 1;
 
-                    dz = surface.LowBottom - initialpos.Z + 7 * dz_price_img;
+                    dz = surface.LowBottom - initialpos.Z + 9 * dz_price_img;
                 }
                 ////////
 
@@ -4793,17 +4917,17 @@ namespace NagaraStage.Ui {
                     Msdxdy[i].X * Sh_low,
                     Msdxdy[i].Y * Sh_low,
                     dz_img,
-                    8);
+                    10);
 
                 //画像・座標の記録
-                LStage_Low.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITLowMid[7].StageCoord.X, LiITLowMid[7].StageCoord.Y, LiITLowMid[7].StageCoord.Z));
-                LiITLowMid[7].img.ImWrite(datarootdirpath + string.Format(@"\img_l_low_{0}.bmp", i));
+                LStage_Low.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITLowMid[9].StageCoord.X, LiITLowMid[9].StageCoord.Y, LiITLowMid[9].StageCoord.Z));
+                LiITLowMid[9].img.ImWrite(datarootdirpath + string.Format(@"\img_l_low_{0}.png", i));
 
                 LowTrackInfo.Add(LiITLowMid);//撮影した8枚の画像と、撮影した位置を記録する。
 
                 //撮影した画像をここで処理する。
                 List<Mat> binimages = new List<Mat>();
-                for (int t = 0; t <= 7; t++) {
+                for (int t = 0; t <= 9; t++) {
                     Mat bin = (Mat)DogContrastBinalize(LiITLowMid[t].img);
 
                     double xx = myTrack.MsDX * myTrack.MsDX;
@@ -4815,7 +4939,7 @@ namespace NagaraStage.Ui {
                     binimages.Add(bin);
                 }
                 //trackを重ねる処理を入れる。
-                Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);//画像の8枚目におけるtrackのpixel座標を算出する。
+                Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 6);//, true);//画像の8枚目におけるtrackのpixel座標を算出する。
 
                 //もし検出に失敗した場合はループを抜ける。
                 if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
@@ -4884,9 +5008,13 @@ namespace NagaraStage.Ui {
                 mc.Join();
             }
 
-
-
             //file write out up_gel
+            string txtfileName_surface = datarootdirpath + string.Format(@"\surface.txt");
+            StreamWriter twriter_surface = File.CreateText(txtfileName_surface);
+            twriter_surface.WriteLine("{0} {1} {2} {3}", surface.UpTop, surface.UpBottom, surface.LowTop, surface.LowBottom);
+            twriter_surface.Close();
+
+
             string txtfileName_sh_up = datarootdirpath + string.Format(@"\Sh_up.txt");
             StreamWriter twriter_sh_up = File.CreateText(txtfileName_sh_up);
             twriter_sh_up.WriteLine("{0}", Sh);
@@ -4976,6 +5104,9 @@ namespace NagaraStage.Ui {
             StreamWriter twriter_time_log = File.CreateText(txtfileName_time_log);
             twriter_time_log.WriteLine("{0} {1} {2}", myTrack.MsDX, myTrack.MsDY, worktime.Elapsed);
             twriter_time_log.Close();
+
+            GoTopUp();
+            mc.Join();
 
         }//startAutoFollowingStep1_not_jumpButton_Click
 
