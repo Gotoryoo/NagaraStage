@@ -3258,7 +3258,7 @@ namespace NagaraStage.Ui {
 
                 //画像・座標の記録
                 LStage_Low.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITLowMid[number_of_images - 1].StageCoord.X, LiITLowMid[number_of_images - 1].StageCoord.Y, LiITLowMid[number_of_images - 1].StageCoord.Z));
-                LiITLowMid[7].img.ImWrite(datarootdirpath + string.Format(@"\img_l_low_{0}.png", i));
+                LiITLowMid[number_of_images - 1].img.ImWrite(datarootdirpath + string.Format(@"\img_l_low_{0}.png", i));
 
                 LowTrackInfo.Add(LiITLowMid);//撮影した8枚の画像と、撮影した位置を記録する。
                 
