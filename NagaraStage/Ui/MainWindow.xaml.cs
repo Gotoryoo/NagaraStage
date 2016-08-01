@@ -3032,13 +3032,24 @@ namespace NagaraStage.Ui {
             Surface surface = Surface.GetInstance(parameterManager);
             try {
                 Vector3 cc = mc.GetPoint();
-                double Zp = surface.UpTop+0.015;
+                double Zp = surface.UpTop + 0.015;
                 mc.MoveTo(new Vector3(cc.X, cc.Y, Zp));
                 mc.Join();
             } catch (ArgumentOutOfRangeException) {
                 MessageBox.Show("Cannot move to top surface of upperlayer ");
             }
-
+        }
+         private void GoToDown() {
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            Surface surface = Surface.GetInstance(parameterManager);
+            try {
+                Vector3 cc = mc.GetPoint();
+                double Zp = surface.LowBottom-0.115;
+                mc.MoveTo(new Vector3(cc.X, cc.Y, Zp));
+                mc.Join();
+            } catch (ArgumentOutOfRangeException) {
+                MessageBox.Show("Cannot move to top surface of upperlayer ");
+            }
         }
         //.......................................................................
         private void Detectbeam(Track myTrack, int mod, int pl) {
@@ -3066,7 +3077,7 @@ namespace NagaraStage.Ui {
             //for up layer
 
             int number_of_images = 10;
-            int hits = 5;
+            int hits = 6;
 
             double Sh = 0.5 / (surface.UpTop - surface.UpBottom);
             double tansi = Math.Sqrt(myTrack.MsDX * myTrack.MsDX + myTrack.MsDY * myTrack.MsDY);
@@ -3330,7 +3341,7 @@ namespace NagaraStage.Ui {
                 Vector3 dstpoint_ = new Vector3(
                   currentpoint.X - Msdxdy[0].X * 0.05* Sh,
                   currentpoint.Y - Msdxdy[0].Y * 0.05 * Sh,
-                  currentpoint.Z - 0.05
+                  currentpoint.Z - 0.02
                    );
                 mc.MovePoint(dstpoint_);
                 mc.Join();
@@ -3340,9 +3351,11 @@ namespace NagaraStage.Ui {
                 List<ImageTaking> NotDetect = TakeSequentialImage(
                         Msdxdy[0].X * Sh,
                         Msdxdy[0].Y * Sh,
-                        0.006,
+                        0.003,
                        20);
-               
+
+               /* string logtxt = string.Format(@"C:\MKS_test\WorkingTime\{0}\{1}-{2}_TTracking.txt", mod, mod, pl);
+                SimpleLogger SL1 = new SimpleLogger(logtxt, sp1[0], sp1[1]);*/
 
                 string txtfileName_t_not_detect = datarootdirpath + string.Format(@"\not_detect.txt");
                 StreamWriter twriter_t_not_detect = File.CreateText(txtfileName_t_not_detect);
@@ -3454,8 +3467,7 @@ namespace NagaraStage.Ui {
                 string TPC;
                 int LL = LStage_Low.Count;
                 if (LL == 0) {
-                    TPC = "No Tracking";
-                    return;
+                    TPC = "Nopass_topsurface";                   
                     
                 } else {
                     double LZ = Math.Abs(LStage_Low[LL - 1].Z);
@@ -3467,27 +3479,24 @@ namespace NagaraStage.Ui {
                     } else {
 
                         TPC = "NoPass";
-                    }
-             
-               //     string[] sp1 = myTrack.IdString.Split('-');
-
-                /*    string logtxt_ = string.Format(@"c:\test\bpm\{0}\{1}-{2}_TK.txt", mod, mod, pl);
-                    //string log_ = string.Format("{0} \n", sw.Elapsed);
-                    string log_ = string.Format("{0} {1} {2} {3} {4} \n", sp1[0], sp1[1], TPC, LZ, Math.Abs(surface.LowBottom));
-                    StreamWriter swr = new StreamWriter(logtxt_, true, Encoding.ASCII);
-                    swr.Write(log_);
-                    swr.Close();*/
-                   
-                    string[] sp1 = myTrack.IdString.Split('-');
-                    string logtxt_ = string.Format(@"c:\test\bpm\{0}\{1}-{2}_TCK.txt", mod, mod, pl);
-                    //string log_ = string.Format("{0} \n", sw.Elapsed);
-                    string log_ = string.Format("{0} {1} {2} {3} {4} \n", sp1[0], sp1[1], TPC, LZ, Math.Abs(surface.LowBottom));
-                    StreamWriter swr = new StreamWriter(logtxt_, true, Encoding.ASCII);
-                    swr.Write(log_);
-                    swr.Close();
+                    }              
+                    
                 }
+                string[] sp1 = myTrack.IdString.Split('-');
+             /*   string logtxt_ = string.Format(@"c:\test\bpm\{0}\{1}-{2}_TCK.txt", mod, mod, pl);
+                //string log_ = string.Format("{0} \n", sw.Elapsed);
+                string log_ = string.Format("{0} {1} {2} \n", sp1[0], sp1[1], TPC);
+                StreamWriter swr = new StreamWriter(logtxt_, true, Encoding.ASCII);
+                swr.Write(log_);
+                swr.Close();*/
+
+                string logtxt = string.Format(@"C:\MKS_test\followingCheck\{0}\{1}-{2}_Trackingcheck.txt", mod, mod, pl);
+                SimpleLogger SL1 = new SimpleLogger(logtxt, sp1[0], sp1[1]);
+                SL1.Trackcheck(TPC);
+
             }
     }
+        
         //........................................................................
 
         private void Full_Automatic_Tracking_button(object sender, RoutedEventArgs e) {
@@ -3514,13 +3523,13 @@ namespace NagaraStage.Ui {
 
                 MessageBoxResult r;
                 // Massage box to check tracking is ok or not, if OK is put, will go to track position.
-            /*    r = MessageBox.Show(
+                r = MessageBox.Show(
                   String.Format("Let's go to {0}; {1} {2}. OK->Go, Cancel->exit", myTrack.IdString, myTrack.MsX, myTrack.MsY),
                   Properties.Strings.LensTypeSetting,
                   MessageBoxButton.OKCancel);
                 if (r == MessageBoxResult.Cancel) {
                     return;
-                }*/
+                }
 
 
              // Go to the track position
@@ -3533,7 +3542,7 @@ namespace NagaraStage.Ui {
 
 
              // Oil putting time
-                Thread.Sleep(3000);
+                Thread.Sleep(1000);
                 led_.AdjustLight(parameterManager);
 
 
@@ -3576,6 +3585,9 @@ namespace NagaraStage.Ui {
                 if (surfacerecogOK == false) {
                     continue;//go to the next track
                 }
+                Thread.Sleep(100);
+                GoTopUp();
+                mc.Join();
 
              // Beampatternmatching
                 BPMW(myTrack, mod, pl);
@@ -3590,7 +3602,7 @@ namespace NagaraStage.Ui {
 
 
                 // Taking Beam pattern
-                Detectbeam(myTrack, mod, pl);
+               // Detectbeam(myTrack, mod, pl);
 
 
                 // Go to top of uppr layer after tracking is finished
@@ -3602,13 +3614,13 @@ namespace NagaraStage.Ui {
 
 
                 // Massage box to cheack tracking is ok or not, it Ok is put, it will go to next track.
-              /*  r = MessageBox.Show(
+                r = MessageBox.Show(
                      "OK->Next, Cancel->exit",
                      Properties.Strings.LensTypeSetting,
                      MessageBoxButton.OKCancel);
                 if (r == MessageBoxResult.Cancel) {
                     return;
-                }*/
+                }
                 SL1.Info("Tracking End");
 
             }
@@ -3634,20 +3646,94 @@ namespace NagaraStage.Ui {
             string logtxt = string.Format(@"C:\MKS_test\WorkingTime\{0}\{1}-{2}_TTracking.txt", mod, mod, pl);
             SimpleLogger SL1 = new SimpleLogger(logtxt, sp1[0], sp1[1]);
 
-            // Tracking in emulsion
+        /*    // Tracking in emulsion
             SL1.Info("Tracking Start");            
-            Tracking(myTrack, mod, pl, false);
-           
+          //  Tracking(myTrack, mod, pl, false);
 
-
+            GoToDown();
+            mc.Join();
             // Taking Beam pattern            
             Detectbeam(myTrack, mod, pl);
             
 
             // Go to top of uppr layer after tracking is finished
+            
+
+            
+            SL1.Info("Tracking End");*/
+
+            // Oil putting time
+            Thread.Sleep(1000);
+            led_.AdjustLight(parameterManager);
+
+
+            // Go to near grid mark and get parameter for shrinkage in X,Y
+            NearGridParameter();
+
+
+            // Go to track position after correction with near gridmark
+            gotrack(myTrack);
+            mc.Join();
+            Vector3 initialpos = mc.GetPoint();
+
+
+            bool surfacerecogOK = false;
+
+            // Detection of boundaries of emulsion layers
+            for (int trial = 0; trial < 1; trial++) {
+                mc.MoveTo(initialpos);
+                mc.Join();
+
+                mc.MoveTo(new Vector3(initialpos.X, initialpos.Y, initialpos.Z + 0.02));
+                mc.Join();
+                led_.AdjustLight(parameterManager);
+                Thread.Sleep(500);
+                surfacerecog();
+                while (surface.IsActive) {
+                    Thread.Sleep(500);
+                }
+                mc.Join();
+                Double Base = (surface.UpBottom - surface.LowTop) * 1000;
+                Double UpLayer = (surface.UpTop - surface.UpBottom) * 1000;
+                Double LowLayer = (surface.LowTop - surface.LowBottom) * 1000;
+
+                if (Base < 50.0 && UpLayer > 200.0 && LowLayer > 200.0) {
+                    surfacerecogOK = true;
+                    break;
+                }
+            }
+
+           // if (surfacerecogOK == false) {
+
+           //     continue;//go to the next track
+          //  }
+        
+            Thread.Sleep(100);
             GoTopUp();
             mc.Join();
-            SL1.Info("Tracking End");
+
+            // Beampatternmatching
+            BPMW(myTrack, mod, pl);
+            mc.Join();
+            Thread.Sleep(100);
+
+
+            // Tracking in emulsion
+            Tracking(myTrack, mod, pl, false);
+
+            // #If the the followed track is stop or cause event, go to Upper surface and to the next track#
+
+
+            // Taking Beam pattern
+            // Detectbeam(myTrack, mod, pl);
+
+
+            // Go to top of uppr layer after tracking is finished
+            GoTopUp();
+            mc.Join();
+            Thread.Sleep(100);
+
+
         }
          
 

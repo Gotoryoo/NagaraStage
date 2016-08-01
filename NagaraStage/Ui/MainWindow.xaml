@@ -10,12 +10,12 @@
         WindowStartupLocation="CenterScreen" Loaded="RibbonWindow_Loaded" 
         Closing="RibbonWindow_Closing" Icon="/NagaraStage;component/Images/autostage.ico">    
     
-    <Grid x:Name="layoutRoot">
+    <Grid x:Name="layoutRoot" Height="802">
         <Grid.RowDefinitions>
             <RowDefinition Height="139" x:Name="ribbon" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <ribbon:Ribbon x:Name="Ribbon" SelectionChanged="Ribbon_SelectionChanged">
+        <ribbon:Ribbon x:Name="Ribbon" SelectionChanged="Ribbon_SelectionChanged" Margin="1,4,-1,661" Grid.RowSpan="2">
             <ribbon:Ribbon.ApplicationMenu>
                 <ribbon:RibbonApplicationMenu Height="24" IsMainMenu="True" Name="appMenu">
                     <ribbon:RibbonApplicationMenuItem Header="{Binding Source={StaticResource strings}, Path=NewStage}"
@@ -134,6 +134,12 @@
                         Name="SurfaceLandingButton" 
                         SmallImageSource="/Images/init.png"
                         Label="SurfaceLanding" Click="SurfaceLandingButton_Click" />
+                    <ribbon:RibbonButton 
+                        Name="GotoUpTopbutton" 
+                        SmallImageSource="/Images/init.png"
+                        Label="GotoUpTop" Click="GotoUpTop_button" />
+                    
+               
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>
             <ribbon:RibbonTab x:Name="coordTab" Header="{Binding Source={StaticResource strings}, Path=CoordTab}">
@@ -250,6 +256,10 @@
                         Label="GridMeasure07"
                         LargeImageSource="/Images/start.png" Click="GridMeasureButton_Click" />
                     <ribbon:RibbonButton
+                        x:Name="GridMeasure373Button" 
+                        Label="GridMeasure373"
+                        LargeImageSource="/Images/start.png" Click="GridMeasureButton373_Click" />
+                    <ribbon:RibbonButton
                         x:Name="Class1Button" 
                         Label="Class1"
                         LargeImageSource="/Images/start.png" Click="Class1Button_Click" />
@@ -279,6 +289,33 @@
                         x:Name="startautofollowingButton" 
                         Label="{Binding Source={StaticResource strings}, Path=Start_auto_follwing}"
                         LargeImageSource="/Images/start.png" Click="start_auto_following_Click" />
+                    
+                    <ribbon:RibbonButton
+                        x:Name="Startbutton_MKS" 
+                        Label="{Binding Source={StaticResource strings}, Path=Start}"
+                        LargeImageSource="/Images/start.png" Click="Start_button" />
+                    <ribbon:RibbonButton
+                        x:Name="NewStep1Button" 
+                        Label="{Binding Source={StaticResource strings}, Path=Step1}"
+                        LargeImageSource="/Images/start.png" Click=" startAutoFollowingNewStep1Button_Click" />
+                    <ribbon:RibbonButton
+                        x:Name="GridTakingButtonFullAutomaticTrackingbutton" 
+                        Label="FAT(1+2+all)"
+                        LargeImageSource="/Images/start.png" Click="Full_Automatic_Tracking_button" />
+                    </ribbon:RibbonGroup>
+                    <ribbon:RibbonGroup 
+                        Name="Trackingfor_PL2"
+                        Header="{Binding Source={StaticResource strings}, Path=TrackingForPL2}">                   
+                    <ribbon:RibbonButton
+                        x:Name="NearGrid_Surfacerec" 
+                        Label="NearGrid+Surfacrec(1)"
+                        LargeImageSource="/Images/start.png" Click=" GoNearGrid_CorrecteTrackPosition_button" />
+                    <ribbon:RibbonButton
+                        x:Name="Tracking_Botton" 
+                        Label="Tracking(2)"
+                        LargeImageSource="/Images/start.png" Click="Full_Automatic_Tracking_PL2_button" />
+
+
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>                       
             <ribbon:RibbonTab
