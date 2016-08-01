@@ -138,6 +138,14 @@
                         Name="GotoUpTopbutton" 
                         SmallImageSource="/Images/init.png"
                         Label="GotoUpTop" Click="GotoUpTop_button" />
+                    <ribbon:RibbonButton 
+                        Name="Coodinate_Record" 
+                        SmallImageSource="/Images/init.png"
+                        Label="Coodinate_Record" Click="coordinate_record" />
+                    <ribbon:RibbonButton 
+                        Name="Coodinate_Init" 
+                        SmallImageSource="/Images/init.png"
+                        Label="Coodinate_Init" Click="coordinate_init" />
                     
                
                 </ribbon:RibbonGroup>

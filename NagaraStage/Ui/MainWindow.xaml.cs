@@ -2510,6 +2510,51 @@ namespace NagaraStage.Ui {
         }
 
 
+
+        private void coordinate_record(object sender, RoutedEventArgs e) {
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+
+            Vector3 CenterPoint = mc.GetPoint();
+
+            string fileName = string.Format(@"c:\test\coordinate.txt");
+
+
+
+            System.IO.StreamWriter sw = new System.IO.StreamWriter(fileName, true, System.Text.Encoding.GetEncoding("shift_jis"));
+            //TextBox1.Textの内容を追加で書き込む
+
+            string coordinate = string.Format("{0} {1} {2}\n", CenterPoint.X, CenterPoint.Y, CenterPoint.Z);
+
+            sw.Write(coordinate);
+            //閉じる
+            sw.Close();
+
+
+           
+        }
+
+        private void coordinate_init(object sender, RoutedEventArgs e) {
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+
+            Vector3 CenterPoint = mc.GetPoint();
+
+            string fileName = string.Format(@"c:\test\coordinate.txt");
+
+            System.IO.StreamWriter sw = new System.IO.StreamWriter(fileName, false, System.Text.Encoding.GetEncoding("shift_jis"));
+            //TextBox1.Textの内容を追加で書き込む
+
+            string coordinate = string.Format("");
+
+            sw.Write(coordinate);
+            //閉じる
+            sw.Close();
+
+            
+
+        }
+
+
+
 //       ....................2016/5/18.........../MKS for automatic track following combination////////////////
 
         //.. Approximatestraightbase
