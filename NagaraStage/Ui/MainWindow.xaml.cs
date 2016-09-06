@@ -3235,13 +3235,16 @@ namespace NagaraStage.Ui {
             double pix = 0.26;//pix_to_micron
 
             //Making a mask
-            double A = 90;
-            double B = 180;
+            //double A = 90;ver ソウ
+            double A = 20;//ver GTR
+            //double B = 180;ver ソウ
+            double B = 155;//ver GTR
             double C = windowsizeH;
           
 
             int mask_x = (int)(A + tant * B);//if tantheta=0.38, mask_x=30
-            int mask_y = (int)(C + tant* (30));
+            //int mask_y = (int)(C + tant * (2*C));//+ tant * (80));ver ソウ
+            int mask_y = (int)C;//ver GTR
             if (mask_x < mask_y) {
                 mask_x = mask_y;
             }
@@ -3380,13 +3383,16 @@ namespace NagaraStage.Ui {
             double pix = 0.26;//pix_to_micron
 
             //Making a mask
-            double A = 90;
-            double B = 180;
+            //double A = 90;ver ソウ
+            double A = 20;//ver GTR
+            //double B = 180;ver ソウ
+            double B = 155;//ver GTR
             double C = windowsizeH;
 
 
             int mask_x = (int)(A + tant * B);//if tantheta=0.38, mask_x=30
-            int mask_y = (int)(C + tant * (2*C));//+ tant * (80));
+            //int mask_y = (int)(C + tant * (2*C));//+ tant * (80));ver ソウ
+            int mask_y = (int)C * 2;//ver GTR
             if (mask_x < mask_y) {
                 mask_x = mask_y;
             }
@@ -5024,8 +5030,8 @@ namespace NagaraStage.Ui {
             //            TimeLogger tl = new TimeLogger("savepath");
 
             //for up layer
-            int window_H1 = 15;
-            int window_H2 = 30;
+            int window_H1 = 23;
+            int window_H2 = 23;
             int number_of_images = 10;
 
 
