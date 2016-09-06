@@ -18,6 +18,7 @@ using Microsoft.Windows.Controls.Ribbon;
 using System.Windows.Media.Animation;
 using System.Threading;
 
+
 using NagaraStage;
 using NagaraStage.IO;
 using NagaraStage.Ui;
@@ -1976,6 +1977,30 @@ namespace NagaraStage.Ui {
         }
 
 
+        private void DownBeamButton_Click(object sender, RoutedEventArgs e) {
+            if (parameterManager.Magnification != 50) {
+                MessageBox.Show(String.Format(Properties.Strings.LensTypeException02, 50));
+                return;
+            }
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            DownBeam downbeam = DownBeam.GetInstance(parameterManager);
+
+            manager.Enqueue(downbeam);
+            manager.Start();
+        }
+
+        private void UpBeamButton_Click(object sender, RoutedEventArgs e) {
+            if (parameterManager.Magnification != 50) {
+                MessageBox.Show(String.Format(Properties.Strings.LensTypeException02, 50));
+                return;
+            }
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            UpBeam upbeam = UpBeam.GetInstance(parameterManager);
+
+            manager.Enqueue(upbeam);
+            manager.Start();
+        }
+
 
 
         private void start_following_Click(object sender, RoutedEventArgs e) {//Ξ追跡アルゴリズム
@@ -2617,7 +2642,9 @@ namespace NagaraStage.Ui {
         //...............................................
 
         // track detection....................///////
-        static OpenCvSharp.CPlusPlus.Point TrackDetection(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsize = 40, int phthresh = 5, bool debugflag = false) {
+
+
+        static OpenCvSharp.CPlusPlus.Point TrackDetection_naka(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsize = 40, int phthresh = 5, double dx = 1.2, double dy = 1.2, bool debugflag = false) {
             int x0 = px - 256;
             int y0 = py - 220;
 
@@ -2625,7 +2652,1192 @@ namespace NagaraStage.Ui {
 
             // Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);
 
+            double phi = Math.Atan2(dy, dx);
+            double angle = phi * (180 / Math.PI);
+            double tant = Math.Sqrt(dx * dx + dy * dy);
+            double pix = 0.26;//pix_to_micron
 
+            //Making a mask
+            double A = 90;
+            double B = 180;
+            double C = 20;
+            double D = 40;
+
+            int mask_x = (int)(A + tant * B);//if tantheta=0.38, mask_x=30
+            int mask_y = (int)(C);
+            if (mask_x < mask_y) {
+                mask_x = mask_y;
+            }
+            int mask_x2 = (int)(A + tant * B);//if tantheta=0.38, mask_x=30
+            int mask_y2 = (int)(D);
+            if (mask_x < mask_y) {
+                mask_x = mask_y;
+            }
+
+            int counter = 0;
+           
+                    using (Mat big = Mat.Zeros(600, 600, MatType.CV_8UC1))
+                    using (Mat imgMask = Mat.Zeros(big.Height, big.Width, MatType.CV_8UC1)) {
+
+                        //make the size of mask
+                        int ystart = big.Height / 2 - mask_y / 2;
+                        int xstart = big.Width / 2 - mask_x / 2;
+                        int ystart2 = big.Height / 2 - mask_y2 / 2;
+                        int xstart2 = big.Width / 2 - mask_x2 / 2;
+
+                        OpenCvSharp.CPlusPlus.Rect recMask1 = new OpenCvSharp.CPlusPlus.Rect(xstart, ystart, mask_x, mask_y);
+                        Cv2.Rectangle(imgMask, recMask1, 255, -1);
+                        Mat imgmask1 = imgMask.Clone();
+
+                    /*    OpenCvSharp.CPlusPlus.Rect recMask2 = new OpenCvSharp.CPlusPlus.Rect(xstart2, ystart2, mask_x, mask_y);
+                        Cv2.Rectangle(imgMask, recMask2, 255, -1);
+                        Mat imgmask2 = imgMask.Clone();*/
+
+
+                        //Mat affineMask = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), -angle, 1);
+                        //Cv2.WarpAffine(imgMask, imgMask, affineMask, imgMask.Size());
+
+
+                        for (int p = 0; p < mats.Count; p++) {
+                            int startx = big.Width / 2 - mats[p].Width / 2 ;
+                            int starty = big.Height / 2 - mats[p].Height / 2 ;
+                            //int startx = big.Width / 2 - mats[p].Width / 2 + (int)(p * ax * shiftpitch / 10.0);
+                            // int starty = big.Height / 2 - mats[p].Height / 2 + (int)(p * ay * shiftpitch / 10.0);
+                            Cv2.Add(
+                                big[starty, starty + mats[p].Height, startx, startx + mats[p].Width],
+                                mats[p],
+                                big[starty, starty + mats[p].Height, startx, startx + mats[p].Width]);
+                        }
+
+
+
+                            Mat big_c = big.Clone();// {
+                            Mat big1 = big*40;
+                            Cv2.ImShow("superimpose", big * 40);
+                            big1.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\naka20\superimpose.png"));
+
+                            Mat affineMask = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), -angle, 1);
+                            Cv2.WarpAffine(big, big, affineMask, big.Size());
+                            Cv2.ImShow("superimpose_roi", big * 40);
+                            Mat big2 = big*40;
+                            big2.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\naka20\superimposeroi.png"));
+
+                            Cv2.BitwiseAnd(big, imgMask, big);
+                            Cv2.ImShow("imgcut", big * 40);
+                            Mat big3 = big*40;
+                            big3.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\naka20\imgcut.png"));
+                           
+                            Cv2.Threshold(big, big, phthresh, 255, ThresholdType.ToZero);                          
+                            Cv2.ImShow("bin", big * 40);
+                            Mat big4 = big * 40;
+                            big4.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\naka20\bin.png"));
+
+                            Mat affineMask2 = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), angle, 1);
+                            Cv2.WarpAffine(big, big, affineMask2, big.Size());
+                             
+                            Cv2.WaitKey(0);
+
+
+                           
+                          //  if (debugflag == true) {//
+                               
+                           // }
+                      //  }//using big_c
+
+                        using (CvMemStorage storage = new CvMemStorage())
+                        using (CvContourScanner scanner = new CvContourScanner(big.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
+                            foreach (CvSeq<CvPoint> c in scanner) {
+                                CvMoments mom = new CvMoments(c, false);
+                                if (c.ElemSize < 2) continue;
+                                if (mom.M00 < 1.0) continue;
+                                double mx = mom.M10 / mom.M00;
+                                double my = mom.M01 / mom.M00;
+                                rawmicrotrack rm = new rawmicrotrack();
+                                rm.ax = 0;
+                                rm.ay = 0;
+                                rm.cx = (int)(mx - big.Width / 2);
+                                rm.cy = (int)(my - big.Height / 2);
+                                rm.pv = (int)(mom.M00);
+                                rms.Add(rm);
+                                //Console.WriteLine(string.Format("{0}   {1} {2}   {3} {4}", rm.pv, ax, ay, rm.cx, rm.cy ));
+                            }
+                        }//using contour
+
+                        //big_c.Dispose();
+
+                        counter++;
+
+
+                    }//using Mat
+
+
+
+            OpenCvSharp.CPlusPlus.Point trackpos = new OpenCvSharp.CPlusPlus.Point(0, 0);
+            if (rms.Count > 0) {
+                rawmicrotrack rm = new rawmicrotrack();
+                double meancx = 0;
+                double meancy = 0;
+                double meanax = 0;
+                double meanay = 0;
+                double meanph = 0;
+                double meanpv = 0;
+                double sumpv = 0;
+
+                for (int i = 0; i < rms.Count; i++) {
+                    meanpv += rms[i].pv * rms[i].pv;
+                    meancx += rms[i].cx * rms[i].pv;
+                    meancy += rms[i].cy * rms[i].pv;
+                    meanax += rms[i].ax * rms[i].pv;
+                    meanay += rms[i].ay * rms[i].pv;
+                    sumpv += rms[i].pv;
+                }
+
+                meancx /= sumpv;//重心と傾きを輝度値で重み付き平均
+                meancy /= sumpv;
+                meanax /= sumpv;
+                meanay /= sumpv;
+                meanpv /= sumpv;
+
+                trackpos = new OpenCvSharp.CPlusPlus.Point(
+                    (int)(meancx) + 256 ,
+                    (int)(meancy) + 220
+                    );
+
+               // double anglex = (meanax * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+               // double angley = (meanay * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+              //  Console.WriteLine(string.Format("{0:f4} {1:f4}", anglex, angley));
+            } else {
+                trackpos = new OpenCvSharp.CPlusPlus.Point(-1, -1);
+            }
+
+
+            return trackpos;
+        }//track detection
+
+        static OpenCvSharp.CPlusPlus.Point TrackDetection_naka_(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsize = 40, int phthresh = 5, double dx = 1.2, double dy = 1.2, bool debugflag = false) {
+            int x0 = px - 256;
+            int y0 = py - 220;
+
+            List<rawmicrotrack> rms = new List<rawmicrotrack>();
+
+            // Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);
+
+            double phi = Math.Atan2(dy, dx);
+            double angle = phi * (180 / Math.PI);
+            double tant = Math.Sqrt(dx * dx + dy * dy);
+            double pix = 0.26;//pix_to_micron
+
+            //Making a mask
+            double A = 90;
+            double B = 180;
+            double C = 20;
+            double D = 90;
+
+            int mask_x = (int)(A + tant * B);//if tantheta=0.38, mask_x=30
+            int mask_y = (int)(C);
+            if (mask_x < mask_y) {
+                mask_x = mask_y;
+            }
+            int mask_x2 = (int)(A + tant * B);//if tantheta=0.38, mask_x=30
+            int mask_y2 = (int)(D);
+            if (mask_x2 < mask_y2) {
+                mask_x2 = mask_y2;
+            }
+
+            int counter = 0;
+           
+                    Mat big = Mat.Zeros(600, 600, MatType.CV_8UC1);
+                    Mat imgMask = Mat.Zeros(big.Height, big.Width, MatType.CV_8UC1);
+                    Mat imgMask1 = imgMask.Clone();
+                    Mat imgMask2 = imgMask.Clone();
+                        //make the size of mask
+                    int ystart = big.Height / 2 - mask_y / 2;
+                    int xstart = big.Width / 2 - mask_x / 2;
+                    int ystart2 = big.Height / 2 - mask_y2 / 2;
+                    int xstart2 = big.Width / 2 - mask_x2 / 2;
+
+                    OpenCvSharp.CPlusPlus.Rect recMask1 = new OpenCvSharp.CPlusPlus.Rect(xstart, ystart, mask_x, mask_y);
+                    Cv2.Rectangle(imgMask1, recMask1, 255, -1);
+                    
+
+                    OpenCvSharp.CPlusPlus.Rect recMask2 = new OpenCvSharp.CPlusPlus.Rect(xstart2, ystart2, mask_x2, mask_y2);
+                    Cv2.Rectangle(imgMask2, recMask2, 255, -1);
+                    
+
+
+                     
+                    for (int p = 0; p < mats.Count; p++) {
+                        int startx = big.Width / 2 - mats[p].Width / 2 ;
+                        int starty = big.Height / 2 - mats[p].Height / 2 ;
+                        //int startx = big.Width / 2 - mats[p].Width / 2 + (int)(p * ax * shiftpitch / 10.0);
+                        // int starty = big.Height / 2 - mats[p].Height / 2 + (int)(p * ay * shiftpitch / 10.0);
+                        Cv2.Add(
+                            big[starty, starty + mats[p].Height, startx, startx + mats[p].Width],
+                            mats[p],
+                            big[starty, starty + mats[p].Height, startx, startx + mats[p].Width]);
+                    }
+
+
+
+                                                     
+                     Cv2.ImShow("superimpose", big * 40);
+                           
+             // Rotate image
+                     Mat affineMask = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), -angle, 1);
+                     Cv2.WarpAffine(big, big, affineMask, big.Size());
+                     Mat big_ = big.Clone();
+                     Cv2.ImShow("superimpose_roi", big * 40);
+                     Cv2.ImShow("big_", big_ * 40);
+                   
+              // Cut image with mask          
+                     Cv2.BitwiseAnd(big, imgMask1, big);
+                     Cv2.ImShow("imgcut", big * 40);
+                     Mat big_L1 = big.Clone();
+                    
+              // binalized
+                     Cv2.Threshold(big_L1, big_L1, phthresh, 255, ThresholdType.ToZero);                          
+                     Cv2.ImShow("bin", big_L1 * 40);
+                           
+
+                     Mat affineMask2 = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), angle, 1);
+                     Cv2.WarpAffine(big_L1, big_L1, affineMask2, big_L1.Size());
+
+                     
+             /*...............
+                     Cv2.BitwiseAnd(big_, imgMask2, big_);
+                     Cv2.ImShow("imgcut_", big_ * 40);
+
+                     Cv2.WarpAffine(big_, big_, affineMask2, big_.Size());
+
+                     Cv2.Threshold(big_, big_, phthresh, 255, ThresholdType.ToZero);
+                     Cv2.ImShow("bin", big_ * 40);*/
+
+
+
+
+                     Cv2.WaitKey(0);
+
+                     using ( CvMemStorage storage = new CvMemStorage())
+                     using (CvContourScanner scanner = new CvContourScanner(big_L1.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
+
+
+                         if (scanner.Count() != 0) {
+                             foreach (CvSeq<CvPoint> c in scanner) {
+                                 CvMoments mom = new CvMoments(c, false);
+                                 if (c.ElemSize < 2) continue;
+                                 if (mom.M00 < 1.0) continue;
+                                 double mx = mom.M10 / mom.M00;
+                                 double my = mom.M01 / mom.M00;
+                                 rawmicrotrack rm = new rawmicrotrack();
+                                 rm.ax = 0;
+                                 rm.ay = 0;
+                                 rm.cx = (int)(mx - big_L1.Width / 2);
+                                 rm.cy = (int)(my - big_L1.Height / 2);
+                                 rm.pv = (int)(mom.M00);
+                                 rms.Add(rm);
+
+                             }
+                         } else {
+
+                             Cv2.BitwiseAnd(big_, imgMask2, big_);
+                             Cv2.ImShow("imgcut_", big_ * 40);
+                             Mat big_L2 = big_.Clone();
+
+                             Cv2.WarpAffine(big_L2, big_L2, affineMask2, big_L2.Size());
+
+                             Cv2.Threshold(big_L2, big_L2, phthresh, 255, ThresholdType.ToZero);
+                             Cv2.ImShow("bin_", big_L2 * 40);
+
+                             Cv2.WaitKey(0);
+
+                            using ( CvMemStorage storage2 = new CvMemStorage())
+                            using (CvContourScanner scanner2 = new CvContourScanner(big_L2.ToIplImage(), storage2, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
+                                if (scanner2.Count() != 0) {
+                                    foreach (CvSeq<CvPoint> c2 in scanner2) {
+                                        CvMoments mom2 = new CvMoments(c2, false);
+                                        if (c2.ElemSize < 2) continue;
+                                        if (mom2.M00 < 1.0) continue;
+                                        double mx = mom2.M10 / mom2.M00;
+                                        double my = mom2.M01 / mom2.M00;
+                                        rawmicrotrack rm = new rawmicrotrack();
+                                        rm.ax = 0;
+                                        rm.ay = 0;
+                                        rm.cx = (int)(mx - big_L2.Width / 2);
+                                        rm.cy = (int)(my - big_L2.Height / 2);
+                                        rm.pv = (int)(mom2.M00);
+                                        rms.Add(rm);
+                                        //Console.WriteLine(string.Format("{0}   {1} {2}   {3} {4}", rm.pv, ax, ay, rm.cx, rm.cy ));
+                                    }
+                                } else {
+
+                                    return new OpenCvSharp.CPlusPlus.Point(-1, -1);
+                                }
+                            }
+                         }
+                     }
+                             //Console.WriteLine(string.Format("{0}   {1} {2}   {3} {4}", rm.pv, ax, ay, rm.cx, rm.cy ));
+                         
+                        
+
+                      
+
+                
+
+
+            OpenCvSharp.CPlusPlus.Point trackpos = new OpenCvSharp.CPlusPlus.Point(0, 0);
+            if (rms.Count > 0) {
+                rawmicrotrack rm = new rawmicrotrack();
+                double meancx = 0;
+                double meancy = 0;
+                double meanax = 0;
+                double meanay = 0;
+                double meanph = 0;
+                double meanpv = 0;
+                double sumpv = 0;
+
+                for (int i = 0; i < rms.Count; i++) {
+                    meanpv += rms[i].pv * rms[i].pv;
+                    meancx += rms[i].cx * rms[i].pv;
+                    meancy += rms[i].cy * rms[i].pv;
+                    meanax += rms[i].ax * rms[i].pv;
+                    meanay += rms[i].ay * rms[i].pv;
+                    sumpv += rms[i].pv;
+                }
+
+                meancx /= sumpv;//重心と傾きを輝度値で重み付き平均
+                meancy /= sumpv;
+                meanax /= sumpv;
+                meanay /= sumpv;
+                meanpv /= sumpv;
+
+                trackpos = new OpenCvSharp.CPlusPlus.Point(
+                    (int)(meancx) + 256 ,
+                    (int)(meancy) + 220
+                    );
+
+               // double anglex = (meanax * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+               // double angley = (meanay * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+              //  Console.WriteLine(string.Format("{0:f4} {1:f4}", anglex, angley));
+            } else {
+                trackpos = new OpenCvSharp.CPlusPlus.Point(-1, -1);
+            }
+
+
+            return trackpos;
+        }//track detection
+
+ static Mat GetMask(Mat img, int height, int width)
+        {
+            Mat mask = Mat.Zeros(img.Height, img.Width, MatType.CV_8UC1);
+            int x0 = mask.Width / 2 - width / 2;
+            int y0 = mask.Height / 2 - height / 2;
+            OpenCvSharp.CPlusPlus.Rect rect = new OpenCvSharp.CPlusPlus.Rect(x0, y0, width, height);
+            Cv2.Rectangle(mask, rect, 255, -1);
+            return mask;
+        }
+
+        static OpenCvSharp.CPlusPlus.Point TrackDetection_naka_2(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsizeH = 40, int phthresh = 5, double dx = 1.2, double dy = 1.2, bool debugflag = false) 
+            
+            
+        {
+            Mat img = Mat.Zeros(600, 600, MatType.CV_8UC1);
+            Mat big = img.Clone();
+            for (int p = 0; p < mats.Count; p++) {
+                int startx = img.Width / 2 - mats[p].Width / 2;
+                int starty = img.Height / 2 - mats[p].Height / 2;
+                Cv2.Add(
+                    img[starty, starty + mats[p].Height, startx, startx + mats[p].Width],
+                    mats[p],
+                    img[starty, starty + mats[p].Height, startx, startx + mats[p].Width]);
+            }
+
+            bool debug = true;
+            //rotationparam
+            double phi = Math.Atan2(dy, dx);
+            double angle = phi * (180 / Math.PI);
+            double tant = Math.Sqrt(dx * dx + dy * dy);
+            double pix = 0.26;//pix_to_micron
+
+
+            // Rotate image
+            Mat affineMask = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(img.Width / 2, img.Height / 2), -angle, 1);
+            Cv2.WarpAffine(img, img, affineMask, img.Size());
+
+           
+            //Making a mask
+            int heightL1 = 15;
+            int heightL2 = 30;
+
+            int width = (int)(90 + tant * 180);
+            width = (width > heightL1) ? width : heightL1;
+
+            Mat maskL1 = GetMask(img, heightL1, width);
+            Mat maskL2 = GetMask(img, heightL2, width);
+            
+
+            // Cut image with mask, thresholding for L1-area         
+            Mat imgL1 = img.Clone();
+            Cv2.BitwiseAnd(imgL1, maskL1, imgL1);
+            if (debug) {
+                Cv2.ImShow("imgL1", imgL1*40);
+                Cv2.WaitKey(0);
+            }
+            
+            Cv2.Threshold(imgL1, imgL1, phthresh, 255, ThresholdType.ToZero);
+
+            //inverse rotation for L1-area
+            Mat affineMask2 = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(imgL1.Width / 2, imgL1.Height / 2), angle, 1);
+            Cv2.WarpAffine(imgL1, imgL1, affineMask2, imgL1.Size());
+
+            if (debug)
+            {
+                Cv2.ImShow("imgL1", imgL1);
+                Cv2.WaitKey(0);
+            }
+
+            //raw micro tracks
+            List<rawmicrotrack> rms = new List<rawmicrotrack>();
+
+
+            //contour detection for L1-area
+            using (CvMemStorage storage = new CvMemStorage())
+            using (CvContourScanner scanner = new CvContourScanner(imgL1.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple))
+            {
+
+                foreach (CvSeq<CvPoint> c in scanner)
+                {
+                    CvMoments mom = new CvMoments(c, false);
+                    if (c.ElemSize < 2) continue;
+                    if (mom.M00 < 1.0) continue;
+                    double mx = mom.M10 / mom.M00;
+                    double my = mom.M01 / mom.M00;
+                    rawmicrotrack rm = new rawmicrotrack();
+                    rm.ax = 0;
+                    rm.ay = 0;
+                    rm.cx = (int)(mx - imgL1.Width / 2);
+                    rm.cy = (int)(my - imgL1.Height / 2);
+                    rm.pv = (int)(mom.M00);
+                    rms.Add(rm);
+                }                        
+            }
+
+
+            //if nocandidate, spread ROI 
+            // Cut image with mask, thresholding for L2-area
+            Mat imgL2 = img.Clone();
+            Cv2.BitwiseAnd(imgL2, maskL2, imgL2);
+            if (debug) {
+                Cv2.ImShow("cutL2", imgL2);
+                Cv2.WaitKey(0);
+            }
+            Cv2.Threshold(imgL2, imgL2, phthresh, 255, ThresholdType.ToZero);
+            if (debug)
+            {
+                Cv2.ImShow("imgL2", imgL2);
+                Cv2.WaitKey(0);
+            }
+
+            //inverse rotation for L2-area
+            Mat affineMaskL2 = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(imgL2.Width / 2, imgL2.Height / 2), angle, 1);
+            Cv2.WarpAffine(imgL2, imgL2, affineMask2, imgL2.Size());
+
+
+            //contour detection for L2-area
+            //if nocandidate, not found 
+            using (CvMemStorage storageL2 = new CvMemStorage())
+            using (CvContourScanner scannerL2 = new CvContourScanner(imgL2.ToIplImage(), storageL2, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple))
+            {
+
+                if (scannerL2.Count() != 0)
+                {
+                    foreach (CvSeq<CvPoint> c in scannerL2)
+                    {
+                        CvMoments mom = new CvMoments(c, false);
+                        if (c.ElemSize < 2) continue;
+                        if (mom.M00 < 1.0) continue;
+                        double mx = mom.M10 / mom.M00;
+                        double my = mom.M01 / mom.M00;
+                        rawmicrotrack rm = new rawmicrotrack();
+                        rm.ax = 0;
+                        rm.ay = 0;
+                        rm.cx = (int)(mx - imgL2.Width / 2);
+                        rm.cy = (int)(my - imgL2.Height / 2);
+                        rm.pv = (int)(mom.M00);
+                        rms.Add(rm);
+                    }
+                }
+                else
+                {
+                    //not detected
+                    return new OpenCvSharp.CPlusPlus.Point(-1, -1);
+                }
+
+            }//using L2 contour 
+
+
+            //calc average of raw-microtracks
+            OpenCvSharp.CPlusPlus.Point trackpos = new OpenCvSharp.CPlusPlus.Point(0, 0);
+            if (rms.Count > 0)
+            {
+                rawmicrotrack rm = new rawmicrotrack();
+                double meancx = 0;
+                double meancy = 0;
+                double meanax = 0;
+                double meanay = 0;
+                double meanph = 0;
+                double meanpv = 0;
+                double sumpv = 0;
+
+                for (int i = 0; i < rms.Count; i++)
+                {
+                    meanpv += rms[i].pv * rms[i].pv;
+                    meancx += rms[i].cx * rms[i].pv;
+                    meancy += rms[i].cy * rms[i].pv;
+                    meanax += rms[i].ax * rms[i].pv;
+                    meanay += rms[i].ay * rms[i].pv;
+                    sumpv += rms[i].pv;
+                }
+
+                meancx /= sumpv;//weighted average
+                meancy /= sumpv;
+                meanax /= sumpv;
+                meanay /= sumpv;
+                meanph /= sumpv;
+                meanpv /= sumpv;
+
+                trackpos = new OpenCvSharp.CPlusPlus.Point(
+                    (int)(meancx) + 256,
+                    (int)(meancy) + 220
+                    );
+                // double anglex = (meanax * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+                // double angley = (meanay * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+                //  Console.WriteLine(string.Format("{0:f4} {1:f4}", anglex, angley));
+                return trackpos;
+            }
+            else
+            {
+                return trackpos;
+            }
+        }
+
+        static OpenCvSharp.CPlusPlus.Point TD_naka_1(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsizeH = 40, int phthresh = 5, double dx = 1.2, double dy = 1.2, int j=1,  bool debugflag = false)
+        {
+            int x0 = px - 256;
+            int y0 = py - 220;
+
+            List<rawmicrotrack> rms = new List<rawmicrotrack>();
+
+            // Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);
+
+            double phi = Math.Atan2(dy, dx);
+            double angle = phi * (180 / Math.PI);
+            double tant = Math.Sqrt(dx * dx + dy * dy);
+            double pix = 0.26;//pix_to_micron
+
+            //Making a mask
+            double A = 90;
+            double B = 180;
+            double C = windowsizeH;
+          
+
+            int mask_x = (int)(A + tant * B);//if tantheta=0.38, mask_x=30
+            int mask_y = (int)(C + tant* (30));
+            if (mask_x < mask_y) {
+                mask_x = mask_y;
+            }
+        
+     
+                    using (Mat big = Mat.Zeros(600, 600, MatType.CV_8UC1))
+                    using (Mat imgMask = Mat.Zeros(big.Height, big.Width, MatType.CV_8UC1)) {
+
+                        //make the size of mask
+                        int ystart = big.Height / 2 - mask_y / 2;
+                        int xstart = big.Width / 2 - mask_x / 2;
+                        
+
+                        OpenCvSharp.CPlusPlus.Rect recMask1 = new OpenCvSharp.CPlusPlus.Rect(xstart, ystart, mask_x, mask_y);
+                        Cv2.Rectangle(imgMask, recMask1, 255, -1);
+
+                        for (int p = 0; p < mats.Count; p++) {
+                            int startx = big.Width / 2 - mats[p].Width / 2 ;
+                            int starty = big.Height / 2 - mats[p].Height / 2 ;
+                            //int startx = big.Width / 2 - mats[p].Width / 2 + (int)(p * ax * shiftpitch / 10.0);
+                            // int starty = big.Height / 2 - mats[p].Height / 2 + (int)(p * ay * shiftpitch / 10.0);
+                            Cv2.Add(
+                                big[starty, starty + mats[p].Height, startx, startx + mats[p].Width],
+                                mats[p],
+                                big[starty, starty + mats[p].Height, startx, startx + mats[p].Width]);
+                        }                           
+                        
+                            Cv2.ImShow("superimpose", big * 40);
+                          
+                          // big_.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\g\superimpose_{0}-{1}-{2}.png", counter, ax, ay));
+                            // Rotation
+                            Mat affineMask = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), -angle, 1);
+                            Cv2.WarpAffine(big, big, affineMask, big.Size());
+                          
+                            // image cut
+                            Cv2.BitwiseAnd(big, imgMask, big);
+                            Cv2.ImShow("imgcut", big * 40);
+                            Mat big_ = big * 40;
+                            big_.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\pl6\superimpose_{0}.png", j));
+                            // threshold
+                            Cv2.Threshold(big, big, phthresh, 255, ThresholdType.ToZero);                          
+                            Cv2.ImShow("bin", big * 40);
+                            Mat big4 = big * 40;
+                           
+                            //  Inverse rotation
+                            Mat affineMask2 = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), angle, 1);
+                            Cv2.WarpAffine(big, big, affineMask2, big.Size());
+                             
+                            Cv2.WaitKey(0);
+
+
+                           
+                          //  if (debugflag == true) {//
+                               
+                           // }
+                      //  }//using big_c
+
+                        using (CvMemStorage storage = new CvMemStorage())
+                        using (CvContourScanner scanner = new CvContourScanner(big.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
+                            foreach (CvSeq<CvPoint> c in scanner) {
+                                CvMoments mom = new CvMoments(c, false);
+                                if (c.ElemSize < 2) continue;
+                                if (mom.M00 < 1.0) continue;//
+                                double mx = mom.M10 / mom.M00;
+                                double my = mom.M01 / mom.M00;
+                                if ( Math.Abs(my- big.Height / 2) > Math.Abs(C/2)) continue;
+                                rawmicrotrack rm = new rawmicrotrack();
+                                rm.ax = 0;
+                                rm.ay = 0;
+                                rm.cx = (int)(mx - big.Width / 2);
+                                rm.cy = (int)(my - big.Height / 2);
+                                rm.pv = (int)(mom.M00);
+                                rms.Add(rm);
+                                
+                            }
+                        }//using contour
+
+
+                    }//using Mat
+
+
+
+            OpenCvSharp.CPlusPlus.Point trackpos = new OpenCvSharp.CPlusPlus.Point(0, 0);
+            if (rms.Count > 0) {
+                rawmicrotrack rm = new rawmicrotrack();
+                double meancx = 0;
+                double meancy = 0;
+                double meanax = 0;
+                double meanay = 0;
+                double meanph = 0;
+                double meanpv = 0;
+                double sumpv = 0;
+
+                for (int i = 0; i < rms.Count; i++) {
+                    meanpv += rms[i].pv * rms[i].pv;
+                    meancx += rms[i].cx * rms[i].pv;
+                    meancy += rms[i].cy * rms[i].pv;
+                    meanax += rms[i].ax * rms[i].pv;
+                    meanay += rms[i].ay * rms[i].pv;
+                    sumpv += rms[i].pv;
+                }
+
+                meancx /= sumpv;//重心と傾きを輝度値で重み付き平均
+                meancy /= sumpv;
+                meanax /= sumpv;
+                meanay /= sumpv;
+                meanpv /= sumpv;
+
+                trackpos = new OpenCvSharp.CPlusPlus.Point(
+                    (int)(meancx) + 256 ,
+                    (int)(meancy) + 220
+                    );
+
+               // double anglex = (meanax * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+               // double angley = (meanay * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+              //  Console.WriteLine(string.Format("{0:f4} {1:f4}", anglex, angley));
+            } else {
+                trackpos = new OpenCvSharp.CPlusPlus.Point(-1, -1);
+            }
+
+
+            return trackpos;
+        }
+
+        static OpenCvSharp.CPlusPlus.Point TD_naka_2(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsizeH = 40, int phthresh = 5, double dx = 1.2, double dy = 1.2, bool debugflag = false) {
+            int x0 = px - 256;
+            int y0 = py - 220;
+
+            List<rawmicrotrack> rms = new List<rawmicrotrack>();
+
+            // Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);
+
+            double phi = Math.Atan2(dy, dx);
+            double angle = phi * (180 / Math.PI);
+            double tant = Math.Sqrt(dx * dx + dy * dy);
+            double pix = 0.26;//pix_to_micron
+
+            //Making a mask
+            double A = 90;
+            double B = 180;
+            double C = windowsizeH;
+
+
+            int mask_x = (int)(A + tant * B);//if tantheta=0.38, mask_x=30
+            int mask_y = (int)(C + tant * (2*C));//+ tant * (80));
+            if (mask_x < mask_y) {
+                mask_x = mask_y;
+            }
+
+
+            using (Mat big = Mat.Zeros(600, 600, MatType.CV_8UC1))
+            using (Mat imgMask = Mat.Zeros(big.Height, big.Width, MatType.CV_8UC1)) {
+
+                //make the size of mask
+                int ystart = big.Height / 2 - mask_y / 2;
+                int xstart = big.Width / 2 - mask_x / 2;
+
+
+                OpenCvSharp.CPlusPlus.Rect recMask1 = new OpenCvSharp.CPlusPlus.Rect(xstart, ystart, mask_x, mask_y);
+                Cv2.Rectangle(imgMask, recMask1, 255, -1);
+
+                for (int p = 0; p < mats.Count; p++) {
+                    int startx = big.Width / 2 - mats[p].Width / 2;
+                    int starty = big.Height / 2 - mats[p].Height / 2;
+                    //int startx = big.Width / 2 - mats[p].Width / 2 + (int)(p * ax * shiftpitch / 10.0);
+                    // int starty = big.Height / 2 - mats[p].Height / 2 + (int)(p * ay * shiftpitch / 10.0);
+                    Cv2.Add(
+                        big[starty, starty + mats[p].Height, startx, startx + mats[p].Width],
+                        mats[p],
+                        big[starty, starty + mats[p].Height, startx, startx + mats[p].Width]);
+                }
+
+                Cv2.ImShow("superimpose", big * 40);
+
+                // Rotation
+                Mat affineMask = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), -angle, 1);
+                Cv2.WarpAffine(big, big, affineMask, big.Size());
+
+                // image cut
+                Cv2.BitwiseAnd(big, imgMask, big);
+                Cv2.ImShow("imgcut", big * 40);
+
+                // threshold
+                Cv2.Threshold(big, big, phthresh, 255, ThresholdType.ToZero);
+                Cv2.ImShow("bin", big * 40);
+                Mat big4 = big * 40;
+
+                //  Inverse rotation
+                Mat affineMask2 = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), angle, 1);
+                Cv2.WarpAffine(big, big, affineMask2, big.Size());
+
+                Cv2.WaitKey(0);
+
+
+
+                //  if (debugflag == true) {//
+
+                // }
+                //  }//using big_c
+
+                using (CvMemStorage storage = new CvMemStorage())
+                using (CvContourScanner scanner = new CvContourScanner(big.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
+                    foreach (CvSeq<CvPoint> c in scanner) {
+                        CvMoments mom = new CvMoments(c, false);
+                        if (c.ElemSize < 2) continue;//
+                        if (mom.M00 < 1.0) continue;//
+                        double mx = mom.M10 / mom.M00;
+                        double my = mom.M01 / mom.M00;
+                       // if (Math.Abs(my - big.Height / 2) > Math.Abs(C/2 - 3)) continue;
+                        rawmicrotrack rm = new rawmicrotrack();
+                        rm.ax = 0;
+                        rm.ay = 0;
+                        rm.cx = (int)(mx - big.Width / 2);
+                        rm.cy = (int)(my - big.Height / 2);
+                        rm.pv = (int)(mom.M00);
+                        rms.Add(rm);
+
+                    }
+                }//using contour
+
+
+            }//using Mat
+
+
+
+            OpenCvSharp.CPlusPlus.Point trackpos = new OpenCvSharp.CPlusPlus.Point(0, 0);
+            if (rms.Count > 0) {
+                rawmicrotrack rm = new rawmicrotrack();
+                double meancx = 0;
+                double meancy = 0;
+                double meanax = 0;
+                double meanay = 0;
+                double meanph = 0;
+                double meanpv = 0;
+                double sumpv = 0;
+
+                for (int i = 0; i < rms.Count; i++) {
+                    meanpv += rms[i].pv * rms[i].pv;
+                    meancx += rms[i].cx * rms[i].pv;
+                    meancy += rms[i].cy * rms[i].pv;
+                    meanax += rms[i].ax * rms[i].pv;
+                    meanay += rms[i].ay * rms[i].pv;
+                    sumpv += rms[i].pv;
+                }
+
+                meancx /= sumpv;//重心と傾きを輝度値で重み付き平均
+                meancy /= sumpv;
+                meanax /= sumpv;
+                meanay /= sumpv;
+                meanpv /= sumpv;
+
+                trackpos = new OpenCvSharp.CPlusPlus.Point(
+                    (int)(meancx) + 256,
+                    (int)(meancy) + 220
+                    );
+
+                // double anglex = (meanax * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+                // double angley = (meanay * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+                //  Console.WriteLine(string.Format("{0:f4} {1:f4}", anglex, angley));
+            } else {
+                trackpos = new OpenCvSharp.CPlusPlus.Point(-1, -1);
+            }
+
+
+            return trackpos;
+        }
+
+
+        static OpenCvSharp.CPlusPlus.Point TD_naka_3(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsize = 40, int phthresh = 5, double dx = 1.2, double dy = 1.2, bool debugflag = false) {
+            int x0 = px - 256;
+            int y0 = py - 220;
+
+            List<rawmicrotrack> rms = new List<rawmicrotrack>();
+
+            // Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);
+
+            double phi = Math.Atan2(dy, dx);
+            double angle = phi * (180 / Math.PI);
+            double tant = Math.Sqrt(dx * dx + dy * dy);
+            double pix = 0.26;//pix_to_micron
+
+            //Making a mask
+            double A = 90;
+            double B = 180;
+            double C = 40;
+
+
+            int mask_x = (int)(A + tant * B);//if tantheta=0.38, mask_x=30
+            int mask_y = (int)(C);
+            if (mask_x < mask_y) {
+                mask_x = mask_y;
+            }
+
+
+            using (Mat big = Mat.Zeros(600, 600, MatType.CV_8UC1))
+            using (Mat imgMask = Mat.Zeros(big.Height, big.Width, MatType.CV_8UC1)) {
+
+                //make the size of mask
+                int ystart = big.Height / 2 - mask_y;
+                int xstart = big.Width / 2 - mask_x / 2;
+
+
+                OpenCvSharp.CPlusPlus.Rect recMask1 = new OpenCvSharp.CPlusPlus.Rect(xstart, ystart, mask_x, mask_y);
+                Cv2.Rectangle(imgMask, recMask1, 255, -1);
+
+                for (int p = 0; p < mats.Count; p++) {
+                    int startx = big.Width / 2 - mats[p].Width / 2;
+                    int starty = big.Height / 2 - mats[p].Height / 2;
+                    //int startx = big.Width / 2 - mats[p].Width / 2 + (int)(p * ax * shiftpitch / 10.0);
+                    // int starty = big.Height / 2 - mats[p].Height / 2 + (int)(p * ay * shiftpitch / 10.0);
+                    Cv2.Add(
+                        big[starty, starty + mats[p].Height, startx, startx + mats[p].Width],
+                        mats[p],
+                        big[starty, starty + mats[p].Height, startx, startx + mats[p].Width]);
+                }
+
+                Cv2.ImShow("superimpose", big * 40);
+              
+                // Rotation
+                Mat affineMask = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), -angle, 1);
+                Cv2.WarpAffine(big, big, affineMask, big.Size());
+
+                // image cut
+                Cv2.BitwiseAnd(big, imgMask, big);
+                Cv2.ImShow("imgcut", big * 40);
+
+                // threshold
+                Cv2.Threshold(big, big, phthresh, 255, ThresholdType.ToZero);
+                Cv2.ImShow("bin", big * 40);
+                Mat big4 = big * 40;
+
+                //  Inverse rotation
+                Mat affineMask2 = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), angle, 1);
+                Cv2.WarpAffine(big, big, affineMask2, big.Size());
+
+                Cv2.WaitKey(0);
+
+
+
+                //  if (debugflag == true) {//
+
+                // }
+                //  }//using big_c
+
+                using (CvMemStorage storage = new CvMemStorage())
+                using (CvContourScanner scanner = new CvContourScanner(big.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
+                    if (scanner.Count() != 0){
+                    foreach (CvSeq<CvPoint> c in scanner) {
+                       
+                        CvMoments mom = new CvMoments(c, false);
+                        if (c.ElemSize <5) continue;//
+                        if (mom.M00 < 3.0) continue;//
+                        double mx = mom.M10 / mom.M00;
+                        double my = mom.M01 / mom.M00;
+                        rawmicrotrack rm = new rawmicrotrack();
+                        rm.ax = 0;
+                        rm.ay = 0;
+                        rm.cx = (int)(mx - big.Width / 2);
+                        rm.cy = (int)(my - big.Height / 2);
+                        rm.pv = (int)(mom.M00);
+                        rms.Add(rm);
+                       
+                    }
+
+                    } else {
+                    
+                        return new OpenCvSharp.CPlusPlus.Point(-1, -1);
+                    }
+
+                }//using contour
+
+
+            }//using Mat
+
+
+
+            OpenCvSharp.CPlusPlus.Point trackpos = new OpenCvSharp.CPlusPlus.Point(0, 0);
+            if (rms.Count > 0) {
+                rawmicrotrack rm = new rawmicrotrack();
+                double meancx = 0;
+                double meancy = 0;
+                double meanax = 0;
+                double meanay = 0;
+                double meanph = 0;
+                double meanpv = 0;
+                double sumpv = 0;
+
+                for (int i = 0; i < rms.Count; i++) {
+                    meanpv += rms[i].pv * rms[i].pv;
+                    meancx += rms[i].cx * rms[i].pv;
+                    meancy += rms[i].cy * rms[i].pv;
+                    meanax += rms[i].ax * rms[i].pv;
+                    meanay += rms[i].ay * rms[i].pv;
+                    sumpv += rms[i].pv;
+                }
+
+                meancx /= sumpv;//重心と傾きを輝度値で重み付き平均
+                meancy /= sumpv;
+                meanax /= sumpv;
+                meanay /= sumpv;
+                meanpv /= sumpv;
+
+                trackpos = new OpenCvSharp.CPlusPlus.Point(
+                    (int)(meancx) + 256,
+                    (int)(meancy) + 220
+                    );
+
+                // double anglex = (meanax * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+                // double angley = (meanay * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+                //  Console.WriteLine(string.Format("{0:f4} {1:f4}", anglex, angley));
+            } else {
+                trackpos = new OpenCvSharp.CPlusPlus.Point(-1, -1);
+            }
+
+
+            return trackpos;
+        }
+
+        static OpenCvSharp.CPlusPlus.Point TD_naka_4(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsize = 40, int phthresh = 5, double dx = 1.2, double dy = 1.2, bool debugflag = false) {
+            int x0 = px - 256;
+            int y0 = py - 220;
+
+            List<rawmicrotrack> rms = new List<rawmicrotrack>();
+
+            // Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);
+
+            double phi = Math.Atan2(dy, dx);
+            double angle = phi * (180 / Math.PI);
+            double tant = Math.Sqrt(dx * dx + dy * dy);
+            double pix = 0.26;//pix_to_micron
+
+            //Making a mask
+            double A = 90;
+            double B = 180;
+            double C = 40;
+
+
+            int mask_x = (int)(A + tant * B);//if tantheta=0.38, mask_x=30
+            int mask_y = (int)(C);
+            if (mask_x < mask_y) {
+                mask_x = mask_y;
+            }
+
+
+            using (Mat big = Mat.Zeros(600, 600, MatType.CV_8UC1))
+            using (Mat imgMask = Mat.Zeros(big.Height, big.Width, MatType.CV_8UC1)) {
+
+                //make the size of mask
+                int ystart = big.Height / 2;
+                int xstart = big.Width / 2 -mask_x/2;
+
+
+                OpenCvSharp.CPlusPlus.Rect recMask1 = new OpenCvSharp.CPlusPlus.Rect(xstart, ystart, mask_x, mask_y);
+                Cv2.Rectangle(imgMask, recMask1, 255, -1);
+
+                for (int p = 0; p < mats.Count; p++) {
+                    int startx = big.Width / 2 - mats[p].Width / 2;
+                    int starty = big.Height / 2 - mats[p].Height / 2;
+                    //int startx = big.Width / 2 - mats[p].Width / 2 + (int)(p * ax * shiftpitch / 10.0);
+                    // int starty = big.Height / 2 - mats[p].Height / 2 + (int)(p * ay * shiftpitch / 10.0);
+                    Cv2.Add(
+                        big[starty, starty + mats[p].Height, startx, startx + mats[p].Width],
+                        mats[p],
+                        big[starty, starty + mats[p].Height, startx, startx + mats[p].Width]);
+                }
+
+                Cv2.ImShow("superimpose", big * 40);
+
+                // Rotation
+                Mat affineMask = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), -angle, 1);
+                Cv2.WarpAffine(big, big, affineMask, big.Size());
+
+                // image cut
+                Cv2.BitwiseAnd(big, imgMask, big);
+                Cv2.ImShow("imgcut", big * 40);
+
+                // threshold
+                Cv2.Threshold(big, big, phthresh, 255, ThresholdType.ToZero);
+                Cv2.ImShow("bin", big * 40);
+                Mat big4 = big * 40;
+
+                //  Inverse rotation
+                Mat affineMask2 = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), angle, 1);
+                Cv2.WarpAffine(big, big, affineMask2, big.Size());
+
+                Cv2.WaitKey(0);
+
+
+
+                //  if (debugflag == true) {//
+
+                // }
+                //  }//using big_c
+
+                using (CvMemStorage storage = new CvMemStorage())
+                using (CvContourScanner scanner = new CvContourScanner(big.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
+                    if (scanner.Count() != 0) {
+                        foreach (CvSeq<CvPoint> c in scanner) {
+
+                            CvMoments mom = new CvMoments(c, false);
+                            if (c.ElemSize < 5) continue;
+                            if (mom.M00 < 1.0) continue;
+                            double mx = mom.M10 / mom.M00;
+                            double my = mom.M01 / mom.M00;
+                            rawmicrotrack rm = new rawmicrotrack();
+                            rm.ax = 0;
+                            rm.ay = 0;
+                            rm.cx = (int)(mx - big.Width / 2);
+                            rm.cy = (int)(my - big.Height / 2);
+                            rm.pv = (int)(mom.M00);
+                            rms.Add(rm);
+
+                        }
+
+                    } else {
+
+                        return new OpenCvSharp.CPlusPlus.Point(-1, -1);
+                    }
+
+                }//using contour
+
+
+            }//using Mat
+
+
+
+            OpenCvSharp.CPlusPlus.Point trackpos = new OpenCvSharp.CPlusPlus.Point(0, 0);
+            if (rms.Count > 0) {
+                rawmicrotrack rm = new rawmicrotrack();
+                double meancx = 0;
+                double meancy = 0;
+                double meanax = 0;
+                double meanay = 0;
+                double meanph = 0;
+                double meanpv = 0;
+                double sumpv = 0;
+
+                for (int i = 0; i < rms.Count; i++) {
+                    meanpv += rms[i].pv * rms[i].pv;
+                    meancx += rms[i].cx * rms[i].pv;
+                    meancy += rms[i].cy * rms[i].pv;
+                    meanax += rms[i].ax * rms[i].pv;
+                    meanay += rms[i].ay * rms[i].pv;
+                    sumpv += rms[i].pv;
+                }
+
+                meancx /= sumpv;//重心と傾きを輝度値で重み付き平均
+                meancy /= sumpv;
+                meanax /= sumpv;
+                meanay /= sumpv;
+                meanpv /= sumpv;
+
+                trackpos = new OpenCvSharp.CPlusPlus.Point(
+                    (int)(meancx) + 256,
+                    (int)(meancy) + 220
+                    );
+
+                // double anglex = (meanax * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+                // double angley = (meanay * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+                //  Console.WriteLine(string.Format("{0:f4} {1:f4}", anglex, angley));
+            } else {
+                trackpos = new OpenCvSharp.CPlusPlus.Point(-1, -1);
+            }
+
+
+            return trackpos;
+        }
+
+
+
+
+        static OpenCvSharp.CPlusPlus.Point TrackDetection(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsize = 40, int phthresh = 5, double dx =1.2, double dy=1.2, bool debugflag = false) {
+            int x0 = px - 256;
+            int y0 = py - 220;
+
+            List<rawmicrotrack> rms = new List<rawmicrotrack>();
+
+            // Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);
+
+            double phi = Math.Atan2(dy, dx);
+            double angle = phi * (180 / Math.PI);
+            double tant = Math.Sqrt(dx * dx + dy * dy);
+            double pix = 0.26;//pix_to_micron
+
+            //Making a mask
+            double A = 90;
+            double B =180;
+            double C =90;
+            double D = 1;
+
+            int mask_x = (int)(A + tant * B);//if tantheta=0.38, mask_x=30
+            int mask_y = (int)(C);
+            if (mask_x < mask_y) {
+                mask_x = mask_y;
+            }
+            
             int counter = 0;
             for (int ax = -shiftx; ax <= shiftx; ax++) {
                 for (int ay = -shifty; ay <= shifty; ay++) {
@@ -2633,18 +3845,24 @@ namespace NagaraStage.Ui {
                     using (Mat imgMask = Mat.Zeros(big.Height, big.Width, MatType.CV_8UC1)) {
 
                         //make the size of mask
-                        int ystart = big.Height / 2 + y0 - windowsize / 2;
-                        int yend = big.Height / 2 + y0 + windowsize / 2;
-                        int xstart = big.Width / 2 + x0 - windowsize / 2;
-                        int xend = big.Width / 2 + x0 + windowsize / 2;
+                        int ystart = big.Height / 2  - mask_y / 2;
+                        int yend = big.Height / 2 +  mask_y / 2;
+                        int xstart = big.Width / 2  - mask_x / 2;
+                        int xend = big.Width / 2 +  mask_x / 2;
 
-                        //make mask as shape of rectangle. by use of opencv
-                        OpenCvSharp.CPlusPlus.Rect recMask = new OpenCvSharp.CPlusPlus.Rect(xstart, ystart, windowsize, windowsize);
-                        Cv2.Rectangle(imgMask, recMask, 255, -1);//brightness=1, fill
+                        OpenCvSharp.CPlusPlus.Rect recMask = new OpenCvSharp.CPlusPlus.Rect(xstart, ystart, mask_x, mask_y);
+                        Cv2.Rectangle(imgMask, recMask, 255, -1);
+                        Mat imgmask = imgMask.Clone();
+
+                        Mat affineMask = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), 0, 1);
+                        Cv2.WarpAffine(imgMask, imgMask, affineMask, imgMask.Size());
+                        
 
                         for (int p = 0; p < mats.Count; p++) {
-                            int startx = big.Width / 2 - mats[p].Width / 2 + (int)(p * ax * shiftpitch / 8.0);
-                            int starty = big.Height / 2 - mats[p].Height / 2 + (int)(p * ay * shiftpitch / 8.0);
+                            int startx = big.Width / 2 - mats[p].Width / 2 + (int)(p * ax * shiftpitch / 10.0);
+                            int starty = big.Height / 2 - mats[p].Height / 2 + (int)(p * ay * shiftpitch / 10.0);
+                            //int startx = big.Width / 2 - mats[p].Width / 2 + (int)(p * ax * shiftpitch / 10.0);
+                           // int starty = big.Height / 2 - mats[p].Height / 2 + (int)(p * ay * shiftpitch / 10.0);
                             Cv2.Add(
                                 big[starty, starty + mats[p].Height, startx, startx + mats[p].Width],
                                 mats[p],
@@ -2652,22 +3870,71 @@ namespace NagaraStage.Ui {
                         }
 
                         using (Mat big_c = big.Clone()) {
+                            Mat big1 = big.Clone();
+                            Cv2.ImShow("superimpose", big*40);
+                            Mat big1_sup = big * 40;
+                            big1_sup.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\g\superimpose_{0}-{1}-{2}.png", counter, ax, ay));
+                            Mat Big2 = big.Clone();
 
-                            Cv2.Threshold(big, big, phthresh, 255, ThresholdType.ToZero);
                             Cv2.BitwiseAnd(big, imgMask, big);
+                            Cv2.ImShow("imgcut", big*40);
 
-                            //Mat roi = big[ystart, yend , xstart, xend];//メモリ領域がシーケンシャルにならないから輪郭抽出のときに例外が出る。
+                            Mat affineMask2 = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), -angle, 1);
+                            Cv2.WarpAffine(big1, big1, affineMask2, big1.Size());
+                            Cv2.ImShow("RoiIMG", big1*40);
+                            Mat Bigroi = big1*40;
+                            Bigroi.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\g\RoiImg_{0}-{1}-{2}.png", counter, ax, ay));
 
+                            Cv2.BitwiseAnd(big1, imgmask, big1);
+                            Cv2.ImShow("imgcut", big1 * 40);
+                            Mat Bigimcut = big*40;
+                            Bigimcut.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\g\imgcut_{0}-{1}-{2}.png", counter, ax, ay));
+                            
+
+                            //Mat maskRoi = big.Clone();
+                            //Mat Big1 = big.Clone();
+                            Cv2.ImShow("Big2", Big2 * 40);
+                            Cv2.Threshold(big, big, phthresh, 255, ThresholdType.ToZero);
+                            Cv2.Threshold(big1, big1, phthresh, 255, ThresholdType.ToZero);
+                            Mat Bigbin = big1 * 40;
+                            Bigbin.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\g\bin_{0}-{1}-{2}.png", counter, ax, ay));
+                            //Cv2.BitwiseAnd(big, imgMask, big);
+
+                            Cv2.ImShow("bin", big*40);
+                           // Cv2.BitwiseAnd(big_c, imgMask, big_c);
+                          //  Mat affineMask2 = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(0, 0),-angle, 1);
+                         //   Cv2.WarpAffine(Big2, Big2, affineMask2, imgMask.Size());
+                          //  Cv2.ImShow("big1", Big2*40);
+                         //   Mat maskRoi = Big1.Clone();
+                            //Cv2.BitwiseAnd(big_c, imgMask, big_c);
+                          //  Mat big_ = big_c * 40;
+                          //  Cv2.Threshold(big_c, big_c, phthresh, 255, ThresholdType.ToZero);
+                          // 
+                            Cv2.WaitKey(0);
+                            
+                             
+                           // Mat maskcut_ = maskcut * 40;
+                           // Mat Roi_ = maskRoi * 40;
                             if (debugflag == true) {//
                                 //bigorg.ImWrite(String.Format(@"{0}_{1}_{2}.png",counter,ax,ay));
                                 //Mat roiwrite = roi.Clone() * 30;
                                 //roiwrite.ImWrite(String.Format(@"roi_{0}_{1}_{2}.png", counter, ax, ay));
-                                Cv2.Rectangle(big_c, recMask, 255, 1);//brightness=1, fill
-                                Cv2.ImShow("big_cx30", big_c * 30);
-                                Cv2.ImShow("bigx30", big * 30);
-                                //Cv2.ImShow("imgMask", imgMask);
-                                //Cv2.ImShow("roi", roi * 30);
-                                Cv2.WaitKey(0);
+                                //Cv2.Rectangle(big_c, recMask, 255, 1);//brightness=1, fill
+                                //Cv2.ImShow("superimposed", big_c * 30);
+                               // Cv2.ImShow("bigx30", maskRoi * 30);
+                               // Cv2.ImShow("imgMask", Big1*40);
+                               // Cv2.ImShow("bina", big * 30);
+                               // Cv2.WaitKey(0);
+                                
+                               // Mat big1 = Big2 * 40;
+                              //  Mat bin = big * 40;
+                                //Mat maskroi = maskRoi * 40;
+                               
+                              //  Mat imgMask_ = imgMask * 40;
+                               // big1.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\a_1\superimpose_{0}-{1}-{2}.png",  counter, ax, ay));
+                               // maskroi.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\a_1\maskRoi_{0}-{1}-{2}.png", counter, ax, ay));
+                              //  bin.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\a\binaliz_{0}-{1}-{2}.png",  counter, ax, ay));
+                              //  imgMask_.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\a\Mask_{0}-{1}-{2}.png",  counter, ax, ay));
                             }
                         }//using big_c
 
@@ -2742,6 +4009,150 @@ namespace NagaraStage.Ui {
 
             return trackpos;
         }//track detection
+
+
+        static OpenCvSharp.CPlusPlus.Point TrackDetection_new(List<Mat> mats, int px, int py, int phthresh = 5, double dx = 0.12, double dy = 0.12, int mod = 5, int plt = 2, string sp0 = "", string sp1 = "", bool debugflag = true) {
+            OpenCvSharp.CPlusPlus.Point center = new OpenCvSharp.CPlusPlus.Point(0, 0);
+            int x0 = px - 256;
+            int y0 = py - 220;
+
+           // List<trackdata> rms = new List<trackdata>();
+
+
+            double phi = Math.Atan2(dy, dx);
+            double angle = phi * (180 / Math.PI);
+            double tant = Math.Sqrt(dx * dx + dy * dy);
+            double pix = 0.26;//pix_to_micron
+
+            //Making a mask
+            double A = 90;
+            double B = 180;
+            double C = 90;
+            double D = 180;
+
+            int mask_x = (int) (A + tant * B);//if tantheta=0.38, mask_x=30
+            int mask_y = (int)(C + tant * D);
+            if (mask_x < mask_y) {
+                mask_x = mask_y;
+            }
+
+            int counter = 0;
+            // Mat imgTemplt = Mat.Zeros(512, 440, MatType.CV_8UC1);
+            //using (Mat big = Mat.Zeros(521, 440, MatType.CV_8UC1))
+            using (Mat big = Mat.Zeros(600, 600, MatType.CV_8UC1))
+            using (Mat imgMask = Mat.Zeros(big.Height, big.Width, MatType.CV_8UC1)) {
+
+
+                int ystart = big.Height / 2 - mask_y / 2;
+                int yend = big.Height / 2 + mask_y / 2;
+                int xstart = big.Width / 2 - mask_x / 2;
+                int xend = big.Width / 2 + mask_x / 2;
+                OpenCvSharp.CPlusPlus.Rect recMask = new OpenCvSharp.CPlusPlus.Rect(xstart, ystart, mask_x, mask_y);
+                Cv2.Rectangle(imgMask, recMask, 255, -1);//brightness=1, fill
+                Mat imgmask = imgMask.Clone();
+                Mat affineMask = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), angle, 1);
+                Cv2.WarpAffine(imgmask, imgMask, affineMask, imgMask.Size());
+
+
+
+                // Cv2.Rectangle(imgMask, recMask, 255, -1);//brightness=1, fill
+
+                for (int p = 0; p < mats.Count; p++) {
+                    int startx = big.Width / 2 - mats[p].Width / 2;
+                    int starty = big.Height / 2 - mats[p].Height / 2;
+                    Cv2.Add(
+                        big[starty, starty + mats[p].Height, startx, startx + mats[p].Width],
+                        mats[p],
+                        big[starty, starty + mats[p].Height, startx, startx + mats[p].Width]);
+                }
+
+                using (Mat big_c = big.Clone()) {
+                    Cv2.Threshold(big, big, phthresh, 255, ThresholdType.ToZero);
+                    Cv2.BitwiseAnd(big, imgMask, big);
+                    Mat maskcut = big.Clone();
+                    // Mat affineMask2 = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), -angle, 1);
+                    // Cv2.WarpAffine(big, big, affineMask2, imgMask.Size());
+                    Mat maskRoi = big.Clone();
+
+
+                    //  Cv2.BitwiseAnd(big, imgMask, big);
+
+                }//using big_c
+
+                //Making template
+                double forcaldepth = 15;
+                double E = 6;
+                double e = 44;
+                double F = 6;
+                double f = 1;
+                int templt_x = (int)(E + tant * e);//if tantheta=0.38, templt_x=22
+                int templt_y = (int)(F + tant * f);
+                if (templt_x < templt_y) {
+                    templt_x = templt_y;
+                }
+
+                Mat imgTemplt = Mat.Zeros(200, 200, MatType.CV_8UC1);
+                OpenCvSharp.CPlusPlus.Rect recTemplt = new OpenCvSharp.CPlusPlus.Rect(100, 100, templt_x, templt_y);
+                Cv2.Rectangle(imgTemplt, recTemplt, 1, -1);//brightness=1, fill
+                Mat affineTemplt = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(100, 100), angle, 1);
+                Cv2.WarpAffine(imgTemplt, imgTemplt, affineTemplt, imgTemplt.Size(), Interpolation.Linear, BorderType.Constant, 0);
+
+
+                Mat imgTempltTrim = new Mat();
+                using (CvMemStorage storage = new CvMemStorage())
+                using (CvContourScanner scanner = new CvContourScanner(imgTemplt.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
+                    foreach (CvSeq<CvPoint> c in scanner) {
+                        CvRect brect = Cv.BoundingRect(c);
+                        int rowstart = brect.Top;
+                        int rowend = brect.Bottom;
+                        int colstart = brect.Left;
+                        int colend = brect.Right;
+                        imgTempltTrim = imgTemplt[rowstart, rowend, colstart, colend];
+                    }
+                }
+
+                Mat temp = Mat.Zeros(big.Width - imgTemplt.Width + 1, big.Height - imgTemplt.Height + 1, MatType.CV_32FC1);
+                Cv2.MatchTemplate(big, imgTempltTrim, temp, MatchTemplateMethod.CCorr);
+
+                double minval = 0;
+                double maxval = 0;
+                OpenCvSharp.CPlusPlus.Point min_loc = new OpenCvSharp.CPlusPlus.Point();
+                OpenCvSharp.CPlusPlus.Point max_loc = new OpenCvSharp.CPlusPlus.Point();
+                Cv2.MinMaxLoc(temp, out minval, out maxval, out min_loc, out max_loc);
+
+                OpenCvSharp.CPlusPlus.Point top_left = max_loc;
+                OpenCvSharp.CPlusPlus.Rect rectframe = new OpenCvSharp.CPlusPlus.Rect(top_left.X, top_left.Y, imgTempltTrim.Width, imgTempltTrim.Height);
+
+                if (debugflag) {
+
+                    //Cv2.ImShow("maskroi_", maskRoi * 30);
+                    Cv2.ImShow("bigx30", big * 30);
+                    Cv2.ImShow("imgmask", imgmask);
+                    Cv2.ImShow("imgMask", imgMask);
+                    Cv2.ImShow("temp", temp * 30);
+                    Cv2.WaitKey(0);
+                }
+                double W = top_left.X - ((big.Width / 2) - 256);
+                double H = top_left.Y - ((big.Height / 2) - 220);
+
+                if (maxval > templt_x * templt_y * 0.3) {
+                    center = new OpenCvSharp.CPlusPlus.Point(W + imgTempltTrim.Width / 2, H + imgTempltTrim.Height / 2);
+                } else {
+                    center = new OpenCvSharp.CPlusPlus.Point(-1, -1);
+                }
+
+                big.Release();
+                imgMask.Release();
+                affineMask.Release();
+                imgTemplt.Release();
+                //affineTemplt.Release();
+                imgTempltTrim.Release();
+                temp.Release();
+                //binorg.Release();
+                //maskRoi.Release();
+            }
+            return center;
+        }
 
         private void BeamDetection(string outputfilename, bool isup) {// beam Detection
 
@@ -3098,7 +4509,10 @@ namespace NagaraStage.Ui {
             //for up layer
 
             int number_of_images = 10;
-            int hits = 6;
+            int hits = 5;
+            double dx = myTrack.MsDX;
+            double dy = myTrack.MsDY;
+            string[] sp = myTrack.IdString.Split('-');          
 
             double Sh = 0.5 / (surface.UpTop - surface.UpBottom);
             double tansi = Math.Sqrt(myTrack.MsDX * myTrack.MsDX + myTrack.MsDY * myTrack.MsDY);
@@ -3185,17 +4599,37 @@ namespace NagaraStage.Ui {
                     binimages.Add(bin);
                 }
 
+                
                 //trackを重ねる処理を入れる。
-                Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, hits);// true);
-                //Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, true);
+                Point2d pixel_cen = TD_naka_1(binimages, 256, 220, 3, 3, 4, 90, hits, dx, dy);//, true);
+                //Point2d pixel_cen = TrackDetection_new(binimages, 256, 220, hits, dx, dy, mod, pl, sp[0], sp[1], true);
+                //Point2d pixel_cen = TrackDetection_new2(binimages, 256, 220, 3, 3, 4, 90, 5, dx, dy, mod, pl, sp[0], sp[1], true);
 
                 if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
-                    mc.Join();
-                    not_detect = 1;
-                    goto not_detect_track;
+                    Point2d pixel_cen2 = TD_naka_2(binimages, 256, 220, 3, 3, 4, 90, hits, dx, dy);
+                    if (pixel_cen2.X == -1 & pixel_cen2.Y == -1) {
+                        Point2d pixel_cen3 = TD_naka_3(binimages, 256, 220, 3, 3, 4, 90, hits, dx, dy);
+                        if (pixel_cen3.X == -1 & pixel_cen3.Y == -1) {
+                            Point2d pixel_cen4 = TD_naka_4(binimages, 256, 220, 3, 3, 4, 90, hits, dx, dy);
+                            if (pixel_cen4.X == -1 & pixel_cen4.Y == -1) {
+                                mc.Join();
+                                not_detect = 1;
+                                goto not_detect_track;
+                            } else {
+                                pixel_cen.X = pixel_cen4.X;
+                                pixel_cen.Y = pixel_cen4.Y;
+                            }
 
+                        } else {
+                            pixel_cen.X = pixel_cen3.X;
+                            pixel_cen.Y = pixel_cen3.Y;
+                        }
+                    } else {
+                        pixel_cen.X = pixel_cen2.X;
+                        pixel_cen.Y = pixel_cen2.Y; 
+                    
+                    }
                 }
-
 
 
                 LPeak.Add(new OpenCvSharp.CPlusPlus.Point(pixel_cen.X - 256, pixel_cen.Y - 220));
@@ -3309,15 +4743,36 @@ namespace NagaraStage.Ui {
                     binimages.Add(bin);
                 }
                 //trackを重ねる処理を入れる。
-                Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, hits);//, true);//画像の8枚目におけるtrackのpixel座標を算出する。
+                Point2d pixel_cen = TD_naka_1(binimages, 256, 220, 3, 3, 4, 90, hits, dx, dy);//, true);//画像の8枚目におけるtrackのpixel座標を算出する。
+               // Point2d pixel_cen = TrackDetection_new(binimages, 256, 220, hits, dx, dy, mod, pl, sp[0], sp[1], true);
+              //  Point2d pixel_cen2 = TrackDetection_new2(binimages, 256, 220, 3, 3, 4, 90, 5, dx, dy, mod, pl, sp[0], sp[1], true);
+                
+               //////////////////////////////////////////////
 
-                //もし検出に失敗した場合はループを抜ける。
                 if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
-                    //mc.MovePoint(LTrack_Low[i - 1].X, LTrack_Low[i - 1].Y, LTrack_Low[i - 1].Z);
-                    mc.Join();
+                    Point2d pixel_cen2 = TD_naka_2(binimages, 256, 220, 3, 3, 4, 90, hits, dx, dy);
+                    if (pixel_cen2.X == -1 & pixel_cen2.Y == -1) {
+                        Point2d pixel_cen3 = TD_naka_3(binimages, 256, 220, 3, 3, 4, 90, hits, dx, dy);
+                        if (pixel_cen3.X == -1 & pixel_cen3.Y == -1) {
+                            Point2d pixel_cen4 = TD_naka_4(binimages, 256, 220, 3, 3, 4, 90, hits, dx, dy);
+                            if (pixel_cen4.X == -1 & pixel_cen4.Y == -1) {
+                                mc.Join();
+                                not_detect = 1;
+                                goto not_detect_track;
+                            } else {
+                                pixel_cen.X = pixel_cen3.X;
+                                pixel_cen.Y = pixel_cen3.Y;
+                            }
 
-                    not_detect = 1;
-                    goto not_detect_track;
+                        } else {
+                            pixel_cen.X = pixel_cen3.X;
+                            pixel_cen.Y = pixel_cen3.Y;
+                        }
+                    } else {
+                        pixel_cen.X = pixel_cen2.X;
+                        pixel_cen.Y = pixel_cen2.Y;
+
+                    }
                 }
                 //
 
@@ -3356,36 +4811,78 @@ namespace NagaraStage.Ui {
               //検出に失敗した場合は、ループを抜けてここに来る。
         not_detect_track: ;//検出に失敗したと考えられる地点で画像を取得し、下ゲル下面まで移動する。(現在は下ゲル下面とするが、今後変更する可能性有。)
 
-            if (not_detect != 0) {
+           /* if (not_detect != 0) {
                //Vector dzz = 
                 Vector3 currentpoint = mc.GetPoint();
                 Vector3 dstpoint_ = new Vector3(
                   currentpoint.X - Msdxdy[0].X * 0.05* Sh,
                   currentpoint.Y - Msdxdy[0].Y * 0.05 * Sh,
-                  currentpoint.Z - 0.02
+                  currentpoint.Z - 0.08
+                   );
+                mc.MovePoint(dstpoint_);
+                mc.Join();
+               List<ImageTaking> NotDetect = TakeSequentialImage(
+                    Msdxdy[0].X * Sh,
+                    Msdxdy[0].Y * Sh,
+                    0.003,
+                   40); */
+
+                 if (not_detect != 0) {
+               //Vector dzz = 
+              /*   Vector3 currentpoint1 = mc.GetPoint();
+                 Vector3 dstpoint_1 = new Vector3(
+                   currentpoint1.X + Msdxdy[0].X * 0.05* Sh,
+                   currentpoint1.Y + Msdxdy[0].Y * 0.05 * Sh,
+                   currentpoint1.Z + 0.015
+                    );
+                 mc.MovePoint(dstpoint_1);
+                 mc.Join();*/
+
+                Vector3 currentpoint = mc.GetPoint();
+                Vector3 dstpoint_ = new Vector3(
+                  currentpoint.X,
+                  currentpoint.Y,
+                  currentpoint.Z - 0.10
                    );
                 mc.MovePoint(dstpoint_);
                 mc.Join();
 
-
-                //写真撮影
+                
                 List<ImageTaking> NotDetect = TakeSequentialImage(
-                        Msdxdy[0].X * Sh,
-                        Msdxdy[0].Y * Sh,
+                        0,
+                        0,
                         0.003,
-                       20);
+                       50);
+
+                SuperImposer si = new SuperImposer();
+                List<Mat> binimages = new List<Mat>();
+                for (int t = 0; t < NotDetect.Count; t++) {
+                   // Cv2.ImShow("NotDetect[t].img", NotDetect[t].img);
+                   // Cv2.WaitKey(0);
+                    si.AddImg(NotDetect[t].img);
+                }
+
+                Mat bigimg_dog = new Mat();
+                Mat bigimg_org = new Mat();
+
+                si.MakeImg(out bigimg_dog, out bigimg_org);
+                Cv2.ImShow("superimposed image org", bigimg_org);
+                Cv2.ImShow("superimposed image dog", bigimg_dog);
+                Cv2.WaitKey(0);
+
 
                /* string logtxt = string.Format(@"C:\MKS_test\WorkingTime\{0}\{1}-{2}_TTracking.txt", mod, mod, pl);
                 SimpleLogger SL1 = new SimpleLogger(logtxt, sp1[0], sp1[1]);*/
 
                 string txtfileName_t_not_detect = datarootdirpath + string.Format(@"\not_detect.txt");
                 StreamWriter twriter_t_not_detect = File.CreateText(txtfileName_t_not_detect);
-                for (int i = 0; i < NotDetect.Count; i++) {
-                    NotDetect[i].img.ImWrite(datarootdirpath + string.Format(@"\img_t_not_detect_{0}.png", i));
-                    Vector3 p = NotDetect[i].StageCoord;
-                    twriter_t_not_detect.WriteLine("{0} {1} {2} {3}", i, p.X, p.Y, p.Z);
-                }
-                twriter_t_not_detect.Close();
+            //   for (int i = 0; i < NotDetect.Count; i++) {
+                    bigimg_org.ImWrite(datarootdirpath + string.Format(@"\superimpsed_org.png"));
+                    bigimg_dog.ImWrite(datarootdirpath + string.Format(@"\superimpsed_dog.png"));
+                   // Vector3 p = NotDetect[i].StageCoord;
+                    //twriter_t_not_detect.WriteLine("{0} {1} {2} {3}", i, p.X, p.Y, p.Z);
+               // }
+                //twriter_t_not_detect.Close();
 
                 //mc.MovePointZ(surface.LowBottom);
                 Vector3 cc = mc.GetPoint();
@@ -3517,6 +5014,672 @@ namespace NagaraStage.Ui {
 
             }
     }
+
+        private void Tracking2(Track myTrack, int mod, int pl, bool dubflag) {
+
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            Camera camera = Camera.GetInstance();
+            Surface surface = Surface.GetInstance(parameterManager);
+            Vector3 initial = mc.GetPoint();
+            //            TimeLogger tl = new TimeLogger("savepath");
+
+            //for up layer
+            int window_H1 = 15;
+            int window_H2 = 30;
+            int number_of_images = 10;
+
+
+            double dx = myTrack.MsDX;
+            double dy = myTrack.MsDY;
+            string[] sp = myTrack.IdString.Split('-');
+            int hits = 6;
+            double Sh = 0.5 / (surface.UpTop - surface.UpBottom);
+            double tansi = Math.Sqrt(myTrack.MsDX * myTrack.MsDX + myTrack.MsDY * myTrack.MsDY);
+            double theta = Math.Atan(tansi);
+
+            double dz;
+            double dz_price_img = (6 * Math.Cos(theta) / Sh) / 1000;
+            double dz_img = dz_price_img * (-1);
+
+            string datarootdirpath = string.Format(@"C:\MKS_test\{0}", myTrack.IdString);//Open forder to store track information
+            System.IO.DirectoryInfo mydir = System.IO.Directory.CreateDirectory(datarootdirpath);
+
+            List<OpenCvSharp.CPlusPlus.Point2d> Msdxdy = new List<OpenCvSharp.CPlusPlus.Point2d>();
+            Msdxdy.Add(new OpenCvSharp.CPlusPlus.Point2d(myTrack.MsDX, myTrack.MsDY));
+
+            List<OpenCvSharp.CPlusPlus.Point3d> LStage = new List<OpenCvSharp.CPlusPlus.Point3d>();
+            List<OpenCvSharp.CPlusPlus.Point> LPeak = new List<OpenCvSharp.CPlusPlus.Point>();
+            List<Point3d> LTrack = new List<Point3d>();
+            List<List<ImageTaking>> UpTrackInfo = new List<List<ImageTaking>>();
+
+            //for down layer................................................................
+            //            tl.Rec("down");
+            double Sh_low;
+            Sh_low = 0.5 / (surface.LowTop - surface.LowBottom);
+
+            List<OpenCvSharp.CPlusPlus.Point2d> Msdxdy_Low = new List<OpenCvSharp.CPlusPlus.Point2d>();
+            List<OpenCvSharp.CPlusPlus.Point3d> LStage_Low = new List<OpenCvSharp.CPlusPlus.Point3d>();
+            List<OpenCvSharp.CPlusPlus.Point> LPeak_Low = new List<OpenCvSharp.CPlusPlus.Point>();
+            List<Point3d> LTrack_Low = new List<Point3d>();
+            List<List<ImageTaking>> LowTrackInfo = new List<List<ImageTaking>>();        
+            int gotobase = 0;
+            int not_detect = 0;
+            // int notrack = 0;
+           // int ltrack_counter = LTrack.Count();
+          //  int msdxdy_counter = Msdxdy.Count();
+
+            for (int i = 0; gotobase < 1; i++) {
+                dz = dz_img;
+                int notrack = 0;
+                hits = 6;
+                dx = Msdxdy[i].X;
+                dy = Msdxdy[i].Y;
+            Retracking: ;
+            //dz_img = dz;
+               /*   if (notrack == 1){
+
+                      dz_img = dz;
+                }*/
+                /*    if (notrack == 2){
+                
+                        goto not_detect_track;
+                        not_detect = 1;
+                    }*/
+
+                Vector3 initialpos = mc.GetPoint();
+                double moverange = (number_of_images - 1) * dz_img;
+                double predpoint = moverange + initialpos.Z;
+
+                if (predpoint < surface.UpBottom) {
+                    gotobase = 1;
+
+                    dz = surface.UpBottom - initialpos.Z + (number_of_images - 1) * dz_price_img;
+                }
+
+
+                //gotobase = 1のときは、移動して画像を撮影するようにする。
+                if (i != 0) {
+                    Vector3 dstpoint = new Vector3(
+                        LTrack[i - 1].X + Msdxdy[i - 1].X * dz * Sh,
+                        LTrack[i - 1].Y + Msdxdy[i - 1].Y * dz * Sh,
+                        LTrack[i - 1].Z + dz
+                        );
+                    mc.MovePoint(dstpoint);
+                    mc.Join();
+                }
+
+                List<ImageTaking> LiITUpMid = TakeSequentialImage( //image taking
+                    Msdxdy[i].X * Sh,//Dx
+                    Msdxdy[i].Y * Sh,//Dy
+                    -0.003,//Dz                //////////////////
+                    number_of_images);//number of images
+
+
+                LStage.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITUpMid[number_of_images - 1].StageCoord.X, LiITUpMid[number_of_images - 1].StageCoord.Y, LiITUpMid[number_of_images - 1].StageCoord.Z));
+                LiITUpMid[number_of_images - 1].img.ImWrite(datarootdirpath + string.Format(@"\img_l_up_{0}.png", i));
+                UpTrackInfo.Add(LiITUpMid);
+
+
+                List<Mat> binimages = new List<Mat>();
+                for (int t = 0; t <= number_of_images - 1; t++) {
+                    Mat bin = (Mat)DogContrastBinalize(LiITUpMid[t].img);
+
+                    double xx = myTrack.MsDX * myTrack.MsDX;
+                    double yy = myTrack.MsDY * myTrack.MsDY;
+                    if (Math.Sqrt(xx + yy) >= 0.2) { // if tantheta is grater than 0.4, Dilate the track
+                        Cv2.Dilate(bin, bin, new Mat());
+                    }
+                    Cv2.Dilate(bin, bin, new Mat());
+                    binimages.Add(bin);
+                }
+
+                //Track detection......................................................................................................
+                // remakeTrP: ;
+                Point2d pixel_cen = TD_naka_1(binimages, 256, 220, 3, 3, 4, window_H1, hits, dx, dy , i);//, true);
+                //Point2d pixel_cen = TrackDetection_new(binimages, 256, 220, hits, dx, dy, mod, pl, sp[0], sp[1], true);
+                //Point2d pixel_cen = TrackDetection_new2(binimages, 256, 220, 3, 3, 4, 90, 5, dx, dy, mod, pl, sp[0], sp[1], true);
+
+                /*    if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
+                        Point2d pixel_cen2 = TD_naka_2(binimages, 256, 220, 3, 3, 4, window_H2, hits, dx, dy);
+
+
+                        if (pixel_cen2.X == -1 & pixel_cen2.Y == -1) {
+                        
+                            hits = 5;
+                            Point2d pixel_cen3 = TD_naka_1(binimages, 256, 220, 3, 3, 4, window_H1, hits, dx, dy);
+
+                            if (pixel_cen3.X == -1 & pixel_cen3.Y == -1) {
+                           
+                                Point2d pixel_cen4 = TD_naka_2(binimages, 256, 220, 3, 3, 4, window_H2, hits, dx, dy);
+
+                                if (pixel_cen4.X == -1 & pixel_cen4.Y == -1) {
+
+                                    if (i != 0) {
+
+                                        LStage.Remove(LStage[i]);
+                                        UpTrackInfo.Remove(UpTrackInfo[i]);
+                                        notrack++;
+
+                                        if (notrack == 1) {
+                                            dz = dz + 0.015;
+                                            goto Retracking;
+                                        } else if (notrack == 2) {
+                                            mc.Join();
+                                            not_detect = 1;
+                                            goto not_detect_track;
+                                        }
+
+                                    } else if (i == 0) {
+                                        mc.Join();
+                                        not_detect = 1;
+                                        goto not_detect_track;
+                                    }
+                                } else {
+                                    pixel_cen.X = pixel_cen4.X;
+                                    pixel_cen.Y = pixel_cen4.Y;
+                                }
+                            } else {
+                                pixel_cen.X = pixel_cen3.X;
+                                pixel_cen.Y = pixel_cen3.Y;
+                            }
+                        } else {
+                            pixel_cen.X = pixel_cen2.X;
+                            pixel_cen.Y = pixel_cen2.Y;
+                        }
+                    }
+                    */
+
+                
+                if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
+                    Point2d pixel_cen2 = TD_naka_2(binimages, 256, 220, 3, 3, 4, window_H2, hits, dx, dy);
+
+
+                    if (pixel_cen2.X == -1 & pixel_cen2.Y == -1) {
+
+                        hits = 5;
+                        Point2d pixel_cen3 = TD_naka_1(binimages, 256, 220, 3, 3, 4, window_H1, hits, dx, dy, i);
+
+                        if (pixel_cen3.X == -1 & pixel_cen3.Y == -1) {
+
+                            Point2d pixel_cen4 = TD_naka_2(binimages, 256, 220, 3, 3, 4, window_H2, hits, dx, dy);
+
+                            if (pixel_cen4.X == -1 & pixel_cen4.Y == -1) {
+
+                                if (i != 0) {
+
+                                    LStage.Remove(LStage[i]);
+                                    UpTrackInfo.Remove(UpTrackInfo[i]);
+                                    notrack++;
+
+                                    if (notrack == 1) {
+                                        dz = dz + 0.015;
+                                        goto Retracking;
+                                    } else if (notrack == 2) {
+                                        mc.Join();
+                                        not_detect = 1;
+                                        goto not_detect_track;
+                                    }
+
+                                } else if (i == 0) {
+                                    mc.Join();
+                                    not_detect = 1;
+                                    goto not_detect_track;
+                                }
+                            } else {
+                                pixel_cen.X = pixel_cen4.X;
+                                pixel_cen.Y = pixel_cen4.Y;
+                            }
+                        } else {
+                            pixel_cen.X = pixel_cen3.X;
+                            pixel_cen.Y = pixel_cen3.Y;
+                        }
+                    } else {
+                        pixel_cen.X = pixel_cen2.X;
+                        pixel_cen.Y = pixel_cen2.Y;
+                    }
+                }
+
+
+                //......................................................................................................
+
+
+                LPeak.Add(new OpenCvSharp.CPlusPlus.Point(pixel_cen.X - 256, pixel_cen.Y - 220));
+
+                double firstx = LStage[i].X - LPeak[i].X * 0.000267;
+                double firsty = LStage[i].Y + LPeak[i].Y * 0.000267;
+                double firstz = LStage[i].Z;
+                LTrack.Add(new Point3d(firstx, firsty, firstz));
+
+
+                if (i == 0) {
+                    Msdxdy.Add(new OpenCvSharp.CPlusPlus.Point2d(myTrack.MsDX, myTrack.MsDY));
+
+                } else if (i == 1) {
+                    List<Point3d> LTrack_ghost = new List<Point3d>();
+                    double dzPrev = (LStage[0].Z - surface.UpTop) * Sh;
+                    double Lghost_x = LTrack[0].X - Msdxdy[i].X * dzPrev;
+                    double Lghost_y = LTrack[0].Y - Msdxdy[i].Y * dzPrev;
+                    LTrack_ghost.Add(new Point3d(Lghost_x, Lghost_y, surface.UpTop));//上側乳剤層上面にtrackがあるならどの位置にあるかを算出する。
+
+                    string txtfileName_ltrackghost = datarootdirpath + string.Format(@"\LTrack_ghost.txt");
+                    StreamWriter twriter_ltrackghost = File.CreateText(txtfileName_ltrackghost);
+                    twriter_ltrackghost.WriteLine("{0} {1} {2}", LTrack_ghost[0].X, LTrack_ghost[0].Y, LTrack_ghost[0].Z);
+                    twriter_ltrackghost.Close();
+
+                    OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LTrack_ghost[0], LTrack[0], LTrack[1]);
+                    Msdxdy.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
+
+                } else {
+                    OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LTrack[i - 2], LTrack[i - 1], LTrack[i]);
+                    Msdxdy.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
+                }
+
+
+            }//for　i-loop
+
+            //baseまたぎ
+              int ltrack_counter = LTrack.Count();
+              int msdxdy_counter = Msdxdy.Count();
+
+            mc.MovePoint(
+                LTrack[ltrack_counter - 1].X + Msdxdy[msdxdy_counter - 1].X * (surface.LowTop - surface.UpBottom),
+                LTrack[ltrack_counter - 1].Y + Msdxdy[msdxdy_counter - 1].Y * (surface.LowTop - surface.UpBottom),
+                surface.LowTop
+                );
+            mc.Join();
+
+
+            //////For Down Layer//
+            Msdxdy_Low.Add(new OpenCvSharp.CPlusPlus.Point2d(Msdxdy[msdxdy_counter - 1].X, Msdxdy[msdxdy_counter - 1].Y));
+            dz_price_img = (6 * Math.Cos(theta) / Sh_low) / 1000;
+            dz_img = dz_price_img * (-1);
+            dz = dz_img;
+
+            int goto_dgel = 0;
+
+            for (int i = 0; goto_dgel < 1; i++) {
+                int notrack_low = 0;
+                dz = dz_img;
+                dx = Msdxdy_Low[i].X;
+                dy = Msdxdy_Low[i].Y;
+            Retracking_low: ;
+
+                
+                Vector3 initialpos = mc.GetPoint();
+                double moverange = (number_of_images - 1) * dz_img;
+                double predpoint = moverange + initialpos.Z;
+
+                if (predpoint < surface.LowBottom)//もしもbaseに入りそうなら、8枚目の画像がちょうど下gelを撮影するようにdzを調整する。
+                {
+                    goto_dgel = 1;
+
+                    dz = surface.LowBottom - initialpos.Z + (number_of_images - 1) * dz_price_img;
+                }
+                ////////
+
+                //goto_dgel == 1のときは、移動して画像を撮影するようにする。
+                if (i != 0) {
+                    Vector3 dstpoint = new Vector3(
+                    LTrack_Low[i - 1].X + Msdxdy_Low[i].X * dz * Sh_low,
+                    LTrack_Low[i - 1].Y + Msdxdy_Low[i].Y * dz * Sh_low,
+                    LTrack_Low[i - 1].Z + dz
+                    );
+                    mc.MovePoint(dstpoint);
+                    mc.Join();
+                }
+
+                //
+                List<ImageTaking> LiITLowMid = TakeSequentialImage(
+                    Msdxdy[i].X * Sh_low,
+                    Msdxdy[i].Y * Sh_low,
+                    -0.003,                   ////
+                    number_of_images);
+
+                //
+                LStage_Low.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITLowMid[number_of_images - 1].StageCoord.X, LiITLowMid[number_of_images - 1].StageCoord.Y, LiITLowMid[number_of_images - 1].StageCoord.Z));
+                LiITLowMid[number_of_images - 1].img.ImWrite(datarootdirpath + string.Format(@"\img_l_low_{0}.png", i));
+                LowTrackInfo.Add(LiITLowMid);
+
+                
+                List<Mat> binimages = new List<Mat>();
+                for (int t = 0; t <= number_of_images - 1; t++) {
+                    Mat bin = (Mat)DogContrastBinalize(LiITLowMid[t].img);
+
+                    double xx = myTrack.MsDX * myTrack.MsDX;
+                    double yy = myTrack.MsDY * myTrack.MsDY;
+                    if (Math.Sqrt(xx + yy) >= 0.2) {
+                        Cv2.Dilate(bin, bin, new Mat());
+                    }
+                    Cv2.Dilate(bin, bin, new Mat());
+                    binimages.Add(bin);
+                }
+                //trackを重ねる処理を入れる。
+
+                Point2d pixel_cen = TD_naka_1(binimages, 256, 220, 3, 3, 4, window_H1, hits, dx, dy ,i);//, true);
+                //Point2d pixel_cen = TrackDetection_new(binimages, 256, 220, hits, dx, dy, mod, pl, sp[0], sp[1], true);
+                //Point2d pixel_cen = TrackDetection_new2(binimages, 256, 220, 3, 3, 4, 90, 5, dx, dy, mod, pl, sp[0], sp[1], true);
+
+                /*    if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
+                        Point2d pixel_cen2 = TD_naka_2(binimages, 256, 220, 3, 3, 4, window_H2, hits, dx, dy);
+
+                        if (pixel_cen2.X == -1 & pixel_cen2.Y == -1) {
+
+                            if (i != 0) {
+
+                                LStage.Remove(LStage[i]);
+                                UpTrackInfo.Remove(UpTrackInfo[i]);
+                                notrack_low++;
+
+                                if (notrack_low == 1) {
+                                    dz = dz + 0.015;
+                                    goto Retracking_low;
+                                } else if (notrack_low == 2) {
+                                    mc.Join();
+                                    not_detect = 1;
+                                    goto not_detect_track;
+                                }
+
+                            } else if (i == 0) {
+                                mc.Join();
+                                not_detect = 1;
+                                goto not_detect_track;
+                            }
+                        } else {
+                            pixel_cen.X = pixel_cen2.X;
+                            pixel_cen.Y = pixel_cen2.Y;
+                        }
+                    }*/
+
+                if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
+                    Point2d pixel_cen2 = TD_naka_2(binimages, 256, 220, 3, 3, 4, window_H2, hits, dx, dy);
+
+
+                    if (pixel_cen2.X == -1 & pixel_cen2.Y == -1) {
+
+                        hits = 5;
+                        Point2d pixel_cen3 = TD_naka_1(binimages, 256, 220, 3, 3, 4, window_H1, hits, dx, dy, i);
+
+                        if (pixel_cen3.X == -1 & pixel_cen3.Y == -1) {
+
+                            Point2d pixel_cen4 = TD_naka_2(binimages, 256, 220, 3, 3, 4, window_H2, hits, dx, dy);
+
+                            if (pixel_cen4.X == -1 & pixel_cen4.Y == -1) {
+
+                                if (i != 0) {
+
+                                    LStage_Low.Remove(LStage_Low[i]);
+                                   LowTrackInfo.Remove(LowTrackInfo[i]);
+                                    notrack_low++;
+
+                                    if (notrack_low == 1) {
+                                        dz = dz + 0.015;
+                                        goto Retracking_low;
+                                    } else if (notrack_low == 2) {
+                                        mc.Join();
+                                        not_detect = 1;
+                                        goto not_detect_track;
+                                    }
+
+                                } else if (i == 0) {
+                                    mc.Join();
+                                    not_detect = 1;
+                                    goto not_detect_track;
+                                }
+                            } else {
+                                pixel_cen.X = pixel_cen4.X;
+                                pixel_cen.Y = pixel_cen4.Y;
+                            }
+                        } else {
+                            pixel_cen.X = pixel_cen3.X;
+                            pixel_cen.Y = pixel_cen3.Y;
+                        }
+                    } else {
+                        pixel_cen.X = pixel_cen2.X;
+                        pixel_cen.Y = pixel_cen2.Y;
+                    }
+                }
+                //
+
+                //検出したpixel座標をstage座標に変換するなどlistに追加する。
+                LPeak_Low.Add(new OpenCvSharp.CPlusPlus.Point(pixel_cen.X - 256, pixel_cen.Y - 220));
+
+                double firstx = LStage_Low[i].X - LPeak_Low[i].X * 0.000267;
+                double firsty = LStage_Low[i].Y + LPeak_Low[i].Y * 0.000267;
+                double firstz = LStage_Low[i].Z;
+                LTrack_Low.Add(new Point3d(firstx, firsty, firstz));
+                //
+
+                //ここからは、最小二乗法で角度を算出するプログラムである。
+                //上側乳剤層上面の1回目のtrack検出によって、次のtrackの位置を検出する角度を求める。
+                //その角度が、1回目のtrack検出の結果によって大きな角度にならないように調整をする。
+                if (i == 0) {
+                    OpenCvSharp.CPlusPlus.Point2d Tangle_l = ApproximateStraightBase(Sh, Sh_low, LTrack[ltrack_counter - 2], LTrack[ltrack_counter - 1], LTrack_Low[i], surface);
+                    Msdxdy_Low.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle_l.X, Tangle_l.Y));
+                } else if (i == 1) {
+                    OpenCvSharp.CPlusPlus.Point2d Tangle_l = ApproximateStraightBase(Sh, Sh_low, LTrack[ltrack_counter - 1], LTrack_Low[i - 1], LTrack_Low[i], surface);
+                    Msdxdy_Low.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle_l.X, Tangle_l.Y));
+                } else {
+                    OpenCvSharp.CPlusPlus.Point2d Tangle_l = ApproximateStraight(Sh_low, LTrack_Low[i - 2], LTrack_Low[i - 1], LTrack_Low[i]);
+                    Msdxdy_Low.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle_l.X, Tangle_l.Y));
+                }
+
+
+            }//i_loop
+
+            //
+            int ltrack_low_count = LTrack_Low.Count();
+            mc.MovePointXY(LTrack_Low[ltrack_low_count - 1].X, LTrack_Low[ltrack_low_count - 1].Y);
+
+            mc.Join();
+
+              //検出に失敗した場合は、ループを抜けてここに来る。
+        not_detect_track: ;//検出に失敗したと考えられる地点で画像を取得し、下ゲル下面まで移動する。(現在は下ゲル下面とするが、今後変更する可能性有。)
+
+            /* if (not_detect != 0) {
+                //Vector dzz = 
+                 Vector3 currentpoint = mc.GetPoint();
+                 Vector3 dstpoint_ = new Vector3(
+                   currentpoint.X - Msdxdy[0].X * 0.05* Sh,
+                   currentpoint.Y - Msdxdy[0].Y * 0.05 * Sh,
+                   currentpoint.Z - 0.08
+                    );
+                 mc.MovePoint(dstpoint_);
+                 mc.Join();
+                List<ImageTaking> NotDetect = TakeSequentialImage(
+                     Msdxdy[0].X * Sh,
+                     Msdxdy[0].Y * Sh,
+                     0.003,
+                    40); */
+
+            if (not_detect != 0) {
+                //Vector dzz = 
+                   Vector3 currentpoint1 = mc.GetPoint();
+                   Vector3 dstpoint_1 = new Vector3(
+                     currentpoint1.X + Msdxdy[0].X * 0.015* Sh,
+                     currentpoint1.Y + Msdxdy[0].Y * 0.015 * Sh,
+                     currentpoint1.Z + 0.015
+                      );
+                   mc.MovePoint(dstpoint_1);
+                   mc.Join();
+
+                Vector3 currentpoint = mc.GetPoint();
+                Vector3 dstpoint_ = new Vector3(
+                  currentpoint.X,
+                  currentpoint.Y,
+                  currentpoint.Z - 0.08
+                   );
+                mc.MovePoint(dstpoint_);
+                mc.Join();
+
+
+                List<ImageTaking> NotDetect = TakeSequentialImage(
+                        0,
+                        0,
+                        0.003,
+                       50);
+
+                SuperImposer si = new SuperImposer();
+                List<Mat> binimages = new List<Mat>();
+                for (int t = 0; t < NotDetect.Count; t++) {
+                    // Cv2.ImShow("NotDetect[t].img", NotDetect[t].img);
+                    // Cv2.WaitKey(0);
+                    si.AddImg(NotDetect[t].img);
+                }
+
+                Mat bigimg_dog = new Mat();
+                Mat bigimg_org = new Mat();
+
+                si.MakeImg(out bigimg_dog, out bigimg_org);
+                Cv2.ImShow("superimposed image org", bigimg_org);
+                Cv2.ImShow("superimposed image dog", bigimg_dog);
+                Cv2.WaitKey(0);
+
+
+                /* string logtxt = string.Format(@"C:\MKS_test\WorkingTime\{0}\{1}-{2}_TTracking.txt", mod, mod, pl);
+                 SimpleLogger SL1 = new SimpleLogger(logtxt, sp1[0], sp1[1]);*/
+
+                // string txtfileName_t_not_detect = datarootdirpath + string.Format(@"\not_detect.txt");
+                // StreamWriter twriter_t_not_detect = File.CreateText(txtfileName_t_not_detect);
+                //   for (int i = 0; i < NotDetect.Count; i++) {
+                bigimg_org.ImWrite(datarootdirpath + string.Format(@"\superimpsed_org.png"));
+                bigimg_dog.ImWrite(datarootdirpath + string.Format(@"\superimpsed_dog.png"));
+                // Vector3 p = NotDetect[i].StageCoord;
+                //twriter_t_not_detect.WriteLine("{0} {1} {2} {3}", i, p.X, p.Y, p.Z);
+                // }
+                //twriter_t_not_detect.Close();
+
+                //mc.MovePointZ(surface.LowBottom);
+                Vector3 cc = mc.GetPoint();
+                double Zp = surface.UpTop;
+                mc.MoveTo(new Vector3(cc.X, cc.Y, Zp));
+                mc.Join();
+
+                mc.Join();
+            }
+
+
+
+            //file write out up_gel
+            string txtfileName_sh_up = datarootdirpath + string.Format(@"\Sh_up.txt");
+            StreamWriter twriter_sh_up = File.CreateText(txtfileName_sh_up);
+            twriter_sh_up.WriteLine("{0}", Sh);
+            twriter_sh_up.Close();
+
+            //file write out
+            string txtfileName_t_info_up = datarootdirpath + string.Format(@"\location_up.txt");
+            StreamWriter twriter_t_info_up = File.CreateText(txtfileName_t_info_up);
+            for (int i = 0; i < UpTrackInfo.Count; i++) {
+                for (int t = 0; t < UpTrackInfo[i].Count; t++) {
+                    UpTrackInfo[i][t].img.ImWrite(datarootdirpath + string.Format(@"\img_t_info_up_{0}-{1}.png", i, t));
+                    Vector3 p = UpTrackInfo[i][t].StageCoord;
+                    twriter_t_info_up.WriteLine("{0} {1} {2} {3} {4}", i, t, p.X, p.Y, p.Z);
+                }
+            }
+            twriter_t_info_up.Close();
+
+            string txtfileName_lpeak = datarootdirpath + string.Format(@"\lpeak_up.txt");
+            StreamWriter twriter_lpeak = File.CreateText(txtfileName_lpeak);
+            for (int i = 0; i < LPeak.Count(); i++) {
+                OpenCvSharp.CPlusPlus.Point p = LPeak[i];
+                twriter_lpeak.WriteLine("{0} {1} {2}", i, p.X, p.Y);
+            }
+            twriter_lpeak.Close();
+
+            string txtfileName_ltrack = datarootdirpath + string.Format(@"\ltrack_up.txt");
+            StreamWriter twriter_ltrack = File.CreateText(txtfileName_ltrack);
+            for (int i = 0; i < LTrack.Count(); i++) {
+                OpenCvSharp.CPlusPlus.Point3d p = LTrack[i];
+                twriter_ltrack.WriteLine("{0} {1} {2} {3}", i, p.X, p.Y, p.Z);
+            }
+            twriter_ltrack.Close();
+
+            string txtfileName_msdxdy = datarootdirpath + string.Format(@"\msdxdy.txt");
+            StreamWriter twriter_msdxdy = File.CreateText(txtfileName_msdxdy);
+            for (int i = 0; i < Msdxdy.Count(); i++) {
+                OpenCvSharp.CPlusPlus.Point2d p = Msdxdy[i];
+                twriter_msdxdy.WriteLine("{0} {1} {2}", i, p.X, p.Y);
+            }
+            twriter_msdxdy.Close();
+
+
+            //file write out low_gel
+            string txtfileName_sh_low = datarootdirpath + string.Format(@"\Sh_low.txt");
+            StreamWriter twriter_sh_low = File.CreateText(txtfileName_sh_low);
+            twriter_sh_low.WriteLine("{0}", Sh_low);
+            twriter_sh_low.Close();
+
+            string txtfileName_t_info_low = datarootdirpath + string.Format(@"\location_low.txt");
+            StreamWriter twriter_t_info_low = File.CreateText(txtfileName_t_info_low);
+            for (int i = 0; i < LowTrackInfo.Count; i++) {
+                for (int t = 0; t < LowTrackInfo[i].Count; t++) {
+                    LowTrackInfo[i][t].img.ImWrite(datarootdirpath + string.Format(@"\img_t_info_low_{0}-{1}.png", i, t));
+                    Vector3 p = LowTrackInfo[i][t].StageCoord;
+                    twriter_t_info_low.WriteLine("{0} {1} {2} {3} {4}", i, t, p.X, p.Y, p.Z);
+
+                }
+            }
+            twriter_t_info_low.Close();
+
+            string txtfileName_lpeak_low = datarootdirpath + string.Format(@"\lpeak_low.txt");
+            StreamWriter twriter_lpeak_low = File.CreateText(txtfileName_lpeak_low);
+            for (int i = 0; i < LPeak_Low.Count(); i++) {
+                OpenCvSharp.CPlusPlus.Point p = LPeak_Low[i];
+                twriter_lpeak_low.WriteLine("{0} {1} {2}", i, p.X, p.Y);
+            }
+            twriter_lpeak_low.Close();
+
+            string txtfileName_ltrack_low = datarootdirpath + string.Format(@"\ltrack_low.txt");
+            StreamWriter twriter_ltrack_low = File.CreateText(txtfileName_ltrack_low);
+            for (int i = 0; i < LTrack_Low.Count(); i++) {
+                OpenCvSharp.CPlusPlus.Point3d p = LTrack_Low[i];
+                twriter_ltrack_low.WriteLine("{0} {1} {2} {3}", i, p.X, p.Y, p.Z);
+            }
+            twriter_ltrack_low.Close();
+
+            string txtfileName_msdxdy_low = datarootdirpath + string.Format(@"\msdxdy_low.txt");
+            StreamWriter twriter_msdxdy_low = File.CreateText(txtfileName_msdxdy_low);
+            for (int i = 0; i < Msdxdy_Low.Count(); i++) {
+                OpenCvSharp.CPlusPlus.Point2d p = Msdxdy_Low[i];
+                twriter_msdxdy_low.WriteLine("{0} {1} {2}", i, p.X, p.Y);
+            }
+            twriter_msdxdy_low.Close();
+
+
+            if (dubflag == false) {
+                string TPC;
+                int LL = LStage_Low.Count;
+                if (LL == 0) {
+                    TPC = "Nopass_topsurface";
+
+                } else {
+                    double LZ = Math.Abs(LStage_Low[LL - 1].Z);
+                    int UU = LStage.Count;
+                    double UZ = Math.Abs(LStage[UU - 1].Z);
+
+                    if (LZ + 0.003 >= Math.Abs(surface.LowBottom)) {
+                        TPC = "Pass";
+                    } else {
+
+                        TPC = "NoPass";
+                    }
+
+                }
+                string[] sp1 = myTrack.IdString.Split('-');
+                /*   string logtxt_ = string.Format(@"c:\test\bpm\{0}\{1}-{2}_TCK.txt", mod, mod, pl);
+                   //string log_ = string.Format("{0} \n", sw.Elapsed);
+                   string log_ = string.Format("{0} {1} {2} \n", sp1[0], sp1[1], TPC);
+                   StreamWriter swr = new StreamWriter(logtxt_, true, Encoding.ASCII);
+                   swr.Write(log_);
+                   swr.Close();*/
+
+                string logtxt = string.Format(@"C:\MKS_test\followingCheck\{0}\{1}-{2}_Trackingcheck_newversion.txt", mod, mod, pl);
+                SimpleLogger SL1 = new SimpleLogger(logtxt, sp1[0], sp1[1]);
+                SL1.Trackcheck(TPC);
+
+            }
+  }
+    
+
         
         //........................................................................
 
@@ -3648,6 +5811,158 @@ namespace NagaraStage.Ui {
         }
 
 
+        static OpenCvSharp.CPlusPlus.Point TrackDetection_new2(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsize = 40, int phthresh = 5, double dx = 0.12, double dy = 0.12, int mod = 5, int plt = 2, string sp0 = "", string sp1 = "", bool debugflag = true) {
+            OpenCvSharp.CPlusPlus.Point center = new OpenCvSharp.CPlusPlus.Point(0, 0);
+            int x0 = px - 256;
+            int y0 = py - 220;
+
+           // List<trackdata> rms = new List<trackdata>();
+
+
+            double phi = Math.Atan2(dy, dx);
+            double angle = phi * (180 / Math.PI);
+            double tant = Math.Sqrt(dx * dx + dy * dy);
+            double pix = 0.26;//pix_to_micron
+
+            //Making a mask
+            double depth = 180;
+            int mask_x = (int)(90 + tant * depth);//if tantheta=0.38, mask_x=30
+            int mask_y = 90;
+            if (mask_x < mask_y) {
+                mask_x = mask_y;
+            }
+
+            int counter = 0;
+            // Mat imgTemplt = Mat.Zeros(512, 440, MatType.CV_8UC1);
+            //using (Mat big = Mat.Zeros(521, 440, MatType.CV_8UC1))
+            using (Mat big = Mat.Zeros(600, 600, MatType.CV_8UC1))
+            using (Mat imgMask = Mat.Zeros(big.Height, big.Width, MatType.CV_8UC1)) {
+
+
+                int ystart = big.Height / 2 - mask_y / 2;
+                int yend = big.Height / 2 + mask_y / 2;
+                int xstart = big.Width / 2 - mask_x / 2;
+                int xend = big.Width / 2 + mask_x / 2;
+                OpenCvSharp.CPlusPlus.Rect recMask = new OpenCvSharp.CPlusPlus.Rect(xstart, ystart, mask_x, mask_y);
+                Cv2.Rectangle(imgMask, recMask, 255, -1);//brightness=1, fill
+                Mat imgmask = imgMask.Clone();
+                Mat affineMask = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), angle, 1);
+                Cv2.WarpAffine(imgmask, imgMask, affineMask, imgMask.Size());
+
+
+
+                // Cv2.Rectangle(imgMask, recMask, 255, -1);//brightness=1, fill
+
+                for (int p = 0; p < mats.Count; p++) {
+                    int startx = big.Width / 2 - mats[p].Width / 2;
+                    int starty = big.Height / 2 - mats[p].Height / 2;
+                    Cv2.Add(
+                        big[starty, starty + mats[p].Height, startx, startx + mats[p].Width],
+                        mats[p],
+                        big[starty, starty + mats[p].Height, startx, startx + mats[p].Width]);
+                }
+
+                using (Mat big_c = big.Clone()) {
+                    Cv2.BitwiseAnd(big, imgMask, big);
+                    Mat big_ = big.Clone();
+                    Cv2.Threshold(big, big, phthresh, 255, ThresholdType.ToZero);
+                    //Cv2.BitwiseAnd(big, imgMask, big);
+                    //Mat big_ = big.Clone();
+                    Mat affineMask2 = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), angle, 1);
+                    Cv2.WarpAffine(big, big, affineMask2, imgMask.Size());
+                    Mat maskRoi = big.Clone();
+                    
+                    if (debugflag) {
+
+                        //Cv2.ImShow("maskroi_", maskRoi * 30);
+                        Cv2.ImShow("bigx30", big * 30);
+                        Cv2.ImShow("imgmask", big_*30);
+                        Cv2.ImShow("imgMask", imgMask);                      
+
+                        Cv2.ImShow("bigcut", big_c * 30);
+                        Cv2.WaitKey(0);
+                    }
+
+                    //  Cv2.BitwiseAnd(big, imgMask, big);
+
+                }//using big_c
+
+                //Making template
+                double forcaldepth = 15;
+                //int templt_x = (int)(tant * forcaldepth / pix);//if tantheta=0.38, templt_x=22
+                int templt_x = 6;
+                int templt_y = 6;
+                if (templt_x < templt_y) {
+                    templt_x = templt_y;
+                }
+
+                Mat imgTemplt = Mat.Zeros(200, 200, MatType.CV_8UC1);
+                OpenCvSharp.CPlusPlus.Rect recTemplt = new OpenCvSharp.CPlusPlus.Rect(100, 100, templt_x, templt_y);
+                Cv2.Rectangle(imgTemplt, recTemplt, 1, -1);//brightness=1, fill
+                Mat affineTemplt = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(100, 100), 0, 1);
+                Cv2.WarpAffine(imgTemplt, imgTemplt, affineTemplt, imgTemplt.Size(), Interpolation.Linear, BorderType.Constant, 0);
+                Mat Template = imgTemplt.Clone();
+
+                Mat imgTempltTrim = new Mat();
+                using (CvMemStorage storage = new CvMemStorage())
+                using (CvContourScanner scanner = new CvContourScanner(imgTemplt.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
+                    foreach (CvSeq<CvPoint> c in scanner) {
+                        CvRect brect = Cv.BoundingRect(c);
+                        int rowstart = brect.Top;
+                        int rowend = brect.Bottom;
+                        int colstart = brect.Left;
+                        int colend = brect.Right;
+                        imgTempltTrim = imgTemplt[rowstart, rowend, colstart, colend];
+                    }
+                }
+
+                Mat temp = Mat.Zeros(big.Width - imgTemplt.Width + 1, big.Height - imgTemplt.Height + 1, MatType.CV_32FC1);
+                Cv2.MatchTemplate(big, imgTempltTrim, temp, MatchTemplateMethod.CCorr);
+
+                double minval = 0;
+                double maxval = 0;
+                OpenCvSharp.CPlusPlus.Point min_loc = new OpenCvSharp.CPlusPlus.Point();
+                OpenCvSharp.CPlusPlus.Point max_loc = new OpenCvSharp.CPlusPlus.Point();
+                Cv2.MinMaxLoc(temp, out minval, out maxval, out min_loc, out max_loc);
+
+                OpenCvSharp.CPlusPlus.Point top_left = max_loc;
+                OpenCvSharp.CPlusPlus.Rect rectframe = new OpenCvSharp.CPlusPlus.Rect(top_left.X, top_left.Y, imgTempltTrim.Width, imgTempltTrim.Height);
+
+                if (debugflag) {
+
+                    //Cv2.ImShow("maskroi_", maskRoi * 30);
+                    Cv2.ImShow("bigx30", big * 30);
+                    Cv2.ImShow("imgmask", imgmask);
+                    Cv2.ImShow("imgMask", imgMask);
+                    Cv2.ImShow("temp", Template * 30);
+                    Cv2.ImShow("temp", temp * 30);
+
+                    
+                    Cv2.WaitKey(0);
+                }
+                double W = top_left.X - ((big.Width / 2) - 256);
+                double H = top_left.Y - ((big.Height / 2) - 220);
+
+                if (maxval > templt_x * templt_y * 0.3) {
+                    center = new OpenCvSharp.CPlusPlus.Point(W + imgTempltTrim.Width / 2, H + imgTempltTrim.Height / 2);
+                } else {
+                    center = new OpenCvSharp.CPlusPlus.Point(-1, -1);
+                }
+
+                big.Release();
+                imgMask.Release();
+                affineMask.Release();
+                imgTemplt.Release();
+                //affineTemplt.Release();
+                imgTempltTrim.Release();
+                temp.Release();
+                //binorg.Release();
+                //maskRoi.Release();
+            }
+            return center;
+        }
+
+
 // ##############################################################################################
                         //AUTOMATIC TRACKING FOR PL#2
 
@@ -3664,44 +5979,44 @@ namespace NagaraStage.Ui {
             Led led_ = Led.GetInstance();
             string[] sp1 = myTrack.IdString.Split('-');
 
-            string logtxt = string.Format(@"C:\MKS_test\WorkingTime\{0}\{1}-{2}_TTracking.txt", mod, mod, pl);
+            string logtxt = string.Format(@"C:\MKS_test\WorkingTime\{0}\{1}-{2}_TTracking_newversion.txt", mod, mod, pl);
             SimpleLogger SL1 = new SimpleLogger(logtxt, sp1[0], sp1[1]);
 
-        /*    // Tracking in emulsion
+            // Tracking in emulsion
             SL1.Info("Tracking Start");            
           //  Tracking(myTrack, mod, pl, false);
 
-            GoToDown();
-            mc.Join();
+         //   GoToDown();
+          //  mc.Join();
             // Taking Beam pattern            
-            Detectbeam(myTrack, mod, pl);
+          //  Detectbeam(myTrack, mod, pl);
             
 
             // Go to top of uppr layer after tracking is finished
             
 
             
-            SL1.Info("Tracking End");*/
+           
 
-            // Oil putting time
+           /* // Oil putting time
             Thread.Sleep(1000);
-            led_.AdjustLight(parameterManager);
+            led_.AdjustLight(parameterManager);*/
 
-
-            // Go to near grid mark and get parameter for shrinkage in X,Y
+/*
+            //Go to near grid mark and get parameter for shrinkage in X,Y
             NearGridParameter();
 
 
             // Go to track position after correction with near gridmark
             gotrack(myTrack);
             mc.Join();
-            Vector3 initialpos = mc.GetPoint();
+            Vector3 initialpos = mc.GetPoint();*/
 
 
             bool surfacerecogOK = false;
 
             // Detection of boundaries of emulsion layers
-            for (int trial = 0; trial < 1; trial++) {
+        /*    for (int trial = 0; trial < 1; trial++) {
                 mc.MoveTo(initialpos);
                 mc.Join();
 
@@ -3728,19 +6043,16 @@ namespace NagaraStage.Ui {
 
            //     continue;//go to the next track
           //  }
-        
-            Thread.Sleep(100);
-            GoTopUp();
-            mc.Join();
-
+        */
+          /*
             // Beampatternmatching
             BPMW(myTrack, mod, pl);
             mc.Join();
-            Thread.Sleep(100);
+            Thread.Sleep(100);*/
 
 
             // Tracking in emulsion
-            Tracking(myTrack, mod, pl, false);
+            Tracking2(myTrack, mod, pl, false);
 
             // #If the the followed track is stop or cause event, go to Upper surface and to the next track#
 
