@@ -3296,7 +3296,6 @@ namespace NagaraStage.Ui {
                             Cv2.WaitKey(0);
 
 
-                           
                           //  if (debugflag == true) {//
                                
                            // }
@@ -5499,7 +5498,7 @@ namespace NagaraStage.Ui {
 
             if (not_detect != 0) {
                 //Vector dzz = 
-                   Vector3 currentpoint1 = mc.GetPoint();
+                   Vector3 currentpoint1 = mc.GetPoint();//ここで、もし境界面付近ならば、境界面によって処理を変更するように修正する。
                    Vector3 dstpoint_1 = new Vector3(
                      currentpoint1.X + Msdxdy[0].X * 0.015* Sh,
                      currentpoint1.Y + Msdxdy[0].Y * 0.015 * Sh,
