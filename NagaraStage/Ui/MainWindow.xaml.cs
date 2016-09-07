@@ -5497,15 +5497,27 @@ namespace NagaraStage.Ui {
                     40); */
 
             if (not_detect != 0) {
+
+                int pozi_flag = 0;
                 //Vector dzz = 
-                   Vector3 currentpoint1 = mc.GetPoint();//ここで、もし境界面付近ならば、境界面によって処理を変更するように修正する。
-                   Vector3 dstpoint_1 = new Vector3(
-                     currentpoint1.X + Msdxdy[0].X * 0.015* Sh,
-                     currentpoint1.Y + Msdxdy[0].Y * 0.015 * Sh,
-                     currentpoint1.Z + 0.015
-                      );
-                   mc.MovePoint(dstpoint_1);
-                   mc.Join();
+                Vector3 currentpoint1 = mc.GetPoint();//ここで、もし境界面付近ならば、境界面によって処理を変更するように修正する。
+
+                if (surface.UpBottom < currentpoint1.Z)//上ゲルにあるか、下ゲルで見失ったのかを判断する。 
+                {
+                    pozi_flag = 1;
+                }
+                if (surface.LowTop > currentpoint1.Z) 
+                {
+                    pozi_flag = 2;
+                }
+
+                Vector3 dstpoint_1 = new Vector3(
+                    currentpoint1.X + Msdxdy[0].X * 0.015* Sh,
+                    currentpoint1.Y + Msdxdy[0].Y * 0.015 * Sh,
+                    currentpoint1.Z + 0.015
+                    );
+                mc.MovePoint(dstpoint_1);
+                mc.Join();
 
                 Vector3 currentpoint = mc.GetPoint();
                 Vector3 dstpoint_ = new Vector3(
@@ -5517,11 +5529,52 @@ namespace NagaraStage.Ui {
                 mc.Join();
 
 
+                double surfacepointLow  = 0;
+                if (pozi_flag == 1) 
+                {
+                    surfacepointLow = surface.UpBottom;
+                }
+                if (pozi_flag == 2) 
+                {
+                    surfacepointLow = surface.LowBottom;
+                }
+
+
+                if (surfacepointLow >　dstpoint_.Z) //もし、下に移動した結果、baseやゲルの外に移動してしまうのならば、境界面まで移動する。
+                {
+                    dstpoint_.Z = surfacepointLow;
+                    mc.MovePoint(dstpoint_);
+                }
+
+                currentpoint = mc.GetPoint();//現在の位置に更新。(写真を撮り始める位置である。)
+
+                double surfacepointUp = 0;
+                if (pozi_flag == 1) 
+                {
+                    surfacepointUp = surface.UpTop;
+                }
+                if (pozi_flag == 2) 
+                {
+                    surfacepointUp = surface.LowTop;
+                }
+
+                int moveflag = 0;
+                int takeImg = 50;
+                if (currentpoint.Z + 0.15 > surfacepointUp) //画像を50枚?撮影した時に、baseの中やゲルの外を撮影するようならそうしないようにする。
+                {
+                    takeImg = (int)((surfacepointUp - currentpoint.Z) / 0.003);//これでゲル以外の部分を撮影するようなら適切な画像の枚数に変化することができる。
+
+                    if (pozi_flag == 2) //もし、下ゲルの上面を飛び越そうとするのならば、上ゲルに関しても、積層画像を作成するようにする。
+                    {
+                        moveflag = 1;
+                    }
+                }
+
                 List<ImageTaking> NotDetect = TakeSequentialImage(
                         0,
                         0,
                         0.003,
-                       50);
+                        takeImg);
 
                 SuperImposer si = new SuperImposer();
                 List<Mat> binimages = new List<Mat>();
@@ -5552,6 +5605,41 @@ namespace NagaraStage.Ui {
                 //twriter_t_not_detect.WriteLine("{0} {1} {2} {3}", i, p.X, p.Y, p.Z);
                 // }
                 //twriter_t_not_detect.Close();
+
+                if (moveflag == 1) 
+                {
+                    currentpoint.Z = surface.UpBottom;
+                    mc.MovePoint(currentpoint);//base上面に移動する。
+                    mc.Join();
+
+                    List<ImageTaking> NotDetect2 = TakeSequentialImage(
+                        0,
+                        0,
+                        0.003,
+                        30);
+
+                    SuperImposer si2 = new SuperImposer();
+                    List<Mat> binimages2 = new List<Mat>();
+                    for (int t = 0; t < NotDetect2.Count; t++) {
+                        // Cv2.ImShow("NotDetect[t].img", NotDetect[t].img);
+                        // Cv2.WaitKey(0);
+                        si2.AddImg(NotDetect2[t].img);
+                    }
+
+                    Mat bigimg_dog2 = new Mat();
+                    Mat bigimg_org2 = new Mat();
+
+                    si2.MakeImg(out bigimg_dog2, out bigimg_org2);
+                    Cv2.ImShow("superimposed image org", bigimg_org2);
+                    Cv2.ImShow("superimposed image dog", bigimg_dog2);
+                    Cv2.WaitKey(0);
+
+                    bigimg_org2.ImWrite(datarootdirpath + string.Format(@"\superimpsed_org2.png"));
+                    bigimg_dog2.ImWrite(datarootdirpath + string.Format(@"\superimpsed_dog2.png"));
+                }
+
+
+
 
                 //mc.MovePointZ(surface.LowBottom);
                 Vector3 cc = mc.GetPoint();
