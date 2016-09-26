@@ -342,6 +342,11 @@
                     <ribbon:RibbonButton Name="noizeCheckButton" Click="noizeCheckButton_cliked" Label="ノイズチェック" LargeImageSource="/NagaraStage;component/Images/coord.png" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>
+            <ribbon:RibbonTab Name="retrackfollowTab" Header="track再追跡">
+                <ribbon:RibbonGroup>
+                    <ribbon:RibbonButton Name="followCheckButton" Click="noizeCheckButton_cliked" Label="ノイズチェック" LargeImageSource="/NagaraStage;component/Images/start.png" />
+                </ribbon:RibbonGroup>
+            </ribbon:RibbonTab>
         </ribbon:Ribbon>
         <ContentControl Grid.Row="1" Name="workspace" HorizontalContentAlignment="Center" VerticalContentAlignment="Stretch" />
     </Grid>
