@@ -284,6 +284,14 @@
                         x:Name="GridTakingButton" 
                         Label="GridTaking"
                         LargeImageSource="/Images/start.png" Click="GridTakingButton_Click" />
+                    <ribbon:RibbonButton
+                        x:Name="DownBeamButton" 
+                        Label="DownBeam"
+                        LargeImageSource="/Images/start.png" Click="DownBeamButton_Click" />
+                    <ribbon:RibbonButton
+                        x:Name="UpBeamButton" 
+                        Label="UpBeam"
+                        LargeImageSource="/Images/start.png" Click="UpBeamButton_Click" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>             
             <ribbon:RibbonTab
@@ -323,14 +331,11 @@
                         x:Name="Tracking_Botton" 
                         Label="Tracking(2)"
                         LargeImageSource="/Images/start.png" Click="Full_Automatic_Tracking_PL2_button" />
-
-
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>                       
             <ribbon:RibbonTab
                 Name="imageEnhanceTab"
                 Header="{Binding Source={StaticResource strings},Path=ImageEnhancement}">
-
             </ribbon:RibbonTab>
             <ribbon:RibbonTab Name="selfCheckTab" Header="自己診断">
                 <ribbon:RibbonGroup>
