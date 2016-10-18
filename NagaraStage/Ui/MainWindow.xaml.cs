@@ -7663,20 +7663,52 @@ namespace NagaraStage.Ui {
             //ここからは、画像の中心(256,220)に近いいくつかのbeamの座標を選択し、それを追跡するように修正する。
             List<Point2d> some_bpm = new List<Point2d>();
             List<Point3d> point = new List<Point3d>();
+            List<Point2d> point_10 = new List<Point2d>();
 
             for (int i = 0; i < BPM_pix.Count(); i++) {
-                Point3d p = new Point3d();
-                double dx = 256 - BPM_pix[i].X;
-                double dy = 220 - BPM_pix[i].X;
-                double dr = Math.Sqrt(dx * dx + dy * dy);
+                List<Point3d> point2 = new List<Point3d>();
+                for (int r = 0; r < BPM_pix.Count(); r++) {
+                    Point3d p = new Point3d();
+                    double dx = BPM_pix[i].X - BPM_pix[r].X;
+                    double dy = BPM_pix[i].Y - BPM_pix[r].Y;
+                    double dr = Math.Sqrt(dx * dx + dy * dy);
 
-                p.X = BPM_pix[i].X;
-                p.Y = BPM_pix[i].Y;
-                p.Z = dr;
-                point.Add(p);
-            }
+                    if (dr < 10) {
+                        p.X = 10;
+                        p.Y = 10;
+                        p.Z = 10;
+                        point2.Add(p);
+                    }
+                }//for r
 
-            point.Sort((a, b) => a.Z.CompareTo(b.Z));
+                if (point2.Count() == 0) {
+                    Point2d bem = new Point2d();
+                    bem.X = BPM_pix[i].X;
+                    bem.Y = BPM_pix[i].Y;
+                    point_10.Add(bem);
+                }
+            
+            }//for i
+
+
+            //この中の処理は、座標を検出するために使ったが、検出した座標が近すぎると追跡の際にバグの発生源となる恐れがあるので、コメントアウトしてある。
+
+            //for (int i = 0; i < BPM_pix.Count(); i++) {
+            //    Point3d p = new Point3d();
+            //    double dx = 256 - BPM_pix[i].X;
+            //    double dy = 220 - BPM_pix[i].X;
+            //    double dr = Math.Sqrt(dx * dx + dy * dy);
+
+            //    p.X = BPM_pix[i].X;
+            //    p.Y = BPM_pix[i].Y;
+            //    p.Z = dr;
+            //    point.Add(p);
+            //}
+
+            //point.Sort((a, b) => a.Z.CompareTo(b.Z));
+
+            //ここまで
+
 
             for (int i = 0; i < 5; i++)//ここで、領域における分け方も含めてbeamを選択できるようにする。
             {
