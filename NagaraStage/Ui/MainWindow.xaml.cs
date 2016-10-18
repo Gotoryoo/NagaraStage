@@ -7673,7 +7673,7 @@ namespace NagaraStage.Ui {
                     double dy = BPM_pix[i].Y - BPM_pix[r].Y;
                     double dr = Math.Sqrt(dx * dx + dy * dy);
 
-                    if (dr < 10) {
+                    if (dr < 7) {//この7という数字は、windowsizeが一辺10ピクセルのため、全体で見た時に7ピクセル離れていれば良いだろうと判断し、このようにした。
                         p.X = 10;
                         p.Y = 10;
                         p.Z = 10;
@@ -7681,7 +7681,7 @@ namespace NagaraStage.Ui {
                     }
                 }//for r
 
-                if (point2.Count() == 0) {
+                if (point2.Count() == 1) {
                     Point2d bem = new Point2d();
                     bem.X = BPM_pix[i].X;
                     bem.Y = BPM_pix[i].Y;
@@ -7708,9 +7708,14 @@ namespace NagaraStage.Ui {
             //point.Sort((a, b) => a.Z.CompareTo(b.Z));
 
             //ここまで
+            int bemcount = 0;
+            if (point_10.Count() >= 5) {
+                bemcount = 5;
+            } else {
+                bemcount = point_10.Count();
+            }
 
-
-            for (int i = 0; i < 5; i++)//ここで、領域における分け方も含めてbeamを選択できるようにする。
+            for (int i = 0; i < bemcount; i++)//ここで、領域における分け方も含めてbeamを選択できるようにする。
             {
                 some_bpm.Add(new Point2d(point[i].X, point[i].Y));
             }
