@@ -13,6 +13,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
+//using System.Windows.Documents;
+using System.IO;
+
 using NagaraStage;
 using NagaraStage.Activities;
 using NagaraStage.IO;
@@ -116,6 +119,9 @@ namespace NagaraStage.Ui {
                 case "imageEnhanceTab":
                     windowImageEnhanceTab_Selected(sender, e);
                     break;
+                case "retrackfollowTab":
+                    windowrefollowTab_Selected(sender, e);
+                    break;
             }
         }
 
@@ -154,6 +160,31 @@ namespace NagaraStage.Ui {
                 ShowGridMarkDifinitionUi(clickedX, clickedY);
             };
         }
+
+        private void windowrefollowTab_Selected(object sender, RibbonTabEventArgs e) {
+            StageContent = new CoordControl(window);
+
+            // エマルションビュワー上でマウスのクリックイベントに，グリッドマークを
+            // 決定する処理を行うイベントを追加
+            emulsionViewerCanvas.Cursor = Cursors.Pen;
+            ViewerMouseDownAction = delegate(object s, MouseButtonEventArgs e2) {
+                // レンズタイプが10倍でなければメッセージを表示して中止
+                /*if (parameterManager.Magnification != ParameterManager.LensMagnificationOfGridMarkSearch) {
+                    string message = Properties.Strings.LensTypeException01
+                        + string.Format(Properties.Strings.CorrectLens,
+                            ParameterManager.LensMagnificationOfGridMarkSearch.ToString());
+                    MessageBox.Show(message, Properties.Strings.Error);
+                    return;
+                }
+                 */
+                // クリックされた座標にバツ印を表示して，グリッドマークを定義するダイ
+                // アログボックスを表示
+                double clickedX = e2.GetPosition(emulsionViewerCanvas).X;
+                double clickedY = e2.GetPosition(emulsionViewerCanvas).Y;
+                ShowReFollowTrackDifinitionUi(clickedX, clickedY);
+            };
+        }
+
 
         private void windowImageEnhanceTab_Selected(object sender, RibbonTabEventArgs e) {
         }
@@ -320,6 +351,35 @@ namespace NagaraStage.Ui {
             emulsionViewerCanvas.Children.Remove(lines[0]);
             emulsionViewerCanvas.Children.Remove(lines[1]);
         }
+
+
+        public void ShowReFollowTrackDifinitionUi(double x, double y) {//H26 9/26 by GTR
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            Vector3 initialpos = mc.GetPoint();
+            Line[] lines = DrawCrossMark(x, y);
+            // Grid markを定義する位置を確認するダイアログボックスを表示する
+            //GridMarkDefinitionUtil util = new GridMarkDefinitionUtil(coordManager);
+            //SelectGridMarkWindow sgWindow = new SelectGridMarkWindow();
+            //sgWindow.GridMarkPoint = util.NextPoint;
+            // ユーザーがGrid markを定義する位置を選択したならば，その箇所でGridf markを定義する．
+            Camera camera = Camera.GetInstance();
+            Vector2 emulsionSystemPoint = coordManager.TransToEmulsionCoord((int)x, (int)y);
+            //coordManager.SetGridMark(emulsionSystemPoint, sgWindow.GridMarkPoint, camera.ArrayImage);
+            //WriteLine(string.Format(Properties.Strings.DefineGridMark,
+            //          sgWindow.GridMarkPoint, emulsionSystemPoint.X, emulsionSystemPoint.Y));
+
+            
+            string datarootdirpathw = string.Format(@"C:\test");
+            string txtfileName_sh_up = datarootdirpathw + string.Format(@"\ReTrackFollowPosi.txt");
+            StreamWriter twriter_sh_up = File.CreateText(txtfileName_sh_up);
+            twriter_sh_up.WriteLine("{0} {1} {2}", emulsionSystemPoint.X, emulsionSystemPoint.Y,initialpos.Z);
+            twriter_sh_up.Close();
+            
+            // バツ印を消去
+            emulsionViewerCanvas.Children.Remove(lines[0]);
+            emulsionViewerCanvas.Children.Remove(lines[1]);
+        }
+
 
         /// <summary>
         /// エマルションビューキャンバスにバツ印を描画します．
