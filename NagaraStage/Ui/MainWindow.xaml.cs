@@ -270,6 +270,9 @@ namespace NagaraStage.Ui {
             }
         }
 
+        
+
+
 
         /*---------------------------------------------------------------------
          * Home tab 内のコントロールのイベントハンドラ
@@ -678,7 +681,6 @@ namespace NagaraStage.Ui {
                 MessageBox.Show(ex.Message, Properties.Strings.Error);
             }
         }
-
 
         /*---------------------------------------------------------------------
          * アプリケーションメニューアイテムのイベントハンドラ
@@ -7623,6 +7625,551 @@ namespace NagaraStage.Ui {
         }//startAutoFollowingStep1_not_jumpButton_Click
 
         //}
+
+
+        public struct pozi {
+            public Point3d img;//画像の撮影した地点の座標。
+            public Point2d peak;//beamのpixel座標。
+            public Point3d stage;//beamのstage座標。
+
+        }
+
+
+        private void BeamFollowButton_Click(Track myTrack, int mod, int pl, bool dubflag) {
+
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            Camera camera = Camera.GetInstance();
+            Surface surface = Surface.GetInstance(parameterManager);
+            Vector3 initial = mc.GetPoint();
+            //            TimeLogger tl = new TimeLogger("savepath");
+
+
+            //
+            string uptxt = string.Format(@"c:\MKS_test\bpm\{0}_{1}_up.txt", initial.X, initial.Y);
+            BeamDetection(uptxt, true);
+            List<Point2d> BPM_pix = new List<Point2d>();//beamのピクセル座標を格納するListである。
+
+            string line;
+
+            System.IO.StreamReader file = new System.IO.StreamReader(uptxt);
+            while ((line = file.ReadLine()) != null) {
+                string[] data = line.Split(' ');
+                double sx = double.Parse(data[0]);
+                double sy = double.Parse(data[1]);
+                BPM_pix.Add(new Point2d(sx, sy));
+            }
+            file.Close();
+
+            //ここからは、画像の中心(256,220)に近いいくつかのbeamの座標を選択し、それを追跡するように修正する。
+            List<Point2d> some_bpm = new List<Point2d>();
+            List<Point3d> point = new List<Point3d>();
+
+            for (int i = 0; i < BPM_pix.Count(); i++) {
+                Point3d p = new Point3d();
+                double dx = 256 - BPM_pix[i].X;
+                double dy = 220 - BPM_pix[i].X;
+                double dr = Math.Sqrt(dx * dx + dy * dy);
+
+                p.X = BPM_pix[i].X;
+                p.Y = BPM_pix[i].Y;
+                p.Z = dr;
+                point.Add(p);
+            }
+
+            point.Sort((a, b) => a.Z.CompareTo(b.Z));
+
+            for (int i = 0; i < 5; i++)//ここで、領域における分け方も含めてbeamを選択できるようにする。
+            {
+                some_bpm.Add(new Point2d(point[i].X, point[i].Y));
+            }
+            //ただ、とりあえずこれで作動はするであろう形になった。
+
+
+
+            //パターンマッチに関する内容を挿入する。
+            //
+
+
+            List<List<pozi>> LBeam = new List<List<pozi>>();
+            List<List<pozi>> LBeam_Low = new List<List<pozi>>();
+
+            List<pozi> c2 = new List<pozi>();
+            List<Point2d> PM_result = some_bpm;//パターンマッチの結果から取得したbeamのpixel座標
+            for (int a = 0; a < PM_result.Count(); a++) {
+                pozi c3 = new pozi();
+                c3.img.X = initial.X;
+                c3.img.Y = initial.Y;
+                c3.img.Z = initial.Z;
+
+                c3.peak = PM_result[a];
+
+                double firstx = c3.img.X - (c3.peak.X - 256) * 0.000267;
+                double firsty = c3.img.Y + (c3.peak.Y - 220) * 0.000267;
+                double firstz = c3.img.Z;
+
+                c3.stage = new Point3d(firstx, firsty, firstz);
+
+                c2.Add(c3);
+            }
+            LBeam.Add(c2);//第一層目でのbeamの情報をぶち込む。
+
+            //for up layer
+
+            int number_of_images = 10;
+            int hits = 6;
+
+            double Sh = 0.5 / (surface.UpTop - surface.UpBottom);
+            double theta = Math.Atan(0);
+
+            double dz;
+            double dz_price_img = (6 * Math.Cos(theta) / Sh) / 1000;
+            double dz_img = dz_price_img * (-1);
+
+            string datarootdirpath = string.Format(@"C:\MKS_test\{0}", myTrack.IdString);//Open forder to store track information
+            System.IO.DirectoryInfo mydir = System.IO.Directory.CreateDirectory(datarootdirpath);
+
+            List<OpenCvSharp.CPlusPlus.Point2d> Msdxdy = new List<OpenCvSharp.CPlusPlus.Point2d>();//stage移動のための角度を入れるList。
+            Msdxdy.Add(new OpenCvSharp.CPlusPlus.Point2d(0.0, 0.0));//最初はbeamが垂直に原子核乾板に照射されていると考えて（0.0,0.0）を入れた。
+
+            List<OpenCvSharp.CPlusPlus.Point3d> LStage = new List<OpenCvSharp.CPlusPlus.Point3d>();//ImageTakeingで撮影した画像の最後の画像の座標を入れるList。
+            List<OpenCvSharp.CPlusPlus.Point3d> LCenter = new List<OpenCvSharp.CPlusPlus.Point3d>();//検出したbemaのずれから算出した、本来の画像の中心点のstage座標。
+
+            List<List<ImageTaking>> UpTrackInfo = new List<List<ImageTaking>>();
+
+            //for down layer................................................................
+            //            tl.Rec("down");
+            double Sh_low;
+            Sh_low = 0.5 / (surface.LowTop - surface.LowBottom);
+
+            List<OpenCvSharp.CPlusPlus.Point2d> Msdxdy_Low = new List<OpenCvSharp.CPlusPlus.Point2d>();
+            List<OpenCvSharp.CPlusPlus.Point3d> LStage_Low = new List<OpenCvSharp.CPlusPlus.Point3d>();
+
+            List<OpenCvSharp.CPlusPlus.Point3d> LCenter_Low = new List<OpenCvSharp.CPlusPlus.Point3d>();//検出したbemaのずれから算出した、本来の画像の中心点のstage座標。
+
+            List<List<ImageTaking>> LowTrackInfo = new List<List<ImageTaking>>();
+
+
+            dz_price_img = (6 * Math.Cos(theta) / Sh) / 1000;
+            dz_img = dz_price_img * (-1);
+            dz = dz_img;
+            int gotobase = 0;
+            int not_detect = 0;
+
+            for (int i = 0; gotobase < 1; i++) {
+                Vector3 initialpos = mc.GetPoint();
+                double moverange = (number_of_images - 1) * dz_img;
+                double predpoint = moverange + initialpos.Z;
+
+                if (predpoint < surface.UpBottom) {
+                    gotobase = 1;
+
+                    dz = surface.UpBottom - initialpos.Z + (number_of_images - 1) * dz_price_img;
+                }
+
+                //gotobase = 1のときは、移動して画像を撮影するようにする。
+                if (i != 0)//このままでOK
+                {
+                    Vector3 dstpoint = new Vector3(
+                        LCenter[i - 1].X + Msdxdy[i].X * dz * Sh,
+                        LCenter[i - 1].Y + Msdxdy[i].Y * dz * Sh,
+                        LCenter[i - 1].Z + dz
+                        );
+                    mc.MovePoint(dstpoint);
+                    mc.Join();
+                }
+
+                List<ImageTaking> LiITUpMid = TakeSequentialImage( //image taking
+                    Msdxdy[i].X * Sh,//Dx
+                    Msdxdy[i].Y * Sh,//Dy
+                    dz_img,//Dz
+                    number_of_images);//number of images
+
+
+                LStage.Add(new OpenCvSharp.CPlusPlus.Point3d(
+                    LiITUpMid[number_of_images - 1].StageCoord.X,
+                    LiITUpMid[number_of_images - 1].StageCoord.Y,
+                    LiITUpMid[number_of_images - 1].StageCoord.Z
+                    ));//撮影した画像の最後の画像の座標を LStage に代入する。
+
+                LiITUpMid[number_of_images - 1].img.ImWrite(datarootdirpath + string.Format(@"\img_l_up_{0}.png", i));//最後の画像だけ別で保存。
+                UpTrackInfo.Add(LiITUpMid);//撮影した画像すべてを UpTrackInfo に代入。
+
+                List<Mat> binimages = new List<Mat>();//撮影した画像に対して画像処理をかける。
+                for (int t = 0; t <= number_of_images - 1; t++) {
+                    Mat bin = (Mat)DogContrastBinalize(LiITUpMid[t].img);
+                    Cv2.Dilate(bin, bin, new Mat());
+                    binimages.Add(bin);
+                }
+
+                List<pozi> beam_data = new List<pozi>();//各stepごとで検出したbeamそれぞれのデータを格納する。
+                List<Point2d> MSDXDY_BEAM = new List<Point2d>();//それぞれのbeamから算出した角度を格納するList。
+                for (int r = 0; r < LBeam[0].Count(); r++) //検出したbeamの数だけ処理を行うようにする。
+                {
+                    pozi beam_pozi = new pozi();
+                    beam_pozi.img = LStage[i];//画像の撮影場所を格納する。
+
+                    //trackを重ねる処理を入れる。
+                    Point2d beam_peak = TrackDetection(//シフトしないようにして、処理を行うようにしよう。
+                        binimages,
+                        (int)LBeam[i][r].peak.X,
+                        (int)LBeam[i][r].peak.Y,
+                        3,
+                        3,
+                        4,
+                        90,
+                        hits);// true);
+
+                    if (beam_peak.X == -1 & beam_peak.Y == -1) {//検出できなかった時にどのような処理を行うのかを考えたほうがいいだろうな。
+                        mc.Join();
+                        not_detect = 1;
+
+                        goto not_detect_track;
+                    }
+
+                    beam_pozi.peak.X = beam_peak.X;
+                    beam_pozi.peak.Y = beam_peak.Y;
+
+                    double firstx = beam_pozi.img.X - (beam_pozi.peak.X - 256) * 0.000267;
+                    double firsty = beam_pozi.img.Y + (beam_pozi.peak.Y - 220) * 0.000267;
+                    double firstz = beam_pozi.img.Z;
+
+                    beam_pozi.stage = new Point3d(firstx, firsty, firstz);
+
+                    beam_data.Add(beam_pozi);
+
+                    if (i == 0) {
+                        Point3d LTrack_ghost = new Point3d();
+                        double dzPrev = (LBeam[i][r].stage.Z - surface.UpTop) * Sh;
+                        double Lghost_x = LBeam[i][r].stage.X - Msdxdy[i].X * dzPrev;
+                        double Lghost_y = LBeam[i][r].stage.Y - Msdxdy[i].Y * dzPrev;
+                        LTrack_ghost = new Point3d(Lghost_x, Lghost_y, surface.UpTop);//上側乳剤層上面にtrackがあるならどの位置にあるかを算出する。
+
+                        OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LTrack_ghost, LBeam[0][r].stage, LBeam[1][r].stage);
+                        MSDXDY_BEAM.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
+
+                    } else {
+                        OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LBeam[i + 1][r].stage, LBeam[i][r].stage, LBeam[i - 1][r].stage);
+                        MSDXDY_BEAM.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
+                    }
+
+                }//r_loop
+
+                Point2d Ms_esti = new Point2d();
+                double Ms_x = new double();
+                double Ms_y = new double();
+
+                int pix_dX = new int();
+                int pix_dY = new int();
+
+                for (int q = 0; q < MSDXDY_BEAM.Count(); q++) //ここで個々のbeamの角度を平均してstageの移動角度を算出する。
+                {
+                    Ms_x += MSDXDY_BEAM[q].X;
+                    Ms_y += MSDXDY_BEAM[q].Y;
+
+                    pix_dX += (int)LBeam[i][q - 1].peak.X - (int)LBeam[i][q].peak.X;
+                    pix_dY += (int)LBeam[i][q - 1].peak.Y - (int)LBeam[i][q].peak.Y;
+                }
+                Ms_x = Ms_x / MSDXDY_BEAM.Count();
+                Ms_y = Ms_y / MSDXDY_BEAM.Count();
+                Ms_esti = new Point2d(Ms_x, Ms_y);
+                Msdxdy.Add(Ms_esti);//算出した角度をぶち込む。
+                LBeam.Add(beam_data);
+
+                pix_dX = pix_dX / MSDXDY_BEAM.Count();//ずれたピクセル量
+                pix_dY = pix_dY / MSDXDY_BEAM.Count();//ずれたピクセル量
+                double cenX = LStage[i].X - pix_dX * 0.000267;
+                double cenY = LStage[i].Y + pix_dY * 0.000267;
+                double cenZ = LStage[i].Z;
+
+                LCenter.Add(new Point3d(cenX, cenY, cenZ));//検出したそれぞれのbeamのズレから算出したパターンマッチの際の中心座標(stage)。
+
+            }//for　i-loop
+
+
+            //baseまたぎ
+            int lcen_counter = LCenter.Count();
+            int msdxdy_counter = Msdxdy.Count();
+
+            mc.MovePoint(
+                LCenter[lcen_counter - 1].X + Msdxdy[msdxdy_counter - 1].X * (surface.LowTop - surface.UpBottom),
+                LCenter[lcen_counter - 1].Y + Msdxdy[msdxdy_counter - 1].Y * (surface.LowTop - surface.UpBottom),
+                surface.LowTop
+                );
+            mc.Join();
+
+
+
+
+            //////ここから下gelの処理
+            Msdxdy_Low.Add(new OpenCvSharp.CPlusPlus.Point2d(Msdxdy[msdxdy_counter - 1].X, Msdxdy[msdxdy_counter - 1].Y));
+            int lbeam_counter = LBeam.Count();
+            LBeam_Low.Add(LBeam[lbeam_counter - 1]);
+
+            //今までのtrack追跡プログラムとは異なる角度等の使い方をする。
+            dz_price_img = (6 * Math.Cos(theta) / Sh_low) / 1000;
+            dz_img = dz_price_img * (-1);
+            dz = dz_img;
+
+            int goto_dgel = 0;
+
+            for (int i = 0; goto_dgel < 1; i++) {
+                ///////移動して画像処理をしたときに、下gelの下に入らないようにする。
+                Vector3 initialpos = mc.GetPoint();
+                double moverange = (number_of_images - 1) * dz_img;
+                double predpoint = moverange + initialpos.Z;
+
+                if (predpoint < surface.LowBottom)//もしもbaseに入りそうなら、8枚目の画像がちょうど下gelを撮影するようにdzを調整する。
+                {
+                    goto_dgel = 1;
+
+                    dz = surface.LowBottom - initialpos.Z + (number_of_images - 1) * dz_price_img;
+                }
+                ////////
+
+                //goto_dgel == 1のときは、移動して画像を撮影するようにする。
+                if (i != 0) {
+                    Vector3 dstpoint = new Vector3(
+                    LCenter_Low[i - 1].X + Msdxdy_Low[i].X * dz * Sh_low,
+                    LCenter_Low[i - 1].Y + Msdxdy_Low[i].Y * dz * Sh_low,
+                    LCenter_Low[i - 1].Z + dz
+                    );
+                    mc.MovePoint(dstpoint);
+                    mc.Join();
+                }
+
+                //今までのtrack追跡プログラムとは異なる角度等の使い方をする。
+                List<ImageTaking> LiITLowMid = TakeSequentialImage(
+                    Msdxdy[i].X * Sh_low,
+                    Msdxdy[i].Y * Sh_low,
+                    dz_img,
+                    number_of_images);
+
+                //画像・座標の記録
+                LStage_Low.Add(new OpenCvSharp.CPlusPlus.Point3d(
+                    LiITLowMid[number_of_images - 1].StageCoord.X,
+                    LiITLowMid[number_of_images - 1].StageCoord.Y,
+                    LiITLowMid[number_of_images - 1].StageCoord.Z));
+
+                LiITLowMid[number_of_images - 1].img.ImWrite(datarootdirpath + string.Format(@"\img_l_low_{0}.png", i));
+
+                LowTrackInfo.Add(LiITLowMid);//撮影した8枚の画像と、撮影した位置を記録する。
+
+                //撮影した画像をここで処理する。
+                List<Mat> binimages = new List<Mat>();
+                for (int t = 0; t <= number_of_images - 1; t++) {
+                    Mat bin = (Mat)DogContrastBinalize(LiITLowMid[t].img);
+                    Cv2.Dilate(bin, bin, new Mat());
+                    binimages.Add(bin);
+                }
+
+                List<pozi> beam_data_low = new List<pozi>();//各stepごとで検出したbeamそれぞれのデータを格納する。
+                List<Point2d> MSDXDY_BEAM_LOW = new List<Point2d>();//それぞれのbeamから算出した角度を格納するList。
+                for (int r = 0; r < LBeam_Low[0].Count(); r++) {
+                    pozi beam_pozi = new pozi();
+                    beam_pozi.img = LStage_Low[i];//画像の撮影場所を格納する。
+
+                    //trackを重ねる処理を入れる。
+                    Point2d beam_peak = TrackDetection(
+                        binimages,
+                        (int)LBeam_Low[i][r].peak.X,
+                        (int)LBeam_Low[i][r].peak.Y,
+                        3,
+                        3,
+                        4,
+                        90,
+                        hits);// true);
+
+                    if (beam_peak.X == -1 & beam_peak.Y == -1) {
+                        mc.Join();
+                        not_detect = 1;
+
+                        goto not_detect_track;
+                    }
+
+                    beam_pozi.peak.X = beam_peak.X;
+                    beam_pozi.peak.Y = beam_peak.Y;
+
+                    double firstx = beam_pozi.img.X - (beam_pozi.peak.X - 256) * 0.000267;
+                    double firsty = beam_pozi.img.Y + (beam_pozi.peak.Y - 220) * 0.000267;
+                    double firstz = beam_pozi.img.Z;
+
+                    beam_pozi.stage = new Point3d(firstx, firsty, firstz);
+
+                    beam_data_low.Add(beam_pozi);
+
+                    if (i == 0) {
+                        OpenCvSharp.CPlusPlus.Point2d Tangle_l = ApproximateStraightBase(
+                            Sh,
+                            Sh_low,
+                            LBeam[lbeam_counter - 2][r].stage,
+                            LBeam[lbeam_counter - 1][r].stage,
+                            LBeam_Low[i][r].stage,
+                            surface);
+                        MSDXDY_BEAM_LOW.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle_l.X, Tangle_l.Y));
+                    } else if (i == 1) {
+                        OpenCvSharp.CPlusPlus.Point2d Tangle_l = ApproximateStraightBase(
+                            Sh,
+                            Sh_low,
+                            LBeam_Low[lbeam_counter - 1][r].stage,
+                            LBeam_Low[i - 1][r].stage,
+                            LBeam_Low[i][r].stage,
+                            surface);
+                        MSDXDY_BEAM_LOW.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle_l.X, Tangle_l.Y));
+                    } else {
+                        OpenCvSharp.CPlusPlus.Point2d Tangle_l = ApproximateStraight(
+                            Sh_low,
+                            LBeam_Low[i - 2][r].stage,
+                            LBeam_Low[i - 1][r].stage,
+                            LBeam_Low[i][r].stage);
+                        MSDXDY_BEAM_LOW.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle_l.X, Tangle_l.Y));
+                    }
+
+                }//r_loop
+
+                Point2d Ms_esti = new Point2d();
+                double Ms_x = new double();
+                double Ms_y = new double();
+
+                int pix_dX = new int();
+                int pix_dY = new int();
+
+                for (int q = 0; q < MSDXDY_BEAM_LOW.Count(); q++) //ここで個々のbeamの角度を平均してstageの移動角度を算出する。
+                {
+                    Ms_x += MSDXDY_BEAM_LOW[q].X;
+                    Ms_y += MSDXDY_BEAM_LOW[q].Y;
+
+                    pix_dX += (int)LBeam_Low[i][q - 1].peak.X - (int)LBeam_Low[i][q].peak.X;
+                    pix_dY += (int)LBeam_Low[i][q - 1].peak.Y - (int)LBeam_Low[i][q].peak.Y;
+                }
+
+                Ms_x = Ms_x / MSDXDY_BEAM_LOW.Count();
+                Ms_y = Ms_y / MSDXDY_BEAM_LOW.Count();
+                Ms_esti = new Point2d(Ms_x, Ms_y);
+                Msdxdy_Low.Add(Ms_esti);//算出した角度をぶち込む。
+                LBeam_Low.Add(beam_data_low);
+
+                pix_dX = pix_dX / MSDXDY_BEAM_LOW.Count();//ずれたピクセル量
+                pix_dY = pix_dY / MSDXDY_BEAM_LOW.Count();//ずれたピクセル量
+                double cenX = LStage_Low[i].X - pix_dX * 0.000267;
+                double cenY = LStage_Low[i].Y + pix_dY * 0.000267;
+                double cenZ = LStage_Low[i].Z;
+
+                LCenter_Low.Add(new Point3d(cenX, cenY, cenZ));//検出したそれぞれのbeamのズレから算出したパターンマッチの際の中心座標(stage)。
+
+            }//i_loop
+
+            //
+            int lcen_low_count = LCenter_Low.Count();
+            mc.MovePointXY(LCenter_Low[lcen_low_count - 1].X, LCenter_Low[lcen_low_count - 1].Y);
+
+            mc.Join();
+
+            //検出に失敗した場合は、ループを抜けてここに来る。
+
+            //file write out up_gel
+            string txtfileName_sh_up = datarootdirpath + string.Format(@"\Sh_up.txt");
+            StreamWriter twriter_sh_up = File.CreateText(txtfileName_sh_up);
+            twriter_sh_up.WriteLine("{0}", Sh);
+            twriter_sh_up.Close();
+
+            //file write out
+            string txtfileName_t_info_up = datarootdirpath + string.Format(@"\location_up.txt");
+            StreamWriter twriter_t_info_up = File.CreateText(txtfileName_t_info_up);
+            for (int i = 0; i < UpTrackInfo.Count; i++) {
+                for (int t = 0; t < UpTrackInfo[i].Count; t++) {
+                    UpTrackInfo[i][t].img.ImWrite(datarootdirpath + string.Format(@"\img_t_info_up_{0}-{1}.png", i, t));
+                    Vector3 p = UpTrackInfo[i][t].StageCoord;
+                    twriter_t_info_up.WriteLine("{0} {1} {2} {3} {4}", i, t, p.X, p.Y, p.Z);
+                }
+            }
+            twriter_t_info_up.Close();
+
+            string txtfileName_lbeam = datarootdirpath + string.Format(@"\lbeam_up.txt");
+            StreamWriter twriter_lbeam = File.CreateText(txtfileName_lbeam);
+            for (int i = 0; i < LBeam.Count(); i++) {
+                for (int r = 0; r < LBeam[i].Count(); r++) {
+                    twriter_lbeam.WriteLine("{0} {1} BeamPeak: {2} {3} LBeam(Stage): {4} {5} {6}",
+                        i,
+                        r,
+                        LBeam[i][r].peak.X,
+                        LBeam[i][r].peak.Y,
+                        LBeam[i][r].stage.X,
+                        LBeam[i][r].stage.Y,
+                        LBeam[i][r].stage.Z);
+                }
+
+            }
+            twriter_lbeam.Close();
+
+            string txtfileName_LCenter = datarootdirpath + string.Format(@"\LCenter_up.txt");
+            StreamWriter twriter_LCenter = File.CreateText(txtfileName_LCenter);
+            for (int i = 0; i < LCenter.Count(); i++) {
+                twriter_LCenter.WriteLine("{0} {1} {2}", LCenter[i].X, LCenter[i].Y, LCenter[i].Z);
+            }
+            twriter_LCenter.Close();
+
+            string txtfileName_msdxdy = datarootdirpath + string.Format(@"\msdxdy.txt");
+            StreamWriter twriter_msdxdy = File.CreateText(txtfileName_msdxdy);
+            for (int i = 0; i < Msdxdy.Count(); i++) {
+                OpenCvSharp.CPlusPlus.Point2d p = Msdxdy[i];
+                twriter_msdxdy.WriteLine("{0} {1} {2}", i, p.X, p.Y);
+            }
+            twriter_msdxdy.Close();
+
+            //file write out low_gel
+            string txtfileName_sh_low = datarootdirpath + string.Format(@"\Sh_low.txt");
+            StreamWriter twriter_sh_low = File.CreateText(txtfileName_sh_low);
+            twriter_sh_low.WriteLine("{0}", Sh_low);
+            twriter_sh_low.Close();
+
+            string txtfileName_t_info_low = datarootdirpath + string.Format(@"\location_low.txt");
+            StreamWriter twriter_t_info_low = File.CreateText(txtfileName_t_info_low);
+            for (int i = 0; i < LowTrackInfo.Count; i++) {
+                for (int t = 0; t < LowTrackInfo[i].Count; t++) {
+                    LowTrackInfo[i][t].img.ImWrite(datarootdirpath + string.Format(@"\img_t_info_low_{0}-{1}.png", i, t));
+                    Vector3 p = LowTrackInfo[i][t].StageCoord;
+                    twriter_t_info_low.WriteLine("{0} {1} {2} {3} {4}", i, t, p.X, p.Y, p.Z);
+                }
+            }
+            twriter_t_info_low.Close();
+
+
+            string txtfileName_lbeam_low = datarootdirpath + string.Format(@"\lbeam_low.txt");
+            StreamWriter twriter_lbeam_low = File.CreateText(txtfileName_lbeam_low);
+            for (int i = 0; i < LBeam_Low.Count(); i++) {
+                for (int r = 0; r < LBeam_Low[i].Count(); r++) {
+                    twriter_lbeam.WriteLine("{0} {1} BeamPeak: {2} {3} LBeam(Stage): {4} {5} {6}",
+                        i,
+                        r,
+                        LBeam_Low[i][r].peak.X,
+                        LBeam_Low[i][r].peak.Y,
+                        LBeam_Low[i][r].stage.X,
+                        LBeam_Low[i][r].stage.Y,
+                        LBeam_Low[i][r].stage.Z);
+                }
+            }
+            twriter_lbeam_low.Close();
+
+
+            string txtfileName_LCenter_low = datarootdirpath + string.Format(@"\LCenter_low.txt");
+            StreamWriter twriter_LCenter_low = File.CreateText(txtfileName_LCenter_low);
+            for (int i = 0; i < LCenter_Low.Count(); i++) {
+                twriter_LCenter_low.WriteLine("{0} {1} {2}", LCenter_Low[i].X, LCenter_Low[i].Y, LCenter_Low[i].Z);
+            }
+            twriter_LCenter_low.Close();
+
+            string txtfileName_msdxdy_low = datarootdirpath + string.Format(@"\msdxdy_low.txt");
+            StreamWriter twriter_msdxdy_low = File.CreateText(txtfileName_msdxdy_low);
+            for (int i = 0; i < Msdxdy_Low.Count(); i++) {
+                OpenCvSharp.CPlusPlus.Point2d p = Msdxdy_Low[i];
+                twriter_msdxdy_low.WriteLine("{0} {1} {2}", i, p.X, p.Y);
+            }
+            twriter_msdxdy_low.Close();
+
+
+
+
+        }
 
     }
 

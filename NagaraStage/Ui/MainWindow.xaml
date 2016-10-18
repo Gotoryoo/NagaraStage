@@ -345,6 +345,10 @@
             <ribbon:RibbonTab Name="retrackfollowTab" Header="track再追跡">
                 <ribbon:RibbonGroup>
                     <ribbon:RibbonButton Name="followCheckButton" Click="noizeCheckButton_cliked" Label="ノイズチェック" LargeImageSource="/NagaraStage;component/Images/start.png" />
+                    <ribbon:RibbonButton
+                        x:Name="BeamFollowButton" 
+                        Label="BeamFollow"
+                        LargeImageSource="/Images/start.png" Click=" BeamFollowButton_Click" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>
         </ribbon:Ribbon>
