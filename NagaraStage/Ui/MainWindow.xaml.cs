@@ -7645,7 +7645,7 @@ namespace NagaraStage.Ui {
 
 
             //
-            string uptxt = string.Format(@"c:\MKS_test\bpm\{0}_{1}_up.txt", initial.X, initial.Y);
+            string uptxt = string.Format(@"c:\GTR_test\bpm\{0}_{1}_up.txt", initial.X, initial.Y);
             BeamDetection(uptxt, true);
             List<Point2d> BPM_pix = new List<Point2d>();//beamのピクセル座標を格納するListである。
 
@@ -7725,7 +7725,7 @@ namespace NagaraStage.Ui {
             double dz_price_img = (6 * Math.Cos(theta) / Sh) / 1000;
             double dz_img = dz_price_img * (-1);
 
-            string datarootdirpath = string.Format(@"C:\MKS_test\{0}", myTrack.IdString);//Open forder to store track information
+            string datarootdirpath = string.Format(@"C:\GTR_test\{0}", myTrack.IdString);//Open forder to store track information
             System.IO.DirectoryInfo mydir = System.IO.Directory.CreateDirectory(datarootdirpath);
 
             List<OpenCvSharp.CPlusPlus.Point2d> Msdxdy = new List<OpenCvSharp.CPlusPlus.Point2d>();//stage移動のための角度を入れるList。
@@ -7813,17 +7813,17 @@ namespace NagaraStage.Ui {
                         binimages,
                         (int)LBeam[i][r].peak.X,
                         (int)LBeam[i][r].peak.Y,
-                        3,
-                        3,
+                        0,//shiftx もともと　3
+                        0,//shifty もともと　3
                         4,
-                        90,
+                        10,//windowsize もともと　90
                         hits);// true);
 
                     if (beam_peak.X == -1 & beam_peak.Y == -1) {//検出できなかった時にどのような処理を行うのかを考えたほうがいいだろうな。
                         mc.Join();
                         not_detect = 1;
 
-                        goto not_detect_track;
+                        //goto not_detect_track; とりあえずコメントアウトしておく
                     }
 
                     beam_pozi.peak.X = beam_peak.X;
@@ -7973,17 +7973,17 @@ namespace NagaraStage.Ui {
                         binimages,
                         (int)LBeam_Low[i][r].peak.X,
                         (int)LBeam_Low[i][r].peak.Y,
-                        3,
-                        3,
+                        0,
+                        0,
                         4,
-                        90,
+                        10,
                         hits);// true);
 
                     if (beam_peak.X == -1 & beam_peak.Y == -1) {
                         mc.Join();
                         not_detect = 1;
 
-                        goto not_detect_track;
+                        //goto not_detect_track; とりあえずコメントアウトしておく
                     }
 
                     beam_pozi.peak.X = beam_peak.X;
