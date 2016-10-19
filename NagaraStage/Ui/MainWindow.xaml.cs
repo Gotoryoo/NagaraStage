@@ -8033,19 +8033,24 @@ namespace NagaraStage.Ui {
                 int pix_dX = new int();
                 int pix_dY = new int();
 
+                LBeam.Add(beam_data);
+
                 for (int q = 0; q < MSDXDY_BEAM.Count(); q++) //ここで個々のbeamの角度を平均してstageの移動角度を算出する。
                 {
                     Ms_x += MSDXDY_BEAM[q].X;
                     Ms_y += MSDXDY_BEAM[q].Y;
 
-                    pix_dX += (int)LBeam[i][q - 1].peak.X - (int)LBeam[i][q].peak.X;//q - 1 がおかしい。ここで何をしたかったのかを思い出そう。
-                    pix_dY += (int)LBeam[i][q - 1].peak.Y - (int)LBeam[i][q].peak.Y;//予想した地点とのピクセルのズレかな？
+                    //pix_dX += (int)LBeam[i][q - 1].peak.X - (int)LBeam[i][q].peak.X;//q - 1 がおかしい。ここで何をしたかったのかを思い出そう。
+                    //pix_dY += (int)LBeam[i][q - 1].peak.Y - (int)LBeam[i][q].peak.Y;//予想した地点とのピクセルのズレかな？
+
+                    pix_dX += (int)LBeam[i + 1][q].peak.X - (int)LBeam[i - 1][q].peak.X;
+                    pix_dY += (int)LBeam[i + 1][q].peak.Y - (int)LBeam[i - 1][q].peak.Y;
                 }
                 Ms_x = Ms_x / MSDXDY_BEAM.Count();
                 Ms_y = Ms_y / MSDXDY_BEAM.Count();
                 Ms_esti = new Point2d(Ms_x, Ms_y);
                 Msdxdy.Add(Ms_esti);//算出した角度をぶち込む。
-                LBeam.Add(beam_data);
+                //LBeam.Add(beam_data);
 
                 pix_dX = pix_dX / MSDXDY_BEAM.Count();//ずれたピクセル量
                 pix_dY = pix_dY / MSDXDY_BEAM.Count();//ずれたピクセル量
