@@ -96,6 +96,9 @@ namespace NagaraStage.Ui {
                     case "imageEnhanceTab":
                         imageEnhanceTab.IsSelected = true;
                         break;
+                    //case "retrackfollowTab":
+                    //    retrackfollowTab.IsSelected = true;
+                    //    break;
                     default:
                         string message = Properties.Strings.Error + ": Parameter is unavailable.";
                         throw new ArgumentException(message);
@@ -130,6 +133,7 @@ namespace NagaraStage.Ui {
                 overallScanTab.IsEnabled = value;
                 autoTrackingTab.IsEnabled = value;
                 imageEnhanceTab.IsEnabled = value;
+                //retrackfollowTab.IsSelected = value;
             }
         }
 
@@ -7634,8 +7638,134 @@ namespace NagaraStage.Ui {
 
         }
 
+        static OpenCvSharp.CPlusPlus.Point TrackDetection_verold(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsize = 40, int phthresh = 5, bool debugflag = false) {
+            int x0 = px - 256;
+            int y0 = py - 220;
 
-        private void BeamFollowButton_Click(Track myTrack, int mod, int pl, bool dubflag) {
+            List<rawmicrotrack> rms = new List<rawmicrotrack>();
+
+            // Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);
+
+
+            int counter = 0;
+            for (int ax = -shiftx; ax <= shiftx; ax++) {
+                for (int ay = -shifty; ay <= shifty; ay++) {
+                    using (Mat big = Mat.Zeros(600, 600, MatType.CV_8UC1))
+                    using (Mat imgMask = Mat.Zeros(big.Height, big.Width, MatType.CV_8UC1)) {
+
+                        //make the size of mask
+                        int ystart = big.Height / 2 + y0 - windowsize / 2;
+                        int yend = big.Height / 2 + y0 + windowsize / 2;
+                        int xstart = big.Width / 2 + x0 - windowsize / 2;
+                        int xend = big.Width / 2 + x0 + windowsize / 2;
+
+                        //make mask as shape of rectangle. by use of opencv
+                        OpenCvSharp.CPlusPlus.Rect recMask = new OpenCvSharp.CPlusPlus.Rect(xstart, ystart, windowsize, windowsize);
+                        Cv2.Rectangle(imgMask, recMask, 255, -1);//brightness=1, fill
+
+                        for (int p = 0; p < mats.Count; p++) {
+                            int startx = big.Width / 2 - mats[p].Width / 2 + (int)(p * ax * shiftpitch / 8.0);
+                            int starty = big.Height / 2 - mats[p].Height / 2 + (int)(p * ay * shiftpitch / 8.0);
+                            Cv2.Add(
+                                big[starty, starty + mats[p].Height, startx, startx + mats[p].Width],
+                                mats[p],
+                                big[starty, starty + mats[p].Height, startx, startx + mats[p].Width]);
+                        }
+
+                        using (Mat big_c = big.Clone()) {
+
+                            Cv2.Threshold(big, big, phthresh, 255, ThresholdType.ToZero);
+                            Cv2.BitwiseAnd(big, imgMask, big);
+
+                            //Mat roi = big[ystart, yend , xstart, xend];//メモリ領域がシーケンシャルにならないから輪郭抽出のときに例外が出る。
+
+                            if (debugflag == true) {//
+                                //bigorg.ImWrite(String.Format(@"{0}_{1}_{2}.png",counter,ax,ay));
+                                //Mat roiwrite = roi.Clone() * 30;
+                                //roiwrite.ImWrite(String.Format(@"roi_{0}_{1}_{2}.png", counter, ax, ay));
+                                Cv2.Rectangle(big_c, recMask, 255, 1);//brightness=1, fill
+                                Cv2.ImShow("big_cx30", big_c * 30);
+                                Cv2.ImShow("bigx30", big * 30);
+                                //Cv2.ImShow("imgMask", imgMask);
+                                //Cv2.ImShow("roi", roi * 30);
+                                Cv2.WaitKey(0);
+                            }
+                        }//using big_c
+
+                        using (CvMemStorage storage = new CvMemStorage())
+                        using (CvContourScanner scanner = new CvContourScanner(big.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
+                            foreach (CvSeq<CvPoint> c in scanner) {
+                                CvMoments mom = new CvMoments(c, false);
+                                if (c.ElemSize < 2) continue;
+                                if (mom.M00 < 1.0) continue;
+                                double mx = mom.M10 / mom.M00;
+                                double my = mom.M01 / mom.M00;
+                                rawmicrotrack rm = new rawmicrotrack();
+                                rm.ax = ax;
+                                rm.ay = ay;
+                                rm.cx = (int)(mx - big.Width / 2);
+                                rm.cy = (int)(my - big.Height / 2);
+                                rm.pv = (int)(mom.M00);
+                                rms.Add(rm);
+                                //Console.WriteLine(string.Format("{0}   {1} {2}   {3} {4}", rm.pv, ax, ay, rm.cx, rm.cy ));
+                            }
+                        }//using contour
+
+                        //big_c.Dispose();
+
+                        counter++;
+
+
+                    }//using Mat
+                }//ay
+            }//ax
+
+
+
+            OpenCvSharp.CPlusPlus.Point trackpos = new OpenCvSharp.CPlusPlus.Point(0, 0);
+            if (rms.Count > 0) {
+                rawmicrotrack rm = new rawmicrotrack();
+                double meancx = 0;
+                double meancy = 0;
+                double meanax = 0;
+                double meanay = 0;
+                double meanph = 0;
+                double meanpv = 0;
+                double sumpv = 0;
+
+                for (int i = 0; i < rms.Count; i++) {
+                    meanpv += rms[i].pv * rms[i].pv;
+                    meancx += rms[i].cx * rms[i].pv;
+                    meancy += rms[i].cy * rms[i].pv;
+                    meanax += rms[i].ax * rms[i].pv;
+                    meanay += rms[i].ay * rms[i].pv;
+                    sumpv += rms[i].pv;
+                }
+
+                meancx /= sumpv;//重心と傾きを輝度値で重み付き平均
+                meancy /= sumpv;
+                meanax /= sumpv;
+                meanay /= sumpv;
+                meanpv /= sumpv;
+
+                trackpos = new OpenCvSharp.CPlusPlus.Point(
+                    (int)(meancx) + 256 - meanax * shiftpitch,
+                    (int)(meancy) + 220 - meanay * shiftpitch
+                    );
+
+                double anglex = (meanax * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+                double angley = (meanay * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
+                Console.WriteLine(string.Format("{0:f4} {1:f4}", anglex, angley));
+            } else {
+                trackpos = new OpenCvSharp.CPlusPlus.Point(-1, -1);
+            }
+
+
+            return trackpos;
+        }//track detection
+
+
+        private void BeamFollow(Track myTrack, int mod, int pl, bool dubflag) {
 
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             Camera camera = Camera.GetInstance();
@@ -7645,7 +7775,8 @@ namespace NagaraStage.Ui {
 
 
             //
-            string uptxt = string.Format(@"c:\GTR_test\bpm\{0}_{1}_up.txt", initial.X, initial.Y);
+            //string uptxt = string.Format(@"c:\GTR_test\bpm\{0}_{1}_up.txt", initial.X, initial.Y);
+            string uptxt = string.Format(@"c:\GTR_test\bpm\{0}_{1}_up.txt", 10, 10);
             BeamDetection(uptxt, true);
             List<Point2d> BPM_pix = new List<Point2d>();//beamのピクセル座標を格納するListである。
 
@@ -7717,7 +7848,7 @@ namespace NagaraStage.Ui {
 
             for (int i = 0; i < bemcount; i++)//ここで、領域における分け方も含めてbeamを選択できるようにする。
             {
-                some_bpm.Add(new Point2d(point[i].X, point[i].Y));
+                some_bpm.Add(new Point2d(point_10[i].X, point_10[i].Y));
             }
             //ただ、とりあえずこれで作動はするであろう形になった。
 
@@ -7846,7 +7977,7 @@ namespace NagaraStage.Ui {
                     beam_pozi.img = LStage[i];//画像の撮影場所を格納する。
 
                     //trackを重ねる処理を入れる。
-                    Point2d beam_peak = TrackDetection(//シフトしないようにして、処理を行うようにしよう。
+                    Point2d beam_peak = TrackDetection_verold(//シフトしないようにして、処理を行うようにしよう。
                         binimages,
                         (int)LBeam[i][r].peak.X,
                         (int)LBeam[i][r].peak.Y,
@@ -7875,18 +8006,22 @@ namespace NagaraStage.Ui {
                     beam_data.Add(beam_pozi);
 
                     if (i == 0) {
-                        Point3d LTrack_ghost = new Point3d();
-                        double dzPrev = (LBeam[i][r].stage.Z - surface.UpTop) * Sh;
-                        double Lghost_x = LBeam[i][r].stage.X - Msdxdy[i].X * dzPrev;
-                        double Lghost_y = LBeam[i][r].stage.Y - Msdxdy[i].Y * dzPrev;
-                        LTrack_ghost = new Point3d(Lghost_x, Lghost_y, surface.UpTop);//上側乳剤層上面にtrackがあるならどの位置にあるかを算出する。
-
-                        OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LTrack_ghost, LBeam[0][r].stage, LBeam[1][r].stage);
-                        MSDXDY_BEAM.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
-
+                        MSDXDY_BEAM.Add(new OpenCvSharp.CPlusPlus.Point2d(Msdxdy[i].X, Msdxdy[i].Y));
                     } else {
-                        OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LBeam[i + 1][r].stage, LBeam[i][r].stage, LBeam[i - 1][r].stage);
-                        MSDXDY_BEAM.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
+                        if (i == 1) {
+                            Point3d LTrack_ghost = new Point3d();
+                            double dzPrev = (LBeam[i][r].stage.Z - surface.UpTop) * Sh;
+                            double Lghost_x = LBeam[i][r].stage.X - Msdxdy[i].X * dzPrev;
+                            double Lghost_y = LBeam[i][r].stage.Y - Msdxdy[i].Y * dzPrev;
+                            LTrack_ghost = new Point3d(Lghost_x, Lghost_y, surface.UpTop);//上側乳剤層上面にtrackがあるならどの位置にあるかを算出する。
+
+                            OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LTrack_ghost, LBeam[0][r].stage, LBeam[1][r].stage);//ここを2点で行うようにする。
+                            MSDXDY_BEAM.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
+
+                        } else {
+                            OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LBeam[i + 1][r].stage, LBeam[i][r].stage, LBeam[i - 1][r].stage);
+                            MSDXDY_BEAM.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
+                        }
                     }
 
                 }//r_loop
@@ -7903,8 +8038,8 @@ namespace NagaraStage.Ui {
                     Ms_x += MSDXDY_BEAM[q].X;
                     Ms_y += MSDXDY_BEAM[q].Y;
 
-                    pix_dX += (int)LBeam[i][q - 1].peak.X - (int)LBeam[i][q].peak.X;
-                    pix_dY += (int)LBeam[i][q - 1].peak.Y - (int)LBeam[i][q].peak.Y;
+                    pix_dX += (int)LBeam[i][q - 1].peak.X - (int)LBeam[i][q].peak.X;//q - 1 がおかしい。ここで何をしたかったのかを思い出そう。
+                    pix_dY += (int)LBeam[i][q - 1].peak.Y - (int)LBeam[i][q].peak.Y;//予想した地点とのピクセルのズレかな？
                 }
                 Ms_x = Ms_x / MSDXDY_BEAM.Count();
                 Ms_y = Ms_y / MSDXDY_BEAM.Count();
@@ -8006,7 +8141,7 @@ namespace NagaraStage.Ui {
                     beam_pozi.img = LStage_Low[i];//画像の撮影場所を格納する。
 
                     //trackを重ねる処理を入れる。
-                    Point2d beam_peak = TrackDetection(
+                    Point2d beam_peak = TrackDetection_verold(
                         binimages,
                         (int)LBeam_Low[i][r].peak.X,
                         (int)LBeam_Low[i][r].peak.Y,
@@ -8204,6 +8339,36 @@ namespace NagaraStage.Ui {
             twriter_msdxdy_low.Close();
 
 
+
+
+        }
+
+        private void BeamFollowButton_Click(object sender, RoutedEventArgs e) {
+
+            MotorControler mc = MotorControler.GetInstance(parameterManager);
+            Camera camera = Camera.GetInstance();
+            TracksManager tm = parameterManager.TracksManager;
+            Track myTrack = tm.GetTrack(tm.TrackingIndex);
+            Surface surface = Surface.GetInstance(parameterManager);
+            int mod = parameterManager.ModuleNo;
+            int pl = parameterManager.PlateNo;
+            bool dubflag;
+            Led led_ = Led.GetInstance();
+
+            //string[] sp1 = myTrack.IdString.Split('-');
+
+            //string logtxt = string.Format(@"C:\GTR_test\WorkingTime\{0}\{1}-{2}_TTracking_newversion.txt", mod, mod, pl);
+            //SimpleLogger SL1 = new SimpleLogger(logtxt, sp1[0], sp1[1]);
+
+            //// Tracking in emulsion
+            //SL1.Info("Tracking Start");
+            
+            BeamFollow(myTrack, mod, pl, false);
+
+            
+            GoTopUp();
+            mc.Join();
+            Thread.Sleep(100);
 
 
         }

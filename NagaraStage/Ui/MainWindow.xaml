@@ -331,6 +331,10 @@
                         x:Name="Tracking_Botton" 
                         Label="Tracking(2)"
                         LargeImageSource="/Images/start.png" Click="Full_Automatic_Tracking_PL2_button" />
+                    <ribbon:RibbonButton
+                        x:Name="BeamFollowButton2" 
+                        Label="BeamFollow"
+                        LargeImageSource="/Images/start.png" Click="BeamFollowButton_Click" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>                       
             <ribbon:RibbonTab
@@ -348,7 +352,7 @@
                     <ribbon:RibbonButton
                         x:Name="BeamFollowButton" 
                         Label="BeamFollow"
-                        LargeImageSource="/Images/start.png" Click=" BeamFollowButton_Click" />
+                        LargeImageSource="/Images/start.png" Click="BeamFollowButton_Click" />
                 </ribbon:RibbonGroup>
             </ribbon:RibbonTab>
         </ribbon:Ribbon>
