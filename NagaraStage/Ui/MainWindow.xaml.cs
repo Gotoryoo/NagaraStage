@@ -8043,8 +8043,8 @@ namespace NagaraStage.Ui {
                     //pix_dX += (int)LBeam[i][q - 1].peak.X - (int)LBeam[i][q].peak.X;//q - 1 がおかしい。ここで何をしたかったのかを思い出そう。
                     //pix_dY += (int)LBeam[i][q - 1].peak.Y - (int)LBeam[i][q].peak.Y;//予想した地点とのピクセルのズレかな？
 
-                    pix_dX += (int)LBeam[i + 1][q].peak.X - (int)LBeam[i - 1][q].peak.X;
-                    pix_dY += (int)LBeam[i + 1][q].peak.Y - (int)LBeam[i - 1][q].peak.Y;
+                    pix_dX += (int)LBeam[i + 1][q].peak.X - (int)LBeam[i][q].peak.X;
+                    pix_dY += (int)LBeam[i + 1][q].peak.Y - (int)LBeam[i][q].peak.Y;
                 }
                 Ms_x = Ms_x / MSDXDY_BEAM.Count();
                 Ms_y = Ms_y / MSDXDY_BEAM.Count();
@@ -8215,8 +8215,8 @@ namespace NagaraStage.Ui {
                     Ms_x += MSDXDY_BEAM_LOW[q].X;
                     Ms_y += MSDXDY_BEAM_LOW[q].Y;
 
-                    pix_dX += (int)LBeam_Low[i][q - 1].peak.X - (int)LBeam_Low[i][q].peak.X;
-                    pix_dY += (int)LBeam_Low[i][q - 1].peak.Y - (int)LBeam_Low[i][q].peak.Y;
+                    pix_dX += (int)LBeam_Low[i + 1][q].peak.X - (int)LBeam_Low[i][q].peak.X;
+                    pix_dY += (int)LBeam_Low[i + 1][q].peak.Y - (int)LBeam_Low[i][q].peak.Y;
                 }
 
                 Ms_x = Ms_x / MSDXDY_BEAM_LOW.Count();
