@@ -7883,8 +7883,8 @@ namespace NagaraStage.Ui {
 
             //for up layer
 
-            int number_of_images = 10;
-            int hits = 6;
+            int number_of_images = 7;
+            int hits = 4;
 
             double Sh = 0.5 / (surface.UpTop - surface.UpBottom);
             double theta = Math.Atan(0);
@@ -7964,7 +7964,7 @@ namespace NagaraStage.Ui {
 
                 List<Mat> binimages = new List<Mat>();//撮影した画像に対して画像処理をかける。
                 for (int t = 0; t <= number_of_images - 1; t++) {
-                    Mat bin = (Mat)DogContrastBinalize(LiITUpMid[t].img);
+                    Mat bin = (Mat)DogContrastBinalize(LiITUpMid[t].img,31,60);
                     Cv2.Dilate(bin, bin, new Mat());
                     binimages.Add(bin);
                 }
@@ -8155,7 +8155,7 @@ namespace NagaraStage.Ui {
                 //撮影した画像をここで処理する。
                 List<Mat> binimages = new List<Mat>();
                 for (int t = 0; t <= number_of_images - 1; t++) {
-                    Mat bin = (Mat)DogContrastBinalize(LiITLowMid[t].img);
+                    Mat bin = (Mat)DogContrastBinalize(LiITLowMid[t].img,31,60);
                     Cv2.Dilate(bin, bin, new Mat());
                     binimages.Add(bin);
                 }
@@ -8249,17 +8249,17 @@ namespace NagaraStage.Ui {
                         OpenCvSharp.CPlusPlus.Point2d Tangle_l = ApproximateStraightBase(
                             Sh,
                             Sh_low,
-                            LBeam_Low[lbeam_counter - 1][k].stage,
+                            LBeam[lbeam_counter - 1][k].stage,
+                            LBeam_Low[i - 1][k].stage,
                             LBeam_Low[i][k].stage,
-                            LBeam_Low[i + 1][k].stage,
                             surface);
                         MSDXDY_BEAM_LOW.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle_l.X, Tangle_l.Y));
                     } else {
                         OpenCvSharp.CPlusPlus.Point2d Tangle_l = ApproximateStraight(
                             Sh_low,
+                            LBeam_Low[i - 2][k].stage,
                             LBeam_Low[i - 1][k].stage,
-                            LBeam_Low[i][k].stage,
-                            LBeam_Low[i + 1][k].stage);
+                            LBeam_Low[i][k].stage);
                         MSDXDY_BEAM_LOW.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle_l.X, Tangle_l.Y));
                     }
                     
@@ -8371,7 +8371,7 @@ namespace NagaraStage.Ui {
             StreamWriter twriter_lbeam_low = File.CreateText(txtfileName_lbeam_low);
             for (int i = 0; i < LBeam_Low.Count(); i++) {
                 for (int r = 0; r < LBeam_Low[i].Count(); r++) {
-                    twriter_lbeam.WriteLine("{0} {1} BeamPeak: {2} {3} LBeam(Stage): {4} {5} {6}",
+                    twriter_lbeam_low.WriteLine("{0} {1} BeamPeak: {2} {3} LBeam(Stage): {4} {5} {6}",
                         i,
                         r,
                         LBeam_Low[i][r].peak.X,
