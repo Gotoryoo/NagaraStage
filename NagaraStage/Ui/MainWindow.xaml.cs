@@ -7985,7 +7985,7 @@ namespace NagaraStage.Ui {
                         0,//shifty もともと　3
                         4,
                         10,//windowsize もともと　90
-                        hits);// true);
+                        hits,true);// true);
 
                     if (beam_peak.X == -1 & beam_peak.Y == -1) {//検出できなかった時にどのような処理を行うのかを考えたほうがいいだろうな。
                         mc.Join();
@@ -8004,7 +8004,7 @@ namespace NagaraStage.Ui {
                     beam_pozi.stage = new Point3d(firstx, firsty, firstz);
 
                     beam_data.Add(beam_pozi);
-
+                    /*
                     if (i == 0) {
                         MSDXDY_BEAM.Add(new OpenCvSharp.CPlusPlus.Point2d(Msdxdy[i].X, Msdxdy[i].Y));
                     } else {
@@ -8019,10 +8019,9 @@ namespace NagaraStage.Ui {
                             MSDXDY_BEAM.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
 
                         } else {
-                            OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LBeam[i + 1][r].stage, LBeam[i][r].stage, LBeam[i - 1][r].stage);
+                            OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LBeam[i - 1][r].stage, LBeam[i][r].stage, LBeam[i + 1][r].stage);
                             MSDXDY_BEAM.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
-                        }
-                    }
+                        }*/
 
                 }//r_loop
 
@@ -8034,6 +8033,28 @@ namespace NagaraStage.Ui {
                 int pix_dY = new int();
 
                 LBeam.Add(beam_data);
+
+                for (int k = 0; k < LBeam[i].Count(); k++) {
+                    if (i == 0) {
+                        MSDXDY_BEAM.Add(new OpenCvSharp.CPlusPlus.Point2d(Msdxdy[i].X, Msdxdy[i].Y));
+                    } else {
+                        if (i == 1) {
+                            Point3d LTrack_ghost = new Point3d();
+                            double dzPrev = (LBeam[i][k].stage.Z - surface.UpTop) * Sh;
+                            double Lghost_x = LBeam[i][k].stage.X - Msdxdy[i].X * dzPrev;
+                            double Lghost_y = LBeam[i][k].stage.Y - Msdxdy[i].Y * dzPrev;
+                            LTrack_ghost = new Point3d(Lghost_x, Lghost_y, surface.UpTop);//上側乳剤層上面にtrackがあるならどの位置にあるかを算出する。
+
+                            OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LTrack_ghost, LBeam[i][k].stage, LBeam[i + 1][k].stage);//ここを2点で行うようにする。
+                            MSDXDY_BEAM.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
+                        } else {
+                            OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LBeam[i - 1][k].stage, LBeam[i][k].stage, LBeam[i + 1][k].stage);
+                            MSDXDY_BEAM.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
+                        }
+                    }
+                }
+
+
 
                 for (int q = 0; q < MSDXDY_BEAM.Count(); q++) //ここで個々のbeamの角度を平均してstageの移動角度を算出する。
                 {
@@ -8116,8 +8137,8 @@ namespace NagaraStage.Ui {
 
                 //今までのtrack追跡プログラムとは異なる角度等の使い方をする。
                 List<ImageTaking> LiITLowMid = TakeSequentialImage(
-                    Msdxdy[i].X * Sh_low,
-                    Msdxdy[i].Y * Sh_low,
+                    Msdxdy_Low[i].X * Sh_low,
+                    Msdxdy_Low[i].Y * Sh_low,
                     dz_img,
                     number_of_images);
 
@@ -8173,7 +8194,7 @@ namespace NagaraStage.Ui {
                     beam_pozi.stage = new Point3d(firstx, firsty, firstz);
 
                     beam_data_low.Add(beam_pozi);
-
+                    /*
                     if (i == 0) {
                         OpenCvSharp.CPlusPlus.Point2d Tangle_l = ApproximateStraightBase(
                             Sh,
@@ -8200,6 +8221,7 @@ namespace NagaraStage.Ui {
                             LBeam_Low[i][r].stage);
                         MSDXDY_BEAM_LOW.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle_l.X, Tangle_l.Y));
                     }
+                     */
 
                 }//r_loop
 
@@ -8209,6 +8231,40 @@ namespace NagaraStage.Ui {
 
                 int pix_dX = new int();
                 int pix_dY = new int();
+
+                LBeam_Low.Add(beam_data_low);
+                for (int k = 0; k < LBeam_Low[i].Count(); k++ ) 
+                {
+                    if (i == 0) 
+                    {
+                        OpenCvSharp.CPlusPlus.Point2d Tangle_l = ApproximateStraightBase(
+                            Sh,
+                            Sh_low,
+                            LBeam[lbeam_counter - 2][k].stage,
+                            LBeam[lbeam_counter - 1][k].stage,
+                            LBeam_Low[i][k].stage,
+                            surface);
+                        MSDXDY_BEAM_LOW.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle_l.X, Tangle_l.Y));
+                    } else if (i == 1) {
+                        OpenCvSharp.CPlusPlus.Point2d Tangle_l = ApproximateStraightBase(
+                            Sh,
+                            Sh_low,
+                            LBeam_Low[lbeam_counter - 1][k].stage,
+                            LBeam_Low[i][k].stage,
+                            LBeam_Low[i + 1][k].stage,
+                            surface);
+                        MSDXDY_BEAM_LOW.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle_l.X, Tangle_l.Y));
+                    } else {
+                        OpenCvSharp.CPlusPlus.Point2d Tangle_l = ApproximateStraight(
+                            Sh_low,
+                            LBeam_Low[i - 1][k].stage,
+                            LBeam_Low[i][k].stage,
+                            LBeam_Low[i + 1][k].stage);
+                        MSDXDY_BEAM_LOW.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle_l.X, Tangle_l.Y));
+                    }
+                    
+                }//roop_k
+
 
                 for (int q = 0; q < MSDXDY_BEAM_LOW.Count(); q++) //ここで個々のbeamの角度を平均してstageの移動角度を算出する。
                 {
@@ -8223,7 +8279,7 @@ namespace NagaraStage.Ui {
                 Ms_y = Ms_y / MSDXDY_BEAM_LOW.Count();
                 Ms_esti = new Point2d(Ms_x, Ms_y);
                 Msdxdy_Low.Add(Ms_esti);//算出した角度をぶち込む。
-                LBeam_Low.Add(beam_data_low);
+                
 
                 pix_dX = pix_dX / MSDXDY_BEAM_LOW.Count();//ずれたピクセル量
                 pix_dY = pix_dY / MSDXDY_BEAM_LOW.Count();//ずれたピクセル量
