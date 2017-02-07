@@ -7225,62 +7225,11 @@ namespace NagaraStage.Ui {
 
 
         private void surfRecB_Click(object sender, RoutedEventArgs e) {
-            // モータが稼働中であれば停止するかどうかを尋ねる．
-            int mod = parameterManager.ModuleNo;
-            int pl = parameterManager.PlateNo;
-            //MotorControler mc = MotorControler.GetInstance(parameterManager);
-            Camera camera = Camera.GetInstance();
-            TracksManager tm = parameterManager.TracksManager;
-            Track myTrack = tm.GetTrack(tm.TrackingIndex);
-            Stopwatch swsurf = new Stopwatch();
-            // Stopwatch Time = new Stopwatch();
-            swsurf.Start();
-            MotorControler mc = MotorControler.GetInstance(parameterManager);
-            if (mc.IsMoving) {
-                MessageBoxResult r = MessageBox.Show(
-                    Properties.Strings.SurfaceException01,
-                    Properties.Strings.Abort + "?",
-                    MessageBoxButton.YesNo);
-                if (r == MessageBoxResult.Yes) {
-                    mc.AbortMoving();
-                } else {
-                    return;
-                }
-            }
-
-            // すでに表面認識が実行中であれば停止するかどうか尋ねる．
-            Surface surface = Surface.GetInstance(parameterManager);
-            if (surface.IsActive) {
-                MessageBoxResult r = MessageBox.Show(
-                    Properties.Strings.SurfaceException02,
-                    Properties.Strings.Abort + "?",
-                    MessageBoxButton.YesNo);
-                if (r == MessageBoxResult.Yes) {
-                    surface.Abort();
-                } else {
-                    return;
-                }
-            }
-
-            try {
-                surface.Start(true);
-
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message, Properties.Strings.Error);
-            }
-            double Time = surface.Time;
-            mc.Join();
-            swsurf.Stop();
-            string[] spsurf = myTrack.IdString.Split('-');
-            string logtxt_ = string.Format(@"c:\test\bpm\{0}\{1}-{2}_surftime.txt", mod, mod, pl);
-            //string log_ = string.Format("{0} \n", sw.Elapsed);
-            string surftime = string.Format("{0} {1} {2} {3} \n", spsurf[0], spsurf[1], swsurf.Elapsed, Time);
-            StreamWriter swr = new StreamWriter(logtxt_, true, Encoding.ASCII);
-            swr.Write(surftime);
-            swr.Close();
-
-        }
-
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            SurfRecB srb = SurfRecB.GetInstance(parameterManager);
+            manager.Enqueue(srb);
+            manager.Start();
+        }//surfRecB_Click
 
         private void startAutoFollowingNewStep1Button_Click(object sender, RoutedEventArgs e) {
             ActivityManager manager = ActivityManager.GetInstance(parameterManager);
