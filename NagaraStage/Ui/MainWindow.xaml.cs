@@ -6217,27 +6217,12 @@ namespace NagaraStage.Ui {
         }
          
 
-        private void GoNearGrid_CorrecteTrackPosition_button(object sender, RoutedEventArgs e) {  
-        TracksManager tm = parameterManager.TracksManager;
-        Track myTrack = tm.GetTrack(tm.TrackingIndex);
-        int mod = parameterManager.ModuleNo;
-        int pl = parameterManager.PlateNo;
-        string[] sp1 = myTrack.IdString.Split('-');
-        MotorControler mc = MotorControler.GetInstance(parameterManager);
-        string logtxt = string.Format(@"C:\MKS_test\WorkingTime\{0}\{1}-{2}_TNeargrid.txt", mod, mod, pl);
-        SimpleLogger SL2 = new SimpleLogger(logtxt, sp1[0], sp1[1]);
-        SL2.Info("Neargrid Start");
-
-        NearGridParameter();
-        gotrack(myTrack);
-        mc.Join();
-        Led led_ = Led.GetInstance();
-        led_.AdjustLight(parameterManager);
-        Thread.Sleep(200);
-        surfacerecog();
-        SL2.Info("Neargrid End");
+        private void GoNearGrid_CorrecteTrackPosition_button(object sender, RoutedEventArgs e) {
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            GoNearGrid_CorrecteTrackPosition ggctp = GoNearGrid_CorrecteTrackPosition.GetInstance(parameterManager);
+            manager.Enqueue(ggctp);
+            manager.Start();
         }
-
 
         private void Start_button(object sender, RoutedEventArgs e) {
             ActivityManager manager = ActivityManager.GetInstance(parameterManager);
