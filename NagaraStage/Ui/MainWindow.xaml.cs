@@ -5811,152 +5811,20 @@ namespace NagaraStage.Ui {
 
                 }
                 string[] sp1 = myTrack.IdString.Split('-');
-                /*   string logtxt_ = string.Format(@"c:\test\bpm\{0}\{1}-{2}_TCK.txt", mod, mod, pl);
-                   //string log_ = string.Format("{0} \n", sw.Elapsed);
-                   string log_ = string.Format("{0} {1} {2} \n", sp1[0], sp1[1], TPC);
-                   StreamWriter swr = new StreamWriter(logtxt_, true, Encoding.ASCII);
-                   swr.Write(log_);
-                   swr.Close();*/
-
+                
                 string logtxt = string.Format(@"C:\MKS_test\followingCheck\{0}\{1}-{2}_Trackingcheck_newversion.txt", mod, mod, pl);
                 SimpleLogger SL1 = new SimpleLogger(logtxt, sp1[0], sp1[1]);
                 SL1.Trackcheck(TPC);
 
             }
   }
-    
-
-        
-        //........................................................................
 
         private void Full_Automatic_Tracking_button(object sender, RoutedEventArgs e) {
-
-            MotorControler mc = MotorControler.GetInstance(parameterManager);
-            Camera camera = Camera.GetInstance();
-            TracksManager tm = parameterManager.TracksManager;
-            Surface surface = Surface.GetInstance(parameterManager);
-            int mod = parameterManager.ModuleNo;
-            int pl = parameterManager.PlateNo;
-            bool dubflag;
-            Led led_ = Led.GetInstance();
-           
-            
-
-            for (int i = 0; i < tm.NumOfTracks; i++) {
-                Track myTrack = tm.GetTrack(i);
-                Console.WriteLine(myTrack.IdString);
-                string[] sp1 = myTrack.IdString.Split('-');
-
-                string logtxt = string.Format(@"C:\MKS_test\WorkingTime\{0}\{1}-{2}_Trackingtime.txt", mod, mod, pl);
-                SimpleLogger SL1 = new SimpleLogger(logtxt, sp1[0], sp1[1]);
-               
-
-                MessageBoxResult r;
-                // Massage box to check tracking is ok or not, if OK is put, will go to track position.
-                r = MessageBox.Show(
-                  String.Format("Let's go to {0}; {1} {2}. OK->Go, Cancel->exit", myTrack.IdString, myTrack.MsX, myTrack.MsY),
-                  Properties.Strings.LensTypeSetting,
-                  MessageBoxButton.OKCancel);
-                if (r == MessageBoxResult.Cancel) {
-                    return;
-                }
-
-
-             // Go to the track position
-                double dstx = myTrack.MsX;
-                double dsty = myTrack.MsY;
-                mc.MovePointXY(dstx, dsty, delegate {
-                    stage.WriteLine(Properties.Strings.MovingComplete);
-                });
-                mc.Join();
-            
-
-             // Oil putting time
-              //  Thread.Sleep(1000);
-               // led_.AdjustLight(parameterManager);
-
-
-             // Go to near grid mark and get parameter for shrinkage in X,Y
-              //  NearGridParameter();
-
-
-             // Go to track position after correction with near gridmark
-               // gotrack(myTrack);
-              //  mc.Join();
-                //Vector3 initialpos = mc.GetPoint();
-
-/*
-                bool surfacerecogOK = false;
-
-             // Detection of boundaries of emulsion layers
-                for (int trial = 0; trial < 5; trial++ ) {
-                    mc.MoveTo(initialpos);
-                    mc.Join();
-
-                    mc.MoveTo(new Vector3(initialpos.X, initialpos.Y, initialpos.Z + 0.02));
-                    mc.Join();
-                    led_.AdjustLight(parameterManager);
-                    Thread.Sleep(500);
-                    surfacerecog();
-                    while (surface.IsActive) {
-                        Thread.Sleep(500);
-                    }
-                    mc.Join();
-                    Double Base = (surface.UpBottom - surface.LowTop) * 1000;
-                    Double UpLayer = (surface.UpTop - surface.UpBottom) * 1000;
-                    Double LowLayer = (surface.LowTop - surface.LowBottom) * 1000;
-
-                    if (Base < 50.0 && UpLayer > 200.0 && LowLayer > 200.0) {
-                        surfacerecogOK = true;
-                        break;
-                    }
-                }
-
-                if (surfacerecogOK == false) {
-                    continue;//go to the next track
-                }
-                Thread.Sleep(100);
-                GoTopUp();
-                mc.Join();*/
-                SL1.Info("Tracking Start");
-             // Beampatternmatching
-                BPMW(myTrack, mod, pl);
-                SL1.Info("Tracking End");
-                mc.Join();
-                Thread.Sleep(100);
-
-
-                // Tracking in emulsion
-              //  Tracking(myTrack, mod, pl, false);
-              
-                // #If the the followed track is stop or cause event, go to Upper surface and to the next track#
-
-
-                // Taking Beam pattern
-               // Detectbeam(myTrack, mod, pl);
-
-
-                // Go to top of uppr layer after tracking is finished
-              //  GoTopUp();
-              //  mc.Join();
-               // Thread.Sleep(100);
-
-
-
-            
-                // Massage box to cheack tracking is ok or not, it Ok is put, it will go to next track.
-                r = MessageBox.Show(
-                     "OK->Next, Cancel->exit",
-                     Properties.Strings.LensTypeSetting,
-                     MessageBoxButton.OKCancel);
-                if (r == MessageBoxResult.Cancel) {
-                    return;
-                }
-                
-
-           }
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            Full_Automatic_Tracking fat = Full_Automatic_Tracking.GetInstance(parameterManager);
+            manager.Enqueue(fat);
+            manager.Start();
         }
-
 
         static OpenCvSharp.CPlusPlus.Point TrackDetection_new2(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsize = 40, int phthresh = 5, double dx = 0.12, double dy = 0.12, int mod = 5, int plt = 2, string sp0 = "", string sp1 = "", bool debugflag = true) {
             OpenCvSharp.CPlusPlus.Point center = new OpenCvSharp.CPlusPlus.Point(0, 0);
@@ -6108,7 +5976,6 @@ namespace NagaraStage.Ui {
             }
             return center;
         }
-
 
 // ##############################################################################################
                         //AUTOMATIC TRACKING FOR PL#2
