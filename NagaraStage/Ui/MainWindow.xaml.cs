@@ -2293,63 +2293,6 @@ namespace NagaraStage.Ui {
                                                     , 512 + 3).CopyTo(superimposed);//１枚目の画像の大きさ、場所で切り取る
                         }
 
-
-
-
-                        //                       if (delta_xx < 0 && delta_yy >= 0) {
-                        //                           for (int i = 0; i < two_set.Count; i++) {   //元画像を大きな型の左下において、そこから他の画像を右上に動かしながらおいていく。
-                        //                               //下の式は、（元の画像の位置）に他の位置を引いていく。
-                        //                               Part_img[i][
-                        //                                       0 + (n - 1) * Math.Abs(delta_yy) - delta_yy * i  //yの値のスタート地点
-                        //                                   , 440 + (n - 1) * Math.Abs(delta_yy) - delta_yy * i  //yの値のゴール地点
-                        //                                   , 0 - delta_xx * i    //xの値のスタート地点
-                        //                                   , 512 - delta_xx * i  //xの値のゴール地点
-                        //                                   ] = two_set[i];//処理済み画像をPartの対応する部分に入れていく
-                        //                           }
-                        //                       }
-                        //
-                        //                       if (delta_xx < 0 && delta_yy < 0) {
-                        //                           for (int i = 0; i < two_set.Count; i++) {    //元画像を大きな型の左上において、そこから他の画像を右下に動かしながらおいていく。
-                        //                               //下の式は、（元の画像の位置）に他の位置を足していく。
-                        //                               Part_img[i][
-                        //                                      0 - delta_yy * i
-                        //                                  , 440 - delta_yy * i
-                        //                                  , 0 - delta_xx * i
-                        //                                  , 512 - delta_xx * i
-                        //                                  ] = two_set[i];
-                        //                           }
-                        //                       }
-                        //
-                        //                       if (delta_xx >= 0 && delta_yy >= 0) {
-                        //                           for (int i = 0; i < two_set.Count; i++) {    //元画像を大きな型の左上において、そこから他の画像を左上に動かしながらおいていく。
-                        //                               //下の式は、（元の画像の位置）に他の位置を足していく。
-                        //                               Part_img[i][
-                        //                                       0 + (n - 1) * Math.Abs(delta_yy) - delta_yy * i  //yの値のスタート地点
-                        //                                   , 440 + (n - 1) * Math.Abs(delta_yy) - delta_yy * i  //yの値のゴール地点
-                        //                                  , 0 + (n - 1) * Math.Abs(delta_xx) - delta_xx * i
-                        //                                  , 512 + (n - 1) * Math.Abs(delta_xx) - delta_xx * i
-                        //                                  ] = two_set[i];
-                        //                           }
-                        //                       }
-                        //
-                        //                       if (delta_xx >= 0 && delta_yy < 0) {
-                        //                           for (int i = 0; i < two_set.Count; i++) {    //元画像を大きな型の左上において、そこから他の画像を左下に動かしながらおいていく。
-                        //                               //下の式は、（元の画像の位置）に他の位置を足していく。
-                        //                               Part_img[i][
-                        //                                       0 - delta_yy * i  //yの値のスタート地点
-                        //                                   , 440 - delta_yy * i  //yの値のゴール地点
-                        //                                  , 0 + (n - 1) * Math.Abs(delta_xx) - delta_xx * i
-                        //                                  , 512 + (n - 1) * Math.Abs(delta_xx) - delta_xx * i
-                        //                                  ] = two_set[i];
-                        //                           }
-                        //                       }
-
-
-
-
-
-
-
                         Mat one1 = Mat.Ones(y0 - 20, 512, MatType.CV_8UC1);//視野の中心からどれだけの窓を開けるか
                         Mat one2 = Mat.Ones(41, x0 - 20, MatType.CV_8UC1);
                         Mat one3 = Mat.Ones(41, 491 - x0, MatType.CV_8UC1);
@@ -2361,10 +2304,6 @@ namespace NagaraStage.Ui {
                         superimposed[y0 + 21, 440, 0, 512] = one4 * 0;//中心から○μｍの正方形以外は黒くする。
 
                         superimposed.ImWrite("C:\\set\\superimposed25_1.bmp");
-
-
-
-
 
                         using (CvMemStorage storage = new CvMemStorage()) {
                             using (CvContourScanner scanner = new CvContourScanner(superimposed.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
@@ -2390,12 +2329,7 @@ namespace NagaraStage.Ui {
                     }//pixel移動x
                 }//pixel移動y
 
-
-
-
-
-
-
+            
             if (white_area.Count > 0) {
                 double center_x = 0;
                 double center_y = 0;
@@ -2450,10 +2384,8 @@ namespace NagaraStage.Ui {
             ActivityManager am = ActivityManager.GetInstance();
             am.Abort();
             MessageBox.Show(Properties.Strings.ActivityAbort);
-
-
-
         }
+
         private void GotoUpTop_button(object sender, RoutedEventArgs e) {
 
             MotorControler mc = MotorControler.GetInstance(parameterManager);
@@ -2529,42 +2461,22 @@ namespace NagaraStage.Ui {
             } catch (System.Exception) {
                 MessageBox.Show("No beam battern。 ");
             }
-
-            /*   Vector3 cc = mc.GetPoint();
-               double Zp = surface.UpTop;
-               mc.MoveTo(new Vector3(cc.X, cc.Y, Zp));                
-               mc.Join();      */
-
         }
-
-
 
         private void coordinate_record(object sender, RoutedEventArgs e) {
-            MotorControler mc = MotorControler.GetInstance(parameterManager);
-            Vector3 CenterPoint = mc.GetPoint();
-
-            string fileName = string.Format(@"c:\test\coordinate.txt");
-            System.IO.StreamWriter sw = new System.IO.StreamWriter(fileName, true, System.Text.Encoding.GetEncoding("shift_jis"));
-            string coordinate = string.Format("{0} {1} {2}\n", CenterPoint.X, CenterPoint.Y, CenterPoint.Z);
-            sw.Write(coordinate);
-            sw.Close();           
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            Coordinate_record cr = Coordinate_record.GetInstance(parameterManager);
+            manager.Enqueue(cr);
+            manager.Start();
         }
-
-
 
         private void coordinate_init(object sender, RoutedEventArgs e) {
-            string fileName = string.Format(@"c:\test\coordinate.txt");
-            System.IO.StreamWriter sw = new System.IO.StreamWriter(fileName, false, System.Text.Encoding.GetEncoding("shift_jis"));
-            string coordinate = string.Format("");
-            sw.Write(coordinate);
-            sw.Close();
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            Coordinate_init ci = Coordinate_init.GetInstance(parameterManager);
+            manager.Enqueue(ci);
+            manager.Start();
         }
 
-
-
-//       ....................2016/5/18.........../MKS for automatic track following combination////////////////
-
-        //.. Approximatestraightbase
         static Point2d ApproximateStraightBase(double sh, double sh_low, Point3d ltrack, Point3d ltrack2, Point3d ltrack3, Surface surface) {
             Point2d p = new Point2d();
 
@@ -2607,8 +2519,6 @@ namespace NagaraStage.Ui {
             return p;
         }
 
-        //...................................................................
-        //ApproximateStraight
         static Point2d ApproximateStraight(double sh, Point3d ltrack, Point3d ltrack2, Point3d ltrack3) {
             Point2d p = new Point2d();
 
@@ -2633,9 +2543,7 @@ namespace NagaraStage.Ui {
 
             return p;
         }
-
-        //.........................................................
-
+        
         public struct rawmicrotrack {//Raw microtrack
 
             public int ph;
@@ -2645,19 +2553,13 @@ namespace NagaraStage.Ui {
             public int cx;
             public int cy;
         }
-        //...............................................
-
-        // track detection....................///////
-
-
+        
         static OpenCvSharp.CPlusPlus.Point TrackDetection_naka(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsize = 40, int phthresh = 5, double dx = 1.2, double dy = 1.2, bool debugflag = false) {
             int x0 = px - 256;
             int y0 = py - 220;
 
             List<rawmicrotrack> rms = new List<rawmicrotrack>();
-
-            // Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);
-
+            
             double phi = Math.Atan2(dy, dx);
             double angle = phi * (180 / Math.PI);
             double tant = Math.Sqrt(dx * dx + dy * dy);
@@ -2694,21 +2596,11 @@ namespace NagaraStage.Ui {
                         OpenCvSharp.CPlusPlus.Rect recMask1 = new OpenCvSharp.CPlusPlus.Rect(xstart, ystart, mask_x, mask_y);
                         Cv2.Rectangle(imgMask, recMask1, 255, -1);
                         Mat imgmask1 = imgMask.Clone();
-
-                    /*    OpenCvSharp.CPlusPlus.Rect recMask2 = new OpenCvSharp.CPlusPlus.Rect(xstart2, ystart2, mask_x, mask_y);
-                        Cv2.Rectangle(imgMask, recMask2, 255, -1);
-                        Mat imgmask2 = imgMask.Clone();*/
-
-
-                        //Mat affineMask = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), -angle, 1);
-                        //Cv2.WarpAffine(imgMask, imgMask, affineMask, imgMask.Size());
-
-
+                
                         for (int p = 0; p < mats.Count; p++) {
                             int startx = big.Width / 2 - mats[p].Width / 2 ;
                             int starty = big.Height / 2 - mats[p].Height / 2 ;
-                            //int startx = big.Width / 2 - mats[p].Width / 2 + (int)(p * ax * shiftpitch / 10.0);
-                            // int starty = big.Height / 2 - mats[p].Height / 2 + (int)(p * ay * shiftpitch / 10.0);
+                            
                             Cv2.Add(
                                 big[starty, starty + mats[p].Height, startx, startx + mats[p].Width],
                                 mats[p],
@@ -2742,14 +2634,7 @@ namespace NagaraStage.Ui {
                             Cv2.WarpAffine(big, big, affineMask2, big.Size());
                              
                             Cv2.WaitKey(0);
-
-
-                           
-                          //  if (debugflag == true) {//
-                               
-                           // }
-                      //  }//using big_c
-
+                
                         using (CvMemStorage storage = new CvMemStorage())
                         using (CvContourScanner scanner = new CvContourScanner(big.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
                             foreach (CvSeq<CvPoint> c in scanner) {
@@ -2808,10 +2693,7 @@ namespace NagaraStage.Ui {
                     (int)(meancx) + 256 ,
                     (int)(meancy) + 220
                     );
-
-               // double anglex = (meanax * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
-               // double angley = (meanay * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
-              //  Console.WriteLine(string.Format("{0:f4} {1:f4}", anglex, angley));
+                
             } else {
                 trackpos = new OpenCvSharp.CPlusPlus.Point(-1, -1);
             }
@@ -2825,9 +2707,7 @@ namespace NagaraStage.Ui {
             int y0 = py - 220;
 
             List<rawmicrotrack> rms = new List<rawmicrotrack>();
-
-            // Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);
-
+            
             double phi = Math.Atan2(dy, dx);
             double angle = phi * (180 / Math.PI);
             double tant = Math.Sqrt(dx * dx + dy * dy);
@@ -2908,19 +2788,7 @@ namespace NagaraStage.Ui {
                      Mat affineMask2 = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), angle, 1);
                      Cv2.WarpAffine(big_L1, big_L1, affineMask2, big_L1.Size());
 
-                     
-             /*...............
-                     Cv2.BitwiseAnd(big_, imgMask2, big_);
-                     Cv2.ImShow("imgcut_", big_ * 40);
-
-                     Cv2.WarpAffine(big_, big_, affineMask2, big_.Size());
-
-                     Cv2.Threshold(big_, big_, phthresh, 255, ThresholdType.ToZero);
-                     Cv2.ImShow("bin", big_ * 40);*/
-
-
-
-
+           
                      Cv2.WaitKey(0);
 
                      using ( CvMemStorage storage = new CvMemStorage())
@@ -2981,15 +2849,7 @@ namespace NagaraStage.Ui {
                             }
                          }
                      }
-                             //Console.WriteLine(string.Format("{0}   {1} {2}   {3} {4}", rm.pv, ax, ay, rm.cx, rm.cy ));
-                         
-                        
-
-                      
-
-                
-
-
+             
             OpenCvSharp.CPlusPlus.Point trackpos = new OpenCvSharp.CPlusPlus.Point(0, 0);
             if (rms.Count > 0) {
                 rawmicrotrack rm = new rawmicrotrack();
@@ -3020,10 +2880,7 @@ namespace NagaraStage.Ui {
                     (int)(meancx) + 256 ,
                     (int)(meancy) + 220
                     );
-
-               // double anglex = (meanax * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
-               // double angley = (meanay * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
-              //  Console.WriteLine(string.Format("{0:f4} {1:f4}", anglex, angley));
+                
             } else {
                 trackpos = new OpenCvSharp.CPlusPlus.Point(-1, -1);
             }
@@ -3043,8 +2900,7 @@ namespace NagaraStage.Ui {
         }
 
         static OpenCvSharp.CPlusPlus.Point TrackDetection_naka_2(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsizeH = 40, int phthresh = 5, double dx = 1.2, double dy = 1.2, bool debugflag = false) 
-            
-            
+             
         {
             Mat img = Mat.Zeros(600, 600, MatType.CV_8UC1);
             Mat big = img.Clone();
@@ -3147,9 +3003,6 @@ namespace NagaraStage.Ui {
             Mat affineMaskL2 = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(imgL2.Width / 2, imgL2.Height / 2), angle, 1);
             Cv2.WarpAffine(imgL2, imgL2, affineMask2, imgL2.Size());
 
-
-            //contour detection for L2-area
-            //if nocandidate, not found 
             using (CvMemStorage storageL2 = new CvMemStorage())
             using (CvContourScanner scannerL2 = new CvContourScanner(imgL2.ToIplImage(), storageL2, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple))
             {
@@ -3215,9 +3068,7 @@ namespace NagaraStage.Ui {
                     (int)(meancx) + 256,
                     (int)(meancy) + 220
                     );
-                // double anglex = (meanax * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
-                // double angley = (meanay * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
-                //  Console.WriteLine(string.Format("{0:f4} {1:f4}", anglex, angley));
+                
                 return trackpos;
             }
             else
@@ -3520,15 +3371,12 @@ namespace NagaraStage.Ui {
             return trackpos;
         }
 
-
         static OpenCvSharp.CPlusPlus.Point TD_naka_3(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsize = 40, int phthresh = 5, double dx = 1.2, double dy = 1.2, bool debugflag = false) {
             int x0 = px - 256;
             int y0 = py - 220;
 
             List<rawmicrotrack> rms = new List<rawmicrotrack>();
-
-            // Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);
-
+            
             double phi = Math.Atan2(dy, dx);
             double angle = phi * (180 / Math.PI);
             double tant = Math.Sqrt(dx * dx + dy * dy);
@@ -3561,8 +3409,7 @@ namespace NagaraStage.Ui {
                 for (int p = 0; p < mats.Count; p++) {
                     int startx = big.Width / 2 - mats[p].Width / 2;
                     int starty = big.Height / 2 - mats[p].Height / 2;
-                    //int startx = big.Width / 2 - mats[p].Width / 2 + (int)(p * ax * shiftpitch / 10.0);
-                    // int starty = big.Height / 2 - mats[p].Height / 2 + (int)(p * ay * shiftpitch / 10.0);
+                    
                     Cv2.Add(
                         big[starty, starty + mats[p].Height, startx, startx + mats[p].Width],
                         mats[p],
@@ -3589,14 +3436,7 @@ namespace NagaraStage.Ui {
                 Cv2.WarpAffine(big, big, affineMask2, big.Size());
 
                 Cv2.WaitKey(0);
-
-
-
-                //  if (debugflag == true) {//
-
-                // }
-                //  }//using big_c
-
+                
                 using (CvMemStorage storage = new CvMemStorage())
                 using (CvContourScanner scanner = new CvContourScanner(big.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
                     if (scanner.Count() != 0){
@@ -3626,8 +3466,6 @@ namespace NagaraStage.Ui {
 
 
             }//using Mat
-
-
 
             OpenCvSharp.CPlusPlus.Point trackpos = new OpenCvSharp.CPlusPlus.Point(0, 0);
             if (rms.Count > 0) {
@@ -3659,10 +3497,7 @@ namespace NagaraStage.Ui {
                     (int)(meancx) + 256,
                     (int)(meancy) + 220
                     );
-
-                // double anglex = (meanax * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
-                // double angley = (meanay * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
-                //  Console.WriteLine(string.Format("{0:f4} {1:f4}", anglex, angley));
+                
             } else {
                 trackpos = new OpenCvSharp.CPlusPlus.Point(-1, -1);
             }
@@ -3676,9 +3511,7 @@ namespace NagaraStage.Ui {
             int y0 = py - 220;
 
             List<rawmicrotrack> rms = new List<rawmicrotrack>();
-
-            // Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);
-
+            
             double phi = Math.Atan2(dy, dx);
             double angle = phi * (180 / Math.PI);
             double tant = Math.Sqrt(dx * dx + dy * dy);
@@ -3689,13 +3522,11 @@ namespace NagaraStage.Ui {
             double B = 180;
             double C = 40;
 
-
             int mask_x = (int)(A + tant * B);//if tantheta=0.38, mask_x=30
             int mask_y = (int)(C);
             if (mask_x < mask_y) {
                 mask_x = mask_y;
             }
-
 
             using (Mat big = Mat.Zeros(600, 600, MatType.CV_8UC1))
             using (Mat imgMask = Mat.Zeros(big.Height, big.Width, MatType.CV_8UC1)) {
@@ -3711,8 +3542,7 @@ namespace NagaraStage.Ui {
                 for (int p = 0; p < mats.Count; p++) {
                     int startx = big.Width / 2 - mats[p].Width / 2;
                     int starty = big.Height / 2 - mats[p].Height / 2;
-                    //int startx = big.Width / 2 - mats[p].Width / 2 + (int)(p * ax * shiftpitch / 10.0);
-                    // int starty = big.Height / 2 - mats[p].Height / 2 + (int)(p * ay * shiftpitch / 10.0);
+                    
                     Cv2.Add(
                         big[starty, starty + mats[p].Height, startx, startx + mats[p].Width],
                         mats[p],
@@ -3739,13 +3569,6 @@ namespace NagaraStage.Ui {
                 Cv2.WarpAffine(big, big, affineMask2, big.Size());
 
                 Cv2.WaitKey(0);
-
-
-
-                //  if (debugflag == true) {//
-
-                // }
-                //  }//using big_c
 
                 using (CvMemStorage storage = new CvMemStorage())
                 using (CvContourScanner scanner = new CvContourScanner(big.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
@@ -3777,8 +3600,6 @@ namespace NagaraStage.Ui {
 
             }//using Mat
 
-
-
             OpenCvSharp.CPlusPlus.Point trackpos = new OpenCvSharp.CPlusPlus.Point(0, 0);
             if (rms.Count > 0) {
                 rawmicrotrack rm = new rawmicrotrack();
@@ -3809,10 +3630,6 @@ namespace NagaraStage.Ui {
                     (int)(meancx) + 256,
                     (int)(meancy) + 220
                     );
-
-                // double anglex = (meanax * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
-                // double angley = (meanay * shiftpitch * 0.267) / (3.0 * 7.0 * 2.2);
-                //  Console.WriteLine(string.Format("{0:f4} {1:f4}", anglex, angley));
             } else {
                 trackpos = new OpenCvSharp.CPlusPlus.Point(-1, -1);
             }
@@ -3821,17 +3638,12 @@ namespace NagaraStage.Ui {
             return trackpos;
         }
 
-
-
-
         static OpenCvSharp.CPlusPlus.Point TrackDetection(List<Mat> mats, int px, int py, int shiftx = 2, int shifty = 2, int shiftpitch = 4, int windowsize = 40, int phthresh = 5, double dx =1.2, double dy=1.2, bool debugflag = false) {
             int x0 = px - 256;
             int y0 = py - 220;
 
             List<rawmicrotrack> rms = new List<rawmicrotrack>();
-
-            // Point2d pixel_cen = TrackDetection(binimages, 256, 220, 3, 3, 4, 90, 3);
-
+            
             double phi = Math.Atan2(dy, dx);
             double angle = phi * (180 / Math.PI);
             double tant = Math.Sqrt(dx * dx + dy * dy);
@@ -3868,12 +3680,10 @@ namespace NagaraStage.Ui {
                         Mat affineMask = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(big.Width / 2, big.Height / 2), 0, 1);
                         Cv2.WarpAffine(imgMask, imgMask, affineMask, imgMask.Size());
                         
-
                         for (int p = 0; p < mats.Count; p++) {
                             int startx = big.Width / 2 - mats[p].Width / 2 + (int)(p * ax * shiftpitch / 10.0);
                             int starty = big.Height / 2 - mats[p].Height / 2 + (int)(p * ay * shiftpitch / 10.0);
-                            //int startx = big.Width / 2 - mats[p].Width / 2 + (int)(p * ax * shiftpitch / 10.0);
-                           // int starty = big.Height / 2 - mats[p].Height / 2 + (int)(p * ay * shiftpitch / 10.0);
+                           
                             Cv2.Add(
                                 big[starty, starty + mats[p].Height, startx, startx + mats[p].Width],
                                 mats[p],
@@ -3901,9 +3711,6 @@ namespace NagaraStage.Ui {
                             Mat Bigimcut = big*40;
                             Bigimcut.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\g\imgcut_{0}-{1}-{2}.png", counter, ax, ay));
                             
-
-                            //Mat maskRoi = big.Clone();
-                            //Mat Big1 = big.Clone();
                             Cv2.ImShow("Big2", Big2 * 40);
                             Cv2.Threshold(big, big, phthresh, 255, ThresholdType.ToZero);
                             Cv2.Threshold(big1, big1, phthresh, 255, ThresholdType.ToZero);
@@ -3912,40 +3719,11 @@ namespace NagaraStage.Ui {
                             //Cv2.BitwiseAnd(big, imgMask, big);
 
                             Cv2.ImShow("bin", big*40);
-                           // Cv2.BitwiseAnd(big_c, imgMask, big_c);
-                          //  Mat affineMask2 = Cv2.GetRotationMatrix2D(new OpenCvSharp.CPlusPlus.Point(0, 0),-angle, 1);
-                         //   Cv2.WarpAffine(Big2, Big2, affineMask2, imgMask.Size());
-                          //  Cv2.ImShow("big1", Big2*40);
-                         //   Mat maskRoi = Big1.Clone();
-                            //Cv2.BitwiseAnd(big_c, imgMask, big_c);
-                          //  Mat big_ = big_c * 40;
-                          //  Cv2.Threshold(big_c, big_c, phthresh, 255, ThresholdType.ToZero);
-                          // 
+                            
                             Cv2.WaitKey(0);
                             
-                             
-                           // Mat maskcut_ = maskcut * 40;
-                           // Mat Roi_ = maskRoi * 40;
                             if (debugflag == true) {//
-                                //bigorg.ImWrite(String.Format(@"{0}_{1}_{2}.png",counter,ax,ay));
-                                //Mat roiwrite = roi.Clone() * 30;
-                                //roiwrite.ImWrite(String.Format(@"roi_{0}_{1}_{2}.png", counter, ax, ay));
-                                //Cv2.Rectangle(big_c, recMask, 255, 1);//brightness=1, fill
-                                //Cv2.ImShow("superimposed", big_c * 30);
-                               // Cv2.ImShow("bigx30", maskRoi * 30);
-                               // Cv2.ImShow("imgMask", Big1*40);
-                               // Cv2.ImShow("bina", big * 30);
-                               // Cv2.WaitKey(0);
-                                
-                               // Mat big1 = Big2 * 40;
-                              //  Mat bin = big * 40;
-                                //Mat maskroi = maskRoi * 40;
                                
-                              //  Mat imgMask_ = imgMask * 40;
-                               // big1.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\a_1\superimpose_{0}-{1}-{2}.png",  counter, ax, ay));
-                               // maskroi.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\a_1\maskRoi_{0}-{1}-{2}.png", counter, ax, ay));
-                              //  bin.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\a\binaliz_{0}-{1}-{2}.png",  counter, ax, ay));
-                              //  imgMask_.ImWrite(String.Format(@"c:\MKS_test\test\Nagara\a\Mask_{0}-{1}-{2}.png",  counter, ax, ay));
                             }
                         }//using big_c
 
@@ -4020,7 +3798,6 @@ namespace NagaraStage.Ui {
 
             return trackpos;
         }//track detection
-
 
         static OpenCvSharp.CPlusPlus.Point TrackDetection_new(List<Mat> mats, int px, int py, int phthresh = 5, double dx = 0.12, double dy = 0.12, int mod = 5, int plt = 2, string sp0 = "", string sp1 = "", bool debugflag = true) {
             OpenCvSharp.CPlusPlus.Point center = new OpenCvSharp.CPlusPlus.Point(0, 0);
@@ -4248,9 +4025,7 @@ namespace NagaraStage.Ui {
                 (int)(p.Y * 1000)));
 
         }//BeamDetection
-
-        //...................................
-
+        
         static Mat DifferenceOfGaussian(Mat image, int kernel = 51) {
             Mat gau = new Mat(440, 512, MatType.CV_8U);
             Mat dst = new Mat(440, 512, MatType.CV_8U);
@@ -4262,8 +4037,7 @@ namespace NagaraStage.Ui {
             gau.Dispose();
             return dst;
         }
-        //.................................
-
+        
         static Mat DogContrastBinalize(Mat image, int kernel = 51, int threshold = 100, ThresholdType thtype = ThresholdType.Binary) {
             Mat img = DifferenceOfGaussian(image, kernel);
 
@@ -4278,14 +4052,11 @@ namespace NagaraStage.Ui {
 
             return img;
         }
-
-        //...........................................
-
+        
         public struct ImageTaking {
             public Vector3 StageCoord;
             public Mat img;
         }
-        //......................................
 
         List<ImageTaking> TakeSequentialImage(double ax, double ay, double dz, int nimage) {
 
@@ -4317,7 +4088,6 @@ namespace NagaraStage.Ui {
 
             return lit;
         }
-
 //........................................2016/06/08/ MKSOE/ ............................
         private void NearGridParameter() {
            
@@ -4381,7 +4151,6 @@ namespace NagaraStage.Ui {
                 System.Diagnostics.Debug.WriteLine("エントリポイントが見当たりません。 " + ex.Message);
             }
         }
-        //.......................................................................
 
         private void gotrack(Track myTrack) {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
@@ -4392,7 +4161,6 @@ namespace NagaraStage.Ui {
             });
            
         }
-        //.......................................................................
 
         private void surfacerecog() {
             Surface surface = Surface.GetInstance(parameterManager);
@@ -4433,7 +4201,7 @@ namespace NagaraStage.Ui {
             mc.Join();
 
         }
-        //........................................................................
+
         private void BPMW(Track myTrack, int mod, int pl) {
             
 
@@ -4480,6 +4248,7 @@ namespace NagaraStage.Ui {
                 MessageBox.Show("No beam battern。 ");
             }
         }
+
         private void BPMW_testbutton(object sender, RoutedEventArgs e) {
 
             MotorControler mc = MotorControler.GetInstance(parameterManager);
@@ -4515,7 +4284,7 @@ namespace NagaraStage.Ui {
                 MessageBox.Show("No beam battern。 ");
             }
         }
-        //........................................................................
+
         private void GoTopUp() {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             Surface surface = Surface.GetInstance(parameterManager);
@@ -4528,6 +4297,7 @@ namespace NagaraStage.Ui {
                 MessageBox.Show("Cannot move to top surface of upperlayer ");
             }
         }
+
          private void GoToDown() {
             MotorControler mc = MotorControler.GetInstance(parameterManager);
             Surface surface = Surface.GetInstance(parameterManager);
@@ -4540,7 +4310,7 @@ namespace NagaraStage.Ui {
                 MessageBox.Show("Cannot move to top surface of upperlayer ");
             }
         }
-        //.......................................................................
+        
         private void Detectbeam(Track myTrack, int mod, int pl) {
             try {
                 string[] sp = myTrack.IdString.Split('-');
@@ -4553,7 +4323,6 @@ namespace NagaraStage.Ui {
                 MessageBox.Show("ID is not exist ");
             }
         }
-        //........................................................................
                    
         private void Tracking(Track myTrack, int mod, int pl, bool dubflag) {
 
@@ -4605,8 +4374,7 @@ namespace NagaraStage.Ui {
             dz = dz_img;
             int gotobase = 0;
             int not_detect = 0;
-
-
+            
             for (int i = 0; gotobase < 1; i++) {
 
                 Vector3 initialpos = mc.GetPoint();
@@ -4618,8 +4386,7 @@ namespace NagaraStage.Ui {
 
                     dz = surface.UpBottom - initialpos.Z + (number_of_images - 1) * dz_price_img;
                 }
-
-
+                
                 //gotobase = 1のときは、移動して画像を撮影するようにする。
                 if (i != 0) {
                     Vector3 dstpoint = new Vector3(
@@ -4636,13 +4403,11 @@ namespace NagaraStage.Ui {
                     Msdxdy[i].Y * Sh,//Dy
                     dz_img,//Dz
                     number_of_images);//number of images
-
-
+                
                 LStage.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITUpMid[number_of_images - 1].StageCoord.X, LiITUpMid[number_of_images - 1].StageCoord.Y, LiITUpMid[number_of_images - 1].StageCoord.Z));
                 LiITUpMid[number_of_images - 1].img.ImWrite(datarootdirpath + string.Format(@"\img_l_up_{0}.png", i));
                 UpTrackInfo.Add(LiITUpMid);
-
-
+                
                 List<Mat> binimages = new List<Mat>();
                 for (int t = 0; t <= number_of_images - 1; t++) {
                     Mat bin = (Mat)DogContrastBinalize(LiITUpMid[t].img);
@@ -4655,13 +4420,10 @@ namespace NagaraStage.Ui {
                     Cv2.Dilate(bin, bin, new Mat());
                     binimages.Add(bin);
                 }
-
                 
                 //trackを重ねる処理を入れる。
                 Point2d pixel_cen = TD_naka_1(binimages, 256, 220, 3, 3, 4, 90, hits, dx, dy);//, true);
-                //Point2d pixel_cen = TrackDetection_new(binimages, 256, 220, hits, dx, dy, mod, pl, sp[0], sp[1], true);
-                //Point2d pixel_cen = TrackDetection_new2(binimages, 256, 220, 3, 3, 4, 90, 5, dx, dy, mod, pl, sp[0], sp[1], true);
-
+                
                 if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
                     Point2d pixel_cen2 = TD_naka_2(binimages, 256, 220, 3, 3, 4, 90, hits, dx, dy);
                     if (pixel_cen2.X == -1 & pixel_cen2.Y == -1) {
@@ -4687,7 +4449,6 @@ namespace NagaraStage.Ui {
                     
                     }
                 }
-
 
                 LPeak.Add(new OpenCvSharp.CPlusPlus.Point(pixel_cen.X - 256, pixel_cen.Y - 220));
 
@@ -4722,7 +4483,6 @@ namespace NagaraStage.Ui {
                     OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LTrack[i - 2], LTrack[i - 1], LTrack[i]);
                     Msdxdy.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
                 }
-
 
             }//for　i-loop
 
@@ -4783,8 +4543,7 @@ namespace NagaraStage.Ui {
                 LStage_Low.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITLowMid[number_of_images - 1].StageCoord.X, LiITLowMid[number_of_images - 1].StageCoord.Y, LiITLowMid[number_of_images - 1].StageCoord.Z));
                 LiITLowMid[number_of_images - 1].img.ImWrite(datarootdirpath + string.Format(@"\img_l_low_{0}.png", i));
 
-                LowTrackInfo.Add(LiITLowMid);//撮影した8枚の画像と、撮影した位置を記録する。
-                
+                LowTrackInfo.Add(LiITLowMid);//撮影した8枚の画像と、撮影した位置を記録する。 
                 
                 //撮影した画像をここで処理する。
                 List<Mat> binimages = new List<Mat>();
@@ -4801,11 +4560,7 @@ namespace NagaraStage.Ui {
                 }
                 //trackを重ねる処理を入れる。
                 Point2d pixel_cen = TD_naka_1(binimages, 256, 220, 3, 3, 4, 90, hits, dx, dy);//, true);//画像の8枚目におけるtrackのpixel座標を算出する。
-               // Point2d pixel_cen = TrackDetection_new(binimages, 256, 220, hits, dx, dy, mod, pl, sp[0], sp[1], true);
-              //  Point2d pixel_cen2 = TrackDetection_new2(binimages, 256, 220, 3, 3, 4, 90, 5, dx, dy, mod, pl, sp[0], sp[1], true);
-                
-               //////////////////////////////////////////////
-
+              
                 if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
                     Point2d pixel_cen2 = TD_naka_2(binimages, 256, 220, 3, 3, 4, 90, hits, dx, dy);
                     if (pixel_cen2.X == -1 & pixel_cen2.Y == -1) {
@@ -4878,23 +4633,7 @@ namespace NagaraStage.Ui {
                    );
                 mc.MovePoint(dstpoint_1);
                 mc.Join();
-              /* List<ImageTaking> NotDetect = TakeSequentialImage(
-                    Msdxdy[0].X * Sh,
-                    Msdxdy[0].Y * Sh,
-                    0.003,
-                   40); 
-
-                 if (not_detect != 0) {*/
-               //Vector dzz = 
-              /*   Vector3 currentpoint1 = mc.GetPoint();
-                 Vector3 dstpoint_1 = new Vector3(
-                   currentpoint1.X + Msdxdy[0].X * 0.05* Sh,
-                   currentpoint1.Y + Msdxdy[0].Y * 0.05 * Sh,
-                   currentpoint1.Z + 0.015
-                    );
-                 mc.MovePoint(dstpoint_1);
-                 mc.Join();*/
-
+              
                 Vector3 currentpoint = mc.GetPoint();
                 Vector3 dstpoint_ = new Vector3(
                   currentpoint.X,
@@ -4915,8 +4654,6 @@ namespace NagaraStage.Ui {
                 SuperImposer si = new SuperImposer();
                 List<Mat> binimages = new List<Mat>();
                 for (int t = 0; t < NotDetect.Count; t++) {
-                   // Cv2.ImShow("NotDetect[t].img", NotDetect[t].img);
-                   // Cv2.WaitKey(0);
                     si.AddImg(NotDetect[t].img);
                 }
 
@@ -4928,21 +4665,12 @@ namespace NagaraStage.Ui {
                 Cv2.ImShow("superimposed image dog", bigimg_dog);
                 Cv2.WaitKey(0);
 
-
-               /* string logtxt = string.Format(@"C:\MKS_test\WorkingTime\{0}\{1}-{2}_TTracking.txt", mod, mod, pl);
-                SimpleLogger SL1 = new SimpleLogger(logtxt, sp1[0], sp1[1]);*/
-
                 string txtfileName_t_not_detect = datarootdirpath + string.Format(@"\not_detect.txt");
                 StreamWriter twriter_t_not_detect = File.CreateText(txtfileName_t_not_detect);
             //   for (int i = 0; i < NotDetect.Count; i++) {
                     bigimg_org.ImWrite(datarootdirpath + string.Format(@"\superimpsed_org.png"));
                     bigimg_dog.ImWrite(datarootdirpath + string.Format(@"\superimpsed_dog.png"));
-                   // Vector3 p = NotDetect[i].StageCoord;
-                    //twriter_t_not_detect.WriteLine("{0} {1} {2} {3}", i, p.X, p.Y, p.Z);
-               // }
-                //twriter_t_not_detect.Close();
-
-                //mc.MovePointZ(surface.LowBottom);
+              
                 Vector3 cc = mc.GetPoint();
                 double Zp = surface.UpTop;
                 mc.MoveTo(new Vector3(cc.X, cc.Y, Zp));
@@ -4950,9 +4678,7 @@ namespace NagaraStage.Ui {
 
                 mc.Join();
             }
-
-
-
+            
             //file write out up_gel
             string txtfileName_sh_up = datarootdirpath + string.Format(@"\Sh_up.txt");
             StreamWriter twriter_sh_up = File.CreateText(txtfileName_sh_up);
@@ -5059,17 +4785,7 @@ namespace NagaraStage.Ui {
                     
                 }
                 string[] sp1 = myTrack.IdString.Split('-');
-             /*   string logtxt_ = string.Format(@"c:\test\bpm\{0}\{1}-{2}_TCK.txt", mod, mod, pl);
-                //string log_ = string.Format("{0} \n", sw.Elapsed);
-                string log_ = string.Format("{0} {1} {2} \n", sp1[0], sp1[1], TPC);
-                StreamWriter swr = new StreamWriter(logtxt_, true, Encoding.ASCII);
-                swr.Write(log_);
-                swr.Close();*/
-
-             //   string logtxt = string.Format(@"C:\MKS_test\followingCheck\{0}\{1}-{2}_Trackingcheck.txt", mod, mod, pl);
-            //    SimpleLogger SL1 = new SimpleLogger(logtxt, sp1[0], sp1[1]);
-             //   SL1.Trackcheck(TPC);
-
+             
             }
     }
 
@@ -5085,8 +4801,7 @@ namespace NagaraStage.Ui {
             int window_H1 = 15;
             int window_H2 = 30;
             int number_of_images = 10;
-
-
+            
             double dx = myTrack.MsDX;
             double dy = myTrack.MsDY;
             string[] sp = myTrack.IdString.Split('-');
@@ -5122,10 +4837,7 @@ namespace NagaraStage.Ui {
             List<List<ImageTaking>> LowTrackInfo = new List<List<ImageTaking>>();        
             int gotobase = 0;
             int not_detect = 0;
-            // int notrack = 0;
-           // int ltrack_counter = LTrack.Count();
-          //  int msdxdy_counter = Msdxdy.Count();
-
+            
             for (int i = 0; gotobase < 1; i++) {
                 dz = dz_img;
                 int notrack = 0;
@@ -5133,16 +4845,6 @@ namespace NagaraStage.Ui {
                 dx = Msdxdy[i].X;
                 dy = Msdxdy[i].Y;
             Retracking: ;
-            //dz_img = dz;
-               /*   if (notrack == 1){
-
-                      dz_img = dz;
-                }*/
-                /*    if (notrack == 2){
-                
-                        goto not_detect_track;
-                        not_detect = 1;
-                    }*/
 
                 Vector3 initialpos = mc.GetPoint();
                 double moverange = (number_of_images - 1) * dz_img;
@@ -5153,8 +4855,7 @@ namespace NagaraStage.Ui {
 
                     dz = surface.UpBottom - initialpos.Z + (number_of_images - 1) * dz_price_img;
                 }
-
-
+                
                 //gotobase = 1のときは、移動して画像を撮影するようにする。
                 if (i != 0) {
                     Vector3 dstpoint = new Vector3(
@@ -5171,12 +4872,10 @@ namespace NagaraStage.Ui {
                     Msdxdy[i].Y * Sh,//Dy
                     -0.003,//Dz                //////////////////
                     number_of_images);//number of images
-
-
+                
                 LStage.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITUpMid[number_of_images - 1].StageCoord.X, LiITUpMid[number_of_images - 1].StageCoord.Y, LiITUpMid[number_of_images - 1].StageCoord.Z));
                 LiITUpMid[number_of_images - 1].img.ImWrite(datarootdirpath + string.Format(@"\img_l_up_{0}.png", i));
                 UpTrackInfo.Add(LiITUpMid);
-
 
                 List<Mat> binimages = new List<Mat>();
                 for (int t = 0; t <= number_of_images - 1; t++) {
@@ -5190,63 +4889,8 @@ namespace NagaraStage.Ui {
                     Cv2.Dilate(bin, bin, new Mat());
                     binimages.Add(bin);
                 }
-
-                //Track detection......................................................................................................
-                // remakeTrP: ;
+                
                 Point2d pixel_cen = TD_naka_1(binimages, 256, 220, 3, 3, 4, window_H1, hits, dx, dy , i);//, true);
-                //Point2d pixel_cen = TrackDetection_new(binimages, 256, 220, hits, dx, dy, mod, pl, sp[0], sp[1], true);
-                //Point2d pixel_cen = TrackDetection_new2(binimages, 256, 220, 3, 3, 4, 90, 5, dx, dy, mod, pl, sp[0], sp[1], true);
-
-                /*    if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
-                        Point2d pixel_cen2 = TD_naka_2(binimages, 256, 220, 3, 3, 4, window_H2, hits, dx, dy);
-
-
-                        if (pixel_cen2.X == -1 & pixel_cen2.Y == -1) {
-                        
-                            hits = 5;
-                            Point2d pixel_cen3 = TD_naka_1(binimages, 256, 220, 3, 3, 4, window_H1, hits, dx, dy);
-
-                            if (pixel_cen3.X == -1 & pixel_cen3.Y == -1) {
-                           
-                                Point2d pixel_cen4 = TD_naka_2(binimages, 256, 220, 3, 3, 4, window_H2, hits, dx, dy);
-
-                                if (pixel_cen4.X == -1 & pixel_cen4.Y == -1) {
-
-                                    if (i != 0) {
-
-                                        LStage.Remove(LStage[i]);
-                                        UpTrackInfo.Remove(UpTrackInfo[i]);
-                                        notrack++;
-
-                                        if (notrack == 1) {
-                                            dz = dz + 0.015;
-                                            goto Retracking;
-                                        } else if (notrack == 2) {
-                                            mc.Join();
-                                            not_detect = 1;
-                                            goto not_detect_track;
-                                        }
-
-                                    } else if (i == 0) {
-                                        mc.Join();
-                                        not_detect = 1;
-                                        goto not_detect_track;
-                                    }
-                                } else {
-                                    pixel_cen.X = pixel_cen4.X;
-                                    pixel_cen.Y = pixel_cen4.Y;
-                                }
-                            } else {
-                                pixel_cen.X = pixel_cen3.X;
-                                pixel_cen.Y = pixel_cen3.Y;
-                            }
-                        } else {
-                            pixel_cen.X = pixel_cen2.X;
-                            pixel_cen.Y = pixel_cen2.Y;
-                        }
-                    }
-                    */
-
                 
                 if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
                     Point2d pixel_cen2 = TD_naka_2(binimages, 256, 220, 3, 3, 4, window_H2, hits, dx, dy);
@@ -5296,19 +4940,14 @@ namespace NagaraStage.Ui {
                         pixel_cen.Y = pixel_cen2.Y;
                     }
                 }
-
-
-                //......................................................................................................
-
-
+                
                 LPeak.Add(new OpenCvSharp.CPlusPlus.Point(pixel_cen.X - 256, pixel_cen.Y - 220));
 
                 double firstx = LStage[i].X - LPeak[i].X * 0.000267;
                 double firsty = LStage[i].Y + LPeak[i].Y * 0.000267;
                 double firstz = LStage[i].Z;
                 LTrack.Add(new Point3d(firstx, firsty, firstz));
-
-
+                
                 if (i == 0) {
                     Msdxdy.Add(new OpenCvSharp.CPlusPlus.Point2d(myTrack.MsDX, myTrack.MsDY));
 
@@ -5331,8 +4970,7 @@ namespace NagaraStage.Ui {
                     OpenCvSharp.CPlusPlus.Point2d Tangle = ApproximateStraight(Sh, LTrack[i - 2], LTrack[i - 1], LTrack[i]);
                     Msdxdy.Add(new OpenCvSharp.CPlusPlus.Point2d(Tangle.X, Tangle.Y));
                 }
-
-
+                
             }//for　i-loop
 
             //baseまたぎ
@@ -5345,7 +4983,6 @@ namespace NagaraStage.Ui {
                 surface.LowTop
                 );
             mc.Join();
-
 
             //////For Down Layer//
             Msdxdy_Low.Add(new OpenCvSharp.CPlusPlus.Point2d(Msdxdy[msdxdy_counter - 1].X, Msdxdy[msdxdy_counter - 1].Y));
@@ -5362,7 +4999,6 @@ namespace NagaraStage.Ui {
                 dy = Msdxdy_Low[i].Y;
             Retracking_low: ;
 
-                
                 Vector3 initialpos = mc.GetPoint();
                 double moverange = (number_of_images - 1) * dz_img;
                 double predpoint = moverange + initialpos.Z;
@@ -5397,8 +5033,7 @@ namespace NagaraStage.Ui {
                 LStage_Low.Add(new OpenCvSharp.CPlusPlus.Point3d(LiITLowMid[number_of_images - 1].StageCoord.X, LiITLowMid[number_of_images - 1].StageCoord.Y, LiITLowMid[number_of_images - 1].StageCoord.Z));
                 LiITLowMid[number_of_images - 1].img.ImWrite(datarootdirpath + string.Format(@"\img_l_low_{0}.png", i));
                 LowTrackInfo.Add(LiITLowMid);
-
-                
+ 
                 List<Mat> binimages = new List<Mat>();
                 for (int t = 0; t <= number_of_images - 1; t++) {
                     Mat bin = (Mat)DogContrastBinalize(LiITLowMid[t].img);
@@ -5414,39 +5049,6 @@ namespace NagaraStage.Ui {
                 //trackを重ねる処理を入れる。
 
                 Point2d pixel_cen = TD_naka_1(binimages, 256, 220, 3, 3, 4, window_H1, hits, dx, dy ,i);//, true);
-                //Point2d pixel_cen = TrackDetection_new(binimages, 256, 220, hits, dx, dy, mod, pl, sp[0], sp[1], true);
-                //Point2d pixel_cen = TrackDetection_new2(binimages, 256, 220, 3, 3, 4, 90, 5, dx, dy, mod, pl, sp[0], sp[1], true);
-
-                /*    if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
-                        Point2d pixel_cen2 = TD_naka_2(binimages, 256, 220, 3, 3, 4, window_H2, hits, dx, dy);
-
-                        if (pixel_cen2.X == -1 & pixel_cen2.Y == -1) {
-
-                            if (i != 0) {
-
-                                LStage.Remove(LStage[i]);
-                                UpTrackInfo.Remove(UpTrackInfo[i]);
-                                notrack_low++;
-
-                                if (notrack_low == 1) {
-                                    dz = dz + 0.015;
-                                    goto Retracking_low;
-                                } else if (notrack_low == 2) {
-                                    mc.Join();
-                                    not_detect = 1;
-                                    goto not_detect_track;
-                                }
-
-                            } else if (i == 0) {
-                                mc.Join();
-                                not_detect = 1;
-                                goto not_detect_track;
-                            }
-                        } else {
-                            pixel_cen.X = pixel_cen2.X;
-                            pixel_cen.Y = pixel_cen2.Y;
-                        }
-                    }*/
 
                 if (pixel_cen.X == -1 & pixel_cen.Y == -1) {
                     Point2d pixel_cen2 = TD_naka_2(binimages, 256, 220, 3, 3, 4, window_H2, hits, dx, dy);
@@ -5533,22 +5135,6 @@ namespace NagaraStage.Ui {
               //検出に失敗した場合は、ループを抜けてここに来る。
         not_detect_track: ;//検出に失敗したと考えられる地点で画像を取得し、下ゲル下面まで移動する。(現在は下ゲル下面とするが、今後変更する可能性有。)
 
-            /* if (not_detect != 0) {
-                //Vector dzz = 
-                 Vector3 currentpoint = mc.GetPoint();
-                 Vector3 dstpoint_ = new Vector3(
-                   currentpoint.X - Msdxdy[0].X * 0.05* Sh,
-                   currentpoint.Y - Msdxdy[0].Y * 0.05 * Sh,
-                   currentpoint.Z - 0.08
-                    );
-                 mc.MovePoint(dstpoint_);
-                 mc.Join();
-                List<ImageTaking> NotDetect = TakeSequentialImage(
-                     Msdxdy[0].X * Sh,
-                     Msdxdy[0].Y * Sh,
-                     0.003,
-                    40); */
-
             if (not_detect != 0) {
 
                 int pozi_flag = 0;
@@ -5580,8 +5166,7 @@ namespace NagaraStage.Ui {
                    );
                 mc.MovePoint(dstpoint_);
                 mc.Join();
-
-
+                
                 double surfacepointLow  = 0;
                 if (pozi_flag == 1) 
                 {
@@ -5591,7 +5176,6 @@ namespace NagaraStage.Ui {
                 {
                     surfacepointLow = surface.LowBottom;
                 }
-
 
                 if (surfacepointLow >　dstpoint_.Z) //もし、下に移動した結果、baseやゲルの外に移動してしまうのならば、境界面まで移動する。
                 {
@@ -5645,20 +5229,10 @@ namespace NagaraStage.Ui {
                 Cv2.ImShow("superimposed image dog", bigimg_dog);
                 Cv2.WaitKey(0);
 
-
-                /* string logtxt = string.Format(@"C:\MKS_test\WorkingTime\{0}\{1}-{2}_TTracking.txt", mod, mod, pl);
-                 SimpleLogger SL1 = new SimpleLogger(logtxt, sp1[0], sp1[1]);*/
-
-                // string txtfileName_t_not_detect = datarootdirpath + string.Format(@"\not_detect.txt");
-                // StreamWriter twriter_t_not_detect = File.CreateText(txtfileName_t_not_detect);
-                //   for (int i = 0; i < NotDetect.Count; i++) {
+                
                 bigimg_org.ImWrite(datarootdirpath + string.Format(@"\superimpsed_org.png"));
                 bigimg_dog.ImWrite(datarootdirpath + string.Format(@"\superimpsed_dog.png"));
-                // Vector3 p = NotDetect[i].StageCoord;
-                //twriter_t_not_detect.WriteLine("{0} {1} {2} {3}", i, p.X, p.Y, p.Z);
-                // }
-                //twriter_t_not_detect.Close();
-
+                
                 if (moveflag == 1) 
                 {
                     currentpoint.Z = surface.UpBottom;
@@ -5690,10 +5264,7 @@ namespace NagaraStage.Ui {
                     bigimg_org2.ImWrite(datarootdirpath + string.Format(@"\superimpsed_org2.png"));
                     bigimg_dog2.ImWrite(datarootdirpath + string.Format(@"\superimpsed_dog2.png"));
                 }
-
-
-
-
+                
                 //mc.MovePointZ(surface.LowBottom);
                 Vector3 cc = mc.GetPoint();
                 double Zp = surface.UpTop;
@@ -5702,8 +5273,6 @@ namespace NagaraStage.Ui {
 
                 mc.Join();
             }
-
-
 
             //file write out up_gel
             string txtfileName_sh_up = datarootdirpath + string.Format(@"\Sh_up.txt");
