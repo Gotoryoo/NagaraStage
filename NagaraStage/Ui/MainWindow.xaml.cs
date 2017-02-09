@@ -2381,9 +2381,10 @@ namespace NagaraStage.Ui {
         }
 
         private void OverallAbortButton_Click(object sender, RoutedEventArgs e) {
-            ActivityManager am = ActivityManager.GetInstance();
-            am.Abort();
-            MessageBox.Show(Properties.Strings.ActivityAbort);
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            OverallAbort oaa = OverallAbort.GetInstance(parameterManager);
+            manager.Enqueue(oaa);
+            manager.Start();
         }
 
         private void GotoUpTop_button(object sender, RoutedEventArgs e) {
