@@ -2387,80 +2387,10 @@ namespace NagaraStage.Ui {
         }
 
         private void GotoUpTop_button(object sender, RoutedEventArgs e) {
-
-            MotorControler mc = MotorControler.GetInstance(parameterManager);
-            Camera camera = Camera.GetInstance();
-            TracksManager tm = parameterManager.TracksManager;
-            Track myTrack = tm.GetTrack(tm.TrackingIndex);
-            Surface surface = Surface.GetInstance(parameterManager);
-            int mod = parameterManager.ModuleNo;
-            int pl = parameterManager.PlateNo;
-            if (mc.IsMoving) {
-                MessageBoxResult r = MessageBox.Show(
-                    Properties.Strings.SurfaceException01,
-                    Properties.Strings.Abort + "?",
-                    MessageBoxButton.YesNo);
-                if (r == MessageBoxResult.Yes) {
-                    mc.AbortMoving();
-                } else {
-                    return;
-                }
-            }
-
-            // すでに表面認識が実行中であれば停止するかどうか尋ねる．
-            //Surface surface = Surface.GetInstance(parameterManager);
-            if (surface.IsActive) {
-                MessageBoxResult r = MessageBox.Show(
-                    Properties.Strings.SurfaceException02,
-                    Properties.Strings.Abort + "?",
-                    MessageBoxButton.YesNo);
-                if (r == MessageBoxResult.Yes) {
-                    surface.Abort();
-                } else {
-                    return;
-                }
-            }
-
-            try {
-                surface.Start(true);
-
-            } catch (Exception ex) {
-                MessageBox.Show(ex.Message, Properties.Strings.Error);
-            }
-
-            mc.Join();
-
-            try {
-
-                string datarootdirpath = string.Format(@"C:\test\bpm\{0}", mod);
-                System.IO.DirectoryInfo mydir = System.IO.Directory.CreateDirectory(datarootdirpath);
-                string[] sp = myTrack.IdString.Split('-');
-                string uptxt = string.Format(@"c:\test\bpm\{0}\{1}-{2}-{3}-{4}_up.txt", mod, mod, pl, sp[0], sp[1]);
-                string dwtxt = string.Format(@"c:\test\bpm\{0}\{1}-{2}-{3}-{4}_dw.txt", mod, mod, pl - 1, sp[0], sp[1]);
-                BeamDetection(uptxt, true);
-
-                BeamPatternMatch bpm = new BeamPatternMatch(8, 200);
-                bpm.ReadTrackDataTxtFile(dwtxt, false);
-
-                bpm.ReadTrackDataTxtFile(uptxt, true);
-                bpm.DoPatternMatch();
-
-                stage.WriteLine(String.Format("pattern match dx,dy = {0}, {1}", bpm.GetPeakX() * 0.2625 * 0.001, bpm.GetPeakY() * 0.2625 * 0.001));
-                Vector3 BfPoint = mc.GetPoint();
-                mc.MoveDistance(bpm.GetPeakX() * 0.2625 * 0.001, VectorId.X);
-                mc.Join();
-                mc.MoveDistance(-bpm.GetPeakY() * 0.2625 * 0.001, VectorId.Y);
-                mc.Join();
-                Led led = Led.GetInstance();
-                led.AdjustLight(parameterManager);
-                Vector3 AfPoint = mc.GetPoint();
-                stage.WriteLine(String.Format("Move dx,dy = {0}, {1}", BfPoint.X - AfPoint.X, BfPoint.Y - AfPoint.Y));
-
-            } catch (ArgumentOutOfRangeException) {
-                MessageBox.Show("ID numver is not existed。 ");
-            } catch (System.Exception) {
-                MessageBox.Show("No beam battern。 ");
-            }
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            GotoUpTop gtut = GotoUpTop.GetInstance(parameterManager);
+            manager.Enqueue(gtut);
+            manager.Start();
         }
 
         private void coordinate_record(object sender, RoutedEventArgs e) {
