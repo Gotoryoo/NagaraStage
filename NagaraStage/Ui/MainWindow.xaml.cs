@@ -1268,88 +1268,10 @@ namespace NagaraStage.Ui {
         static double over_dy;
 
         private void start_auto_following_Click(object sender, RoutedEventArgs e) {
-            TracksManager tm = parameterManager.TracksManager;
-            Track myTrack = tm.GetTrack(tm.TrackingIndex);
-            MotorControler mc = MotorControler.GetInstance(parameterManager);
-            Camera camera = Camera.GetInstance();
-
-            
-            int nshot = 70;
-            byte[] bb = new byte[440 * 512 * nshot];
-
-            Vector3 now_p = mc.GetPoint();         //スライス画像を取るための残し
-
-            DateTime starttime = System.DateTime.Now;
-            string datfileName = string.Format(@"C:\Documents and Settings\stage1-user\デスクトップ\window_model\7601_135\d.dat");
-            BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
-
-            string txtfileName = string.Format(@"C:\Documents and Settings\stage1-user\デスクトップ\window_model\7601_135\d.txt");
-            StreamWriter twriter = File.CreateText(txtfileName);
-            string stlog = "";
-
-
-
-            int kk = 0;
-            while (kk < nshot) {
-                byte[] b = camera.ArrayImage;//画像を取得
-                //Mat image = new Mat(440, 512, MatType.CV_8U, b);
-                //Mat image_clone = image.Clone();
-                b.CopyTo(bb, 440 * 512 * kk);
-
-                //image_clone.ImWrite(string.Format(@"E:\20141015\5201_136\{0}.bmp", kk));
-                stlog += String.Format("{0} {1} {2} {3} {4}\n",
-                    System.DateTime.Now.ToString("HHmmss\\.fff"),
-                    (now_p.X * 1000).ToString("0.0"),
-                    (now_p.Y * 1000).ToString("0.0"),
-                    (now_p.Z * 1000).ToString("0.0"),
-                    kk);
-
-                kk++;
-                //mc.MovePointZ(now_p.Z - 0.0020);
-                mc.MoveDistance(-0.0020, VectorId.Z);
-                mc.Join();
-            }
-
-            twriter.Write(stlog);
-            writer.Write(bb);
-            writer.Flush();
-            writer.Close();
-
-            return;
-
-
-            Surface surface = Surface.GetInstance(parameterManager);//表面認識から境界値を取得
-            double uptop = surface.UpTop;
-            double upbottom = surface.UpBottom;
-            double lowtop = surface.LowTop;
-            double lowbottom = surface.LowBottom;
-
-            while (mc.GetPoint().Z >= upbottom + 0.030)//上ゲル内での連続移動
-            {
-                Follow();
-            }
-
-            if (mc.GetPoint().Z >= upbottom + 0.024) {
-                double now_x = mc.GetPoint().X;
-                double now_y = mc.GetPoint().Y;
-                double now_z = mc.GetPoint().Z;
-                mc.MovePoint(now_x - common_dx * (now_z - (upbottom + 0.024)) * 2.2, now_y - common_dy * (now_z - (upbottom + 0.024)) * 2.2, upbottom + 0.024);
-            } else {
-                double now_x = mc.GetPoint().X;
-                double now_y = mc.GetPoint().Y;
-                double now_z = mc.GetPoint().Z;
-                mc.MovePoint(now_x - common_dx * ((upbottom + 0.024) - now_z) * 2.2, now_y - common_dy * ((upbottom + 0.024) - now_z) * 2.2, upbottom + 0.024);
-            }
-
-            while (mc.GetPoint().Z >= upbottom)//上ゲル内での連続移動
-            {
-                Follow();
-            }
-
-            mc.MovePoint(mc.GetPoint().X - common_dx * (upbottom - lowtop)
-                , mc.GetPoint().Y - common_dy * (upbottom - lowtop)
-                , lowtop);//Base下側への移動
-
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            StartAutoFollowing saf = StartAutoFollowing.GetInstance(parameterManager);
+            manager.Enqueue(saf);
+            manager.Start();
         }
 
         static int number_of_follow;
@@ -1714,7 +1636,6 @@ namespace NagaraStage.Ui {
 
         }
 
-
         private void OverallScanButton_Click(object sender, RoutedEventArgs e) {
             if (parameterManager.Magnification != 20) {
                 MessageBox.Show(String.Format(Properties.Strings.LensTypeException02, 20));
@@ -1746,7 +1667,6 @@ namespace NagaraStage.Ui {
                 manager.Start();
             }
         }
-
 
         private void ScaleMeasureActivityButton_Click(object sender, RoutedEventArgs e) {
 
@@ -1781,7 +1701,6 @@ namespace NagaraStage.Ui {
             mc.DisplayStat();
         }
 
-
         private void GridMeasureButton_Click(object sender, RoutedEventArgs e) {
             ActivityManager manager = ActivityManager.GetInstance(parameterManager);
             GridMeasure07 gm = GridMeasure07.GetInstance(parameterManager);
@@ -1815,8 +1734,6 @@ namespace NagaraStage.Ui {
             manager.Start();
         }
 
-
-
         private void DATFileButton_Click(object sender, RoutedEventArgs e) {
             ActivityManager manager = ActivityManager.GetInstance(parameterManager);
             DATFile dat = DATFile.GetInstance(parameterManager);
@@ -1824,7 +1741,6 @@ namespace NagaraStage.Ui {
             manager.Enqueue(dat);
             manager.Start();
         }
-
 
         private void GridTakingButton_Click(object sender, RoutedEventArgs e) {
             if (parameterManager.Magnification != 10) {
@@ -1837,7 +1753,6 @@ namespace NagaraStage.Ui {
             manager.Enqueue(gt);
             manager.Start();
         }
-
 
         private void DownBeamButton_Click(object sender, RoutedEventArgs e) {
             if (parameterManager.Magnification != 50) {
@@ -1862,8 +1777,6 @@ namespace NagaraStage.Ui {
             manager.Enqueue(upbeam);
             manager.Start();
         }
-
-
 
         private void start_following_Click(object sender, RoutedEventArgs e) {//Ξ追跡アルゴリズム
             ActivityManager manager = ActivityManager.GetInstance(parameterManager);
