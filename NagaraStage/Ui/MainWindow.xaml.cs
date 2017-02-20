@@ -1091,122 +1091,11 @@ namespace NagaraStage.Ui {
 
 
         private void BeamDetectionButton_Click(object sender, RoutedEventArgs e) {
-            Camera camera = Camera.GetInstance();
-            MotorControler mc = MotorControler.GetInstance(parameterManager);
-            Vector3 CurrentPoint = mc.GetPoint();
-            Vector3 p = new Vector3();
-            int BinarizeThreshold = 10;
-            int BrightnessThreshold = 7;
-            Mat sum = Mat.Zeros(440, 512, MatType.CV_8UC1);
-
-            string datfileName = string.Format(@"c:\img\{0}.dat", System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"));
-            BinaryWriter writer = new BinaryWriter(File.Open(datfileName, FileMode.Create));
-
-            for (int i = 0; i < 10; i++) {
-                byte[] b = camera.ArrayImage;
-                writer.Write(b);
-                p = mc.GetPoint();
-                Mat mat = new Mat(440, 512, MatType.CV_8U, b);
-                mat.ImWrite(String.Format(@"c:\img\{0}_{1}_{2}_{3}.bmp",
-                        System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
-                        (int)(p.X * 1000),
-                        (int)(p.Y * 1000),
-                        (int)(p.Z * 1000)));
-                Cv2.GaussianBlur(mat, mat, Cv.Size(3, 3), -1);
-                Mat gau = mat.Clone();
-                Cv2.GaussianBlur(gau, gau, Cv.Size(31, 31), -1);
-                Cv2.Subtract(gau, mat, mat);
-                Cv2.Threshold(mat, mat, BinarizeThreshold, 1, ThresholdType.Binary);
-                Cv2.Add(sum, mat, sum);
-                mc.MoveDistance(-0.003, VectorId.Z);
-                mc.Join();
-            }
-
-            Cv2.Threshold(sum, sum, BrightnessThreshold, 1, ThresholdType.Binary);
-
-            //Cv2.FindContoursをつかうとAccessViolationExceptionになる(Release/Debug両方)ので、C-API風に書く
-            using (CvMemStorage storage = new CvMemStorage()) {
-                using (CvContourScanner scanner = new CvContourScanner(sum.ToIplImage(), storage, CvContour.SizeOf, ContourRetrieval.Tree, ContourChain.ApproxSimple)) {
-                    //string fileName = string.Format(@"c:\img\{0}.txt",
-                    //        System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"));
-                    string fileName = string.Format(@"c:\img\u.txt");
-
-                    foreach (CvSeq<CvPoint> c in scanner) {
-                        CvMoments mom = new CvMoments(c, false);
-                        if (c.ElemSize < 2) continue;
-                        if (mom.M00 == 0.0) continue;
-                        double mx = mom.M10 / mom.M00;
-                        double my = mom.M01 / mom.M00;
-                        File.AppendAllText(fileName, string.Format("{0:F} {1:F}\n", mx, my));
-                    }
-                }
-            }
-
-            sum *= 255;
-            sum.ImWrite(String.Format(@"c:\img\{0}_{1}_{2}.bmp",
-                System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
-                (int)(p.X * 1000),
-                (int)(p.Y * 1000)));
-
-
-            Vector2 encoderPoint = new Vector2(-1, -1);
-            encoderPoint.X = mc.GetPoint().X;
-            encoderPoint.Y = mc.GetPoint().Y;//おこられたのでしかたなくこうする　吉田20150427
-            Vector2 viewerPoint = new Vector2(-1, -1);
-
-            if (TigerPatternMatch.PatternMatch(ref viewerPoint)) {
-                encoderPoint = coordManager.TransToEmulsionCoord(viewerPoint);
-                mc.MovePointXY(encoderPoint);
-                mc.Join();
-            }
-
-            //Vector2 vshift = new Vector2();
-            //if(TigerPatternMatch.PatternMatch(vshift)){
-            //    mc.MovePointXY(vshift);            
-            //}
-            /*
-            OpenCvSharp.CPlusPlus.Point[][] contours;
-            HiearchyIndex[] hierarchyindexes;
-            try {
-                Cv2.FindContours(sum, out contours, out hierarchyindexes, ContourRetrieval.External, ContourChain.ApproxSimple);
-
-                string fileName = string.Format(@"c:\img\{0}_{1}_{2}.txt",
-                                System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
-                                (int)(p.X * 1000),
-                                (int)(p.Y * 1000));
-                for (int i = 0; i < contours.Length; i++) {
-                    Moments mom = new Moments(contours[i]);
-                    if (contours[i].Length < 2) continue;
-                    if (mom.M00 == 0.0) continue;
-                    double mx = mom.M10 / mom.M00;
-                    double my = mom.M01 / mom.M00;
-                    File.WriteAllText(fileName, string.Format("{0:F},{1:F}", mx, my));
-                }
-
-                sum *= 255;
-                sum.ImWrite(String.Format(@"c:\img\{0}_{1}_{2}.bmp",
-                    System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff"),
-                    (int)(p.X * 1000),
-                    (int)(p.Y * 1000)));
-            } catch (AccessViolationException ex) {
-                System.Diagnostics.Debug.WriteLine("exception" + ex.Message);
-            }
-            */
-            /*
-            mc.Inch(MechaAxisAddress.ZAddress, PlusMinus.Minus);           
-            bool flag = true;
-            while (flag) {
-                byte[] b = camera.ArrayImage;
-                Mat mat = new Mat(440, 512, MatType.CV_8U, b);
-                mat.ImWrite(String.Format(@"c:\img\{0}_seq.bmp", System.DateTime.Now.ToString("yyyyMMdd_HHmmss_fff")));
-                Vector3 p = mc.GetPoint();
-                if ((CurrentPoint.Z - p.Z) > 0.1) flag = false;
-            }
-            mc.StopInching(MechaAxisAddress.ZAddress);
-            mc.Join();
-            */
+            ActivityManager manager = ActivityManager.GetInstance(parameterManager);
+            BeamDetection bd = BeamDetection.GetInstance(parameterManager);//後でbeamdetection消した後になんとかする。
+            manager.Enqueue(bd);
+            manager.Start();
         }
-
 
         private void moveToCoordButton_Click(object sender, RoutedEventArgs e) {
             // これから表示するダイアログのテキストボックスのTextChangedイベントハンドラ
@@ -1250,8 +1139,6 @@ namespace NagaraStage.Ui {
             return;
         }
 
-
-
         public struct mm {
             public double white_x;
             public double white_y;
@@ -1259,7 +1146,6 @@ namespace NagaraStage.Ui {
             public double white_dx;
             public double white_dy;
         }
-
 
         static double common_dx;
         static double common_dy;
