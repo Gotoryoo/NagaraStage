@@ -474,6 +474,9 @@ namespace NagaraStage.Activities {
             Track myTrack = tm.GetTrack(tm.TrackingIndex);
             Surface surface = Surface.GetInstance(parameterManager);
             Stopwatch sw = new Stopwatch();
+            CoordManager coordManager = new CoordManager(parameterManager);
+
+
             //CoordManager coordManager;
             int mod = parameterManager.ModuleNo;
             int pl = parameterManager.PlateNo;
@@ -561,7 +564,7 @@ namespace NagaraStage.Activities {
             double dstx = myTrack.MsX + coordManager.HFDX;
             double dsty = myTrack.MsY + coordManager.HFDY;
             mc.MovePointXY(dstx, dsty, delegate {
-                stage.WriteLine(Properties.Strings.MovingComplete);
+                //stage.WriteLine(Properties.Strings.MovingComplete);
             });
 
             mc.Join();
@@ -641,7 +644,7 @@ namespace NagaraStage.Activities {
                 bpm.ReadTrackDataTxtFile(uptxt, true);
                 bpm.DoPatternMatch();
 
-                stage.WriteLine(String.Format("pattern match dx,dy = {0}, {1}", bpm.GetPeakX() * 0.2625 * 0.001, bpm.GetPeakY() * 0.2625 * 0.001));
+                //stage.WriteLine(String.Format("pattern match dx,dy = {0}, {1}", bpm.GetPeakX() * 0.2625 * 0.001, bpm.GetPeakY() * 0.2625 * 0.001));
                 Vector3 BfPoint = mc.GetPoint();
                 mc.MoveDistance(bpm.GetPeakX() * 0.2625 * 0.001, VectorId.X);
                 mc.Join();
@@ -650,7 +653,7 @@ namespace NagaraStage.Activities {
                 Led led = Led.GetInstance();
                 led.AdjustLight(parameterManager);
                 Vector3 AfPoint = mc.GetPoint();
-                stage.WriteLine(String.Format("Move dx,dy = {0}, {1}", BfPoint.X - AfPoint.X, BfPoint.Y - AfPoint.Y));
+                //stage.WriteLine(String.Format("Move dx,dy = {0}, {1}", BfPoint.X - AfPoint.X, BfPoint.Y - AfPoint.Y));
 
             }
             catch (ArgumentOutOfRangeException)

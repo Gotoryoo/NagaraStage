@@ -448,7 +448,7 @@ namespace NagaraStage.Activities {
                                     koko.white_dx = delta_xx;
                                     koko.white_dy = delta_yy;
                                     white_area.Add(koko);
-                                    stage.WriteLine(String.Format("mx={0:f2} , my={1:f2} , dx={2:f2} , dy={3:f2} , M={4:f2}", mx, my, delta_xx, delta_yy, mom.M00));
+                                    //stage.WriteLine(String.Format("mx={0:f2} , my={1:f2} , dx={2:f2} , dy={3:f2} , M={4:f2}", mx, my, delta_xx, delta_yy, mom.M00));
                                 }
                             }
                         }
